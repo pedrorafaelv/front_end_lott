@@ -1,0 +1,68 @@
+<main class="form-signin w-100 m-auto">
+
+    <div class="row">
+        <div class="col-md-4">
+            <svg class="bi" width="32" height="32" fill="currentColor">
+                 <use xlink:href="bootstrap-icons.svg#heart-fill"/>
+                </svg>
+        </div>
+        <div class="col-md-4">
+            <div class="limiter animated fadeInLeft">
+                <div class="container-login100">
+                    <div class="wrap-login100 p-t-50 p-b-90">
+                        <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()">
+
+                            <h1 class="h3 mb-3 fw-normal">Login</h1>
+                            <div class="form-floating">
+                                <input class="form-control" type="email" id="email" placeholder="Correo electrónico" formControlName="correo" [class.is-invalid]="correoNoValido">
+                                <label class="col-form-label" for="email">Correo</label>
+                                <small *ngIf="correoNoValido" class="text-danger">Ingrese un correo valido </small>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control" type="text" id="nombre" placeholder="Nombre de Usuario" formControlName="usuario" [class.is-invalid]="usuarioNoValido">
+                                <label class="col-form-label" for="nombre">Usuario</label>
+                                <small *ngIf="usuarioNoValido" class="text-danger">Usuario no disponible </small>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control" type="password" id="contrasena" placeholder="Contraseña" formControlName="pass1" [class.is-invalid]="pass1NoValido">
+                                <label class="col-form-label" for="contrasena">Contraseña</label>
+                            </div>
+                            <div class="checkbox mb-3">
+                                <input [(ngModel)]="recordarme" class="input-checkbox100" id="ckb1" type="checkbox" name="recordarme">
+                                <label class="label-checkbox100" for="ckb1">
+                                Recordar mi usuario
+                            </label>
+                            </div>
+                            <div class="checkbox mb-3">
+                                <div class="col">
+                                    <a routerLink="/sing-up" class="txt1">
+                                    ¿No tienes una cuenta?/Registrate
+                                </a>
+                                </div>
+                            </div>
+                            <div class="wrap-input100 m-b-16">
+                                <label class="col-form-label">&nbsp;</label>
+                                <div class="input-group col-md-8">
+                                    <button type="submit" class="w-100 btn btn-lg btn-primary">
+                                    Ingresar
+                                </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
+</main>
+
+<pre>
+    estado del formulario : {{forma.valid}}
+    <br>
+    Status: {{forma.status}}
+</pre>
+
+<pre>
+    
+    {{forma.value |json}}

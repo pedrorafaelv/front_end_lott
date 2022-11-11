@@ -1,0 +1,210 @@
+<h3>Nuevo Sorteo </h3>
+<div class="container">
+    <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()">
+        <div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Nombre</label>
+                <div class="col-4">
+                    <input class="form-control" type="text" placeholder="Nombre" formControlName="nombre" name="nombre" [class.is-invalid]="nombreNoValido">
+                    <small *ngIf="nombreNoValido" class="text-danger">Ingrese 5 letras </small>
+                </div>
+                <label class="col-2 col-form-label">Descripción</label>
+                <div class="col-4">
+                    <input class="form-control" type="text" placeholder="Descripción" formControlName="description" name="description" [class.is-invalid]="descriptionNoValido">
+                    <small *ngIf="descriptionNoValido" class="text-danger">Ingrese 5 letras </small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Grupo</label>
+                <div class="col">
+                    <select formControlName="grupo" class="form-select form-select-font-size-1" name="grupo">
+                        <option [ngValue]="null" disabled>Selecciona...</option>
+                        <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
+                    </select>
+                    <small *ngIf="grupoNoValido" class="text-danger"></small>
+                </div>
+                <label class="col-2 col-form-label">Monto Total</label>
+                <div class="col">
+                    <input class="form-control" type="text" placeholder="Monto Total " formControlName="total_amount" name="total_amount" [class.is-invalid]="totalAmountNoValido">
+                    <small *ngIf="totalAmountNoValido" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Monto Cartón</label>
+                <div class="col-4">
+                    <input class="form-control" type="text" placeholder="Monto Cartón" formControlName="card_amount" name="card_amount" [class.is-invalid]="cardAmountNoValido">
+                    <small *ngIf="cardAmountNoValido" class="text-danger"> </small>
+                </div>
+                <label class="col-2 col-form-label">Mínimo de Jugadas</label>
+                <div class="col-4">
+                    <input class="form-control" type="text" placeholder="Número Mínimo de Jugadas" formControlName="minimun_play" name="minimun_play" [class.is-invalid]="minimunPlayNoValido">
+                    <small *ngIf="minimunPlayNoValido" class="text-danger"> </small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Tipo de Sorteo</label>
+                <div class="col col-2">
+                    <label class="form-check-label">
+                        <input type="radio"  class="form-check-input" formControlName="raffle_type" [class.is-invalid]="raffleTypeNoValido" value = "{{listaRaffleType[0]['id']}}" > {{listaRaffleType[0]['name']}}
+                    </label>
+                </div>
+                <div class="col col-2">
+                    <label class="form-check-label">
+                        <input type="radio"  class="form-check-input" formControlName="raffle_type" [class.is-invalid]="raffleTypeNoValido" value = "{{listaRaffleType[1]['id']}} "  > {{listaRaffleType[1]['name']}}
+                    </label>
+                    <small *ngIf="raffleTypeNoValido" class="text-danger"></small>
+                </div>
+                <label class="col-2 col-form-label">Privacidad</label>
+                <div class="col col-2">
+                    <label class="form-check-label">
+                        <input type="radio"  class="form-check-input" formControlName="privacy" value = "{{listaPublicPrivate[0]['id']}}" [class.is-invalid]="privacyNoValido" > {{listaPublicPrivate[0]['name']}}
+                    </label>
+                </div>
+                <div class="col col-2">
+                    <label class="form-check-label">
+                        <input type="radio"   class="form-check-input" formControlName="privacy" value = "{{listaPublicPrivate[1]['id']}}" [class.is-invalid]="privacyNoValido" > {{listaPublicPrivate[1]['name']}}
+                    </label>
+                    <small *ngIf="privacyNoValido" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Máximo de Jugadas</label>
+                <div class="col-4">
+                    <input class="form-control" type="text" placeholder="Máximo número de jugadas" formControlName="maximun_play" name="maximun_play" [class.is-invalid]="maximunPlayNoValido">
+                    <small *ngIf="maximunPlayNoValido" class="text-danger"> </small>
+                </div>
+                <label class="col-2 col-form-label">Máximo de Jugadores</label>
+                <div class="col-4">
+                    <input class="form-control" type="text" placeholder="Máximo número de jugadores" formControlName="maximun_user_play" name="maximun_user_play" [class.is-invalid]="maximunUserPlayNoValido">
+                    <small *ngIf="maximunUserPlayNoValido" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">% Retención</label>
+                <div class="col-4">
+                    <select formControlName="retention_percent" class="form-select form-select-font-size-1" name="retention_percent">
+                        <option [ngValue]="null" disabled>Selecciona...</option>
+                        <option *ngFor="let p of listaPercent" [ngValue]="p.id">{{p.name}}</option>
+                    </select>
+                    <small *ngIf="retentionPercentNoValido" class="text-danger">Ingrese número entre 0 y 20 </small>
+                </div>
+                <label class="col-2 col-form-label">Retención</label>
+                <div class="col-4">
+                    <input class="form-control" type="text" placeholder="Monto de retención" formControlName="retention_amount" name="retention_amount" [class.is-invalid]="retentionAmountNoValido">
+                    <small *ngIf="retentionAmountNoValido" class="text-danger"> </small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">% Retención (admin)</label>
+                <div class="col-4">
+                    <select formControlName="admin_retention_percent" class="form-select form-select-font-size-1" name="admin_retention_percent">
+                        <option [ngValue]="null" >Selecciona...</option>
+                        <option *ngFor="let p of listaPercent" [ngValue]="p.id">{{p.name}}</option>
+                    </select>
+                    <small *ngIf="adminRetentionPercentNoValido" class="text-danger">Ingrese número entre 0 y 10 </small>
+                </div>
+                <label class="col-2 col-form-label">Retención (admin)</label>
+                <div class="col-4">
+                    <input class="form-control" type="text" placeholder="Monto de retención (administrador)" formControlName="admin_retention_amount" name="admin_retention_amount" ng-disabled="isDisabled" [class.is-invalid]="adminRetentionAmountNoValido">
+                    <small *ngIf="adminRetentionAmountNoValido" class="text-danger"> </small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Premio Línea</label>
+                <div class="col-2">
+                    <label class="form-check-label">
+                        <input type="radio"  class="form-check-input" formControlName="reward_line" value = "{{ListaYesNo[0]['id']}}" [class.is-invalid]="rewardLineNoValido" > {{ListaYesNo[0]['name']}}
+                    </label>
+                </div>
+                <div class="col-2">
+                    <label class="form-check-label">
+                        <input type="radio"  class="form-check-input" formControlName="reward_line" value = "{{ListaYesNo[1]['id']}}"  [class.is-invalid]="rewardLineNoValido"> {{ListaYesNo[1]['name']}}
+                        <small *ngIf="rewardLineNoValido" class="text-danger"></small>
+                    </label>
+                </div>
+                <label class="col-2 col-form-label">% por Línea</label>
+                <div class="col col-4">
+                    <p>
+                        <select formControlName="percent_line" class="form-select form-select-font-size-1" ng-disabled="percentLineIsDisabled" name="percent_line">
+                            <option [ngValue]="null" disabled>Selecciona...</option>
+                            <option  *ngFor="let item of listaPercent2" [ngValue]="item.id">{{item.name}}</option>
+                        </select>
+                    </p>
+                    <small *ngIf="percentLineNoValido" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Cartón Lleno</label>
+                <div class="col-2">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" formControlName="reward_full" value = "{{ListaYesNo[0]['id']}}" [class.is-invalid]="rewardFullNoValido"> {{ListaYesNo[0]['name']}}
+                    </label>
+                </div>
+                <div class="col-2">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" formControlName="reward_full" value = "{{ListaYesNo[1]['id']}}" [class.is-invalid]="rewardFullNoValido"> {{ListaYesNo[1]['name']}}
+                    </label>
+                    <small *ngIf="rewardFullNoValido" class="text-danger"></small>
+                </div>
+                <label class="col-2 col-form-label">% Catón Lleno</label>
+                <div class="col-4">
+                    <select formControlName="percent_full" class="form-select form-select-font-size-1" name="percent_full">
+                        <option [ngValue]="null" disabled>Selecciona...</option>
+                        <option *ngFor="let p of listaPercent2" [ngValue]="p.id">{{p.name}}</option>
+                    </select>
+                    <small *ngIf="percentFullNoValido" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Fecha/Hora programada </label>
+                <div class="col-2">
+                    <input class="form-control" type="date" placeholder="Fecha Programada" formControlName="scheduled_date" [class.is-invalid]="scheduledDateNoValido">
+                    <small *ngIf="scheduledDateNoValido" class="text-danger">Fecha Programada no valida </small>
+                </div>
+                <div class="col-2">
+                    <input class="form-control" type="time" placeholder="Hora fin" formControlName="scheduled_hour" [class.is-invalid]="scheduledHourNoValido">
+                    <small *ngIf="scheduledHourNoValido" class="text-danger">Hora programada no valida </small>
+                </div>
+                <label class="col-2 col-form-label">Fecha/Hora  Inicio</label>
+                <div class="col-2">
+                    <input class="form-control" type="date" placeholder="Fecha Fin" formControlName="start_date" [class.is-invalid]="startDateNoValido">
+                    <small *ngIf="startDateNoValido" class="text-danger">Fecha Inicio no valida </small>
+                </div>
+                <div class="col-2">
+                    <input class="form-control" type="time" placeholder="hora de inicio" formControlName="start_hour" [class.is-invalid]="startHourNoValido">
+                    <small *ngIf="startHourNoValido" class="text-danger">Hora de inicio no valida </small>
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">Fecha/Hora final </label>
+                <div class="col-2">
+                    <input class="form-control" type="date" placeholder="Fecha Fin" formControlName="end_date" [class.is-invalid]="endDateNoValido">
+                    <small *ngIf="endDateNoValido" class="text-danger">Fecha fin no valida </small>
+                </div>
+                <div class="col-2">
+                    <input class="form-control" type="time" placeholder="Hora fin" formControlName="end_hour" [class.is-invalid]="endHourNoValido">
+                    <small *ngIf="endHourNoValido" class="text-danger">Hora final no valida </small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-2 col-form-label">&nbsp;</label>
+                <div class="input-group col-md-8">
+                    <button type="submit" class="btn btn-primary btn-block">
+                    Guardar
+                </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<br>
+<pre>
+    Estado del formulario {{forma.valid}}
+    <br>
+    Status: {{forma.status}}
+</pre>
+<pre>
+    {{forma.value | json }}
+</pre>

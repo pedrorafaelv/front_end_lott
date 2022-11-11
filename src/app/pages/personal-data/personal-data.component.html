@@ -1,0 +1,134 @@
+<h4>Registro de Usuarios</h4>
+<div class="container">
+    <div class="row">
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-10">
+            <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()">
+                <div class="form-group row">
+                    <div class="col-6">
+                        <h1> Datos de la cuenta </h1>
+                        <div class="row">
+                            <div class="col">
+                                <label class="col col-form-label">Nombre de usuario</label>
+                                <input class="form-control" type="text" placeholder="Nombre de Usuario" formControlName="usuario" [class.is-invalid]="usuarioNoValido">
+                                <small *ngIf="usuarioNoValido" class="text-danger">Usuario no disponible </small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="col col-form-label">Correo</label>
+                                <input class="form-control" type="email" placeholder="Correo electrónico" formControlName="correo" [class.is-invalid]="correoNoValido">
+                                <small *ngIf="correoNoValido" class="text-danger">Ingrese un correo valido </small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="col col-form-label">Contraseña</label>
+                                <input class="form-control" type="password" placeholder="Contraseña" formControlName="pass1" [class.is-invalid]="pass1NoValido">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="col col-form-label">Confirmar Contraseña</label>
+                                <input class="form-control" type="password" placeholder="Confirmar Contraseña" formControlName="pass2" [class.is-invalid]="pass2NoValido">
+                            </div>
+                        </div>
+                        <div class="form-group row" formGroupName="direccion">
+                            <div class="form-row col">
+                                <label class="col col-form-label">Dirección</label>
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Pais" formControlName="country" [class.is-invalid]="paisNoValido">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Estado" formControlName="state" [class.is-invalid]="estadoNoValido">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Ciudad" formControlName="city" [class.is-invalid]="ciudadNoValido">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="dirección" formControlName="address" [class.is-invalid]="direccionNoValido">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h1> Datos Personales </h1>
+                        <div class=" row">
+                            <div class="col">
+                                <label class="col-2 col-form-label">Nombre</label>
+                                <input class="form-control" type="text" placeholder="Nombre" formControlName="nombre" [class.is-invalid]="nombreNoValido">
+                                <small *ngIf="nombreNoValido" class="text-danger">Ingrese 5 letras </small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="col col-form-label">Apellido</label>
+                                <input class="form-control" type="text" placeholder="Apellido" formControlName="apellido" [class.is-invalid]="apellidoNoValido">
+                                <small *ngIf="apellidoNoValido" class="text-danger">Ingrese 5 letras </small>
+                            </div>
+                        </div>
+                        <div class=" row">
+                            <div class="col">
+                                <label class="col col-form-label">fecha de nacimiento</label>
+                                <input class="form-control" type="text" placeholder="fecha de nacimiento" formControlName="birth_date" [class.is-invalid]="birthDateNoValido">
+                                <small *ngIf="birthDateNoValido" class="text-danger">Fecha de Nacimiento no valida </small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="col col-form-label">Documento de Identidad</label>
+                                <input class="form-control" type="text" placeholder="Documento de Identidad" formControlName="document" [class.is-invalid]="documentNoValido">
+                                <small *ngIf="documentNoValido" class="text-danger ">Documento no valido </small>
+                            </div>
+                        </div>
+                        <div class=" row ">
+                            <div class="col ">
+                                <label class="col col-form-label ">Género</label>
+                                <input class="form-control " type="text" placeholder="Genero" formControlName="gender" [class.is-invalid]="generoNoValido">
+                                <small *ngIf="generoNoValido" class="text-danger">Genero no valido </small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col ">
+                                <label class="col-2 col-form-label ">Teléfono</label>
+                                <input class="form-control " type="text" placeholder="Teléfono" formControlName="phone" [class.is-invalid]="telefonoNoValido">
+                                <small *ngIf="telefonoNoValido" class="text-danger">Teléfono no valido </small>
+                            </div>
+                        </div>
+                        <div class="contact100-form-checkbox">
+                            <input formControlName="politics" class="input-checkbox100" id="ckb1" type="checkbox" name="politics">
+                            <label class="label-checkbox100" for="ckb1"> He leído y aceptado los <a routerLink="/politics" class="txt1"> términos y condiciones </a></label>
+                            <small *ngIf="politicsNoValido" class="text-danger">Debe aceptar los términos y condiciones</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col  align-center">
+                        <a routerLink="/log-in" class="txt1"> ¿Ya tienes una cuenta?/Ingresa </a>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label">&nbsp;</label>
+                    <div class="input-group col-md-8">
+                        <button type="submit" class="btn btn-primary btn-block">
+                        Guardar
+                    </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-1"> </div>
+    </div>
+</div>
+
+<pre>
+    estado del formulario : {{forma.valid}}
+    <br>
+    Status: {{forma.status}}
+</pre>
+
+<pre>
+    
+    {{forma.value |json}}
+ </pre>

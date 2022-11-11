@@ -1,0 +1,13 @@
+<!-- <p>card-raffle works!</p> -->
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-6 mb-6" *ngFor="let carton of cartones">
+            <div class="row mt-1">
+                <div class="col col-md-12">
+                    <p>Nro Carton: {{carton.id}}</p>
+                    <app-cartones [carton]="carton"></app-cartones>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

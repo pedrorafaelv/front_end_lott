@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col-6">
+        <h1>Imagenes</h1>
+    </div>
+    <div class="col-6">
+        <h1>Carton</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col col-6">
+
+        <div id="imagen" cdkDropList>
+            <div class="row animate__animated animate__fadeIn">
+                <div class="caja  col-md-sm-3 " *ngFor="let icono of iconos" cdkDrag>
+                    <fa-icon [icon]="icono" size="3x"></fa-icon>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col col-md-5">
+
+        <div id="carton" cdkDropList>
+            <div class="row animate__animated animate__fadeIn">
+                <div class="caja  col-md-sm-3 " *ngFor="let posicion of posiciones" cdkDrag>
+                    <!-- <fa-icon [icon]="posicion" size="3x"></fa-icon> -->
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

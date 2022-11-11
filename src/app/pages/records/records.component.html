@@ -1,0 +1,11 @@
+<div class="container">
+
+    <div class="row">
+        <div class="col" *ngFor="let ficha of Fichas">
+            <div class="caja">
+                <img [src]="ficha.image| imagen:color" class="img-thumbnail">
+            </div>
+
+        </div>
+    </div>
+</div>

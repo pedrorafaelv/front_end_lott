@@ -1,0 +1,87 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" [routerLink]="['/home']" routerLinkActive="router-link-active">Loteria</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/home" routerLinkActive="active">
+                        <fa-icon [icon]="faHouseChimneyUser"></fa-icon> Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/cards" routerLinkActive="active">
+                        <fa-icon [icon]="faChessBoard"></fa-icon> Cartones</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/play" routerLinkActive="active">
+                        <fa-icon [icon]="faHatWizard"></fa-icon> Jugando</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/groups" routerLinkActive="active">
+                        <fa-icon [icon]="faUsersRectangle"></fa-icon> Grupos</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/my-cards" routerLinkActive="active">Mis cartones</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/moves" routerLinkActive="active">
+                        <fa-icon [icon]="faCommentsDollar"></fa-icon> Billetera</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/raffle" routerLinkActive="active">
+                        <fa-icon [icon]="faDice"></fa-icon> Sorteo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/account" routerLinkActive="active">
+                        <fa-icon [icon]="faUserGear"></fa-icon> Mi cuenta</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/log-in" routerLinkActive="active">
+                        <fa-icon [icon]="faUserCheck"></fa-icon> Ingresar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/log-out" routerLinkActive="active">
+                        <fa-icon [icon]="faDoorOpen"></fa-icon> cerrar sesión</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/sing-up" routerLinkActive="active">
+                        <fa-icon [icon]="faUserplus"></fa-icon> Registrarse</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li> -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            sobre Lotiapp
+          </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <fa-icon [icon]="faUsersRectangle"></fa-icon> Mi Cuenta</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <fa-icon [icon]="faUsersRectangle"></fa-icon> Mis Grupos</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <fa-icon [icon]="faUsersRectangle"></fa-icon> Mis Referidos</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                </li> -->
+            </ul>
+            <!-- <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Grupos" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Buscar</button>
+            </form> -->
+        </div>
+    </div>
+</nav>

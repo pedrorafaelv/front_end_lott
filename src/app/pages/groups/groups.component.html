@@ -1,0 +1,98 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <p>Crear Grupo</p>
+
+            <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()">
+                <div>
+                    <div class="form-group row">
+                        <label class="col-2 col-form-label">Nombre</label>
+                        <div class="col">
+                            <input class="form-control" type="text" placeholder="Nombre" formControlName="nombre" [class.is-invalid]="nombreNoValido">
+                            <small *ngIf="nombreNoValido" class="text-danger">Ingrese 5 letras </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Descripción</label>
+                    <div class="col">
+                        <input class="form-control" type="text" placeholder="description" formControlName="description" [class.is-invalid]="descriptionNoValido">
+                        <small *ngIf="descriptionNoValido" class="text-danger">Ingrese un correo valido </small>
+                    </div>
+                </div>
+                <div class="form-group row" style="margin-top:10px">
+                    <label class="col-2 col-form-label">Activo</label>
+                    <div class="col-2">
+                        <label class="form-check-label">
+                <input type="radio" class="form-check-input" formControlName="active" value = "{{ListaYesNo[0]['id']}}" [class.is-invalid]="activeNoValido"> {{ListaYesNo[0]['name']}}
+            </label>
+                    </div>
+                    <div class="col-2">
+                        <label class="form-check-label">
+            <input type="radio" class="form-check-input" formControlName="active" value = "{{ListaYesNo[1]['id']}}" [class.is-invalid]="activeNoValido"> {{ListaYesNo[1]['name']}}
+        </label>
+                        <small *ngIf="activeNoValido" class="text-danger"></small>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Privacidad</label>
+                    <div class="col-2">
+                        <label class="form-check-label">
+                <input type="radio" class="form-check-input" formControlName="privacy" value = "{{listaPublicPrivate[0]['id']}}" [class.is-invalid]="privacyNoValido"> {{listaPublicPrivate[0]['name']}}
+            </label>
+                    </div>
+                    <div class="col-2">
+                        <label class="form-check-label">
+            <input type="radio" class="form-check-input" formControlName="privacy" value = "{{listaPublicPrivate[1]['id']}}" [class.is-invalid]="privacyNoValido"> {{listaPublicPrivate[1]['name']}}
+        </label>
+                        <small *ngIf="privacyNoValido" class="text-danger"></small>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">Start Date</label>
+                    <div class="col">
+                        <input class="form-control" type="date" placeholder="Fecha Fin" formControlName="start_date" [class.is-invalid]="startDateNoValido">
+                        <small *ngIf="startDateNoValido" class="text-danger">Fecha Inicio no valida </small>
+                        <!-- <mat-form-field appearance="fill">
+                <mat-label>Input & change events</mat-label>
+                <input matInput [matDatepicker]="start_date" fromControlName="start_date" (dateInput)="addEvent('input', $event)" (dateChange)="addEvent('change', $event)">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="start_date"></mat-datepicker-toggle>
+            <mat-datepicker #start_date></mat-datepicker>
+        </mat-form-field> -->
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-2 col-form-label">End Date</label>
+                    <div class="col">
+                        <input class="form-control" type="date" placeholder="Fecha Fin" formControlName="end_date" [class.is-invalid]="endDateNoValido">
+                        <small *ngIf="endDateNoValido" class="text-danger">Fecha fin no valida </small>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px">
+                    <label class="col-2 col-form-label">&nbsp;</label>
+                    <div class="col-md-10">
+                        <button type="submit" class="btn btn-primary btn-block">
+                        Crear Grupo
+                    </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3">
+
+        </div>
+    </div>
+</div>
+
+<pre>
+estado del formulario : {{forma.valid}}
+<br>
+Status: {{forma.status}}
+</pre>
+
+<pre>
+
+{{forma.value |json}}
+</pre>

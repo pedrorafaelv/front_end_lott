@@ -1,0 +1,19 @@
+.swiper {
+    width: 100%;
+    height: 390px;
+    border-color: aqua;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+    color: rgb(40, 28, 202);
+}
+
+.card-description {
+    background-color: rgba(0, 0, 0, 0.3);
+    bottom: 0;
+    padding: 5px 30px;
+    position: absolute;
+    width: 100%;
+    border-radius: 0%;
+}
