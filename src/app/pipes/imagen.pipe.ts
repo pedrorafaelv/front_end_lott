@@ -11,7 +11,7 @@ public imagen2 : string;
       if (imagen.indexOf('@')>0){
          color = 'full';
          img = imagen.substring(0, imagen.length - 1);
-          console.log('imagen =',img);
+          // console.log('imagen =',img);
          return './assets/capicon/' + color + '/' + img;
       }else{
         if (color){

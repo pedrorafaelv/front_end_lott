@@ -8,6 +8,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BrowserModule } from "@angular/platform-browser";
 import { PipesModule } from '../pipes/pipes.module';
 import { CartonesPosterGridComponent } from './cartones-poster-grid/cartones-poster-grid.component';
+ import { FormsModule, ReactiveFormsModule  } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { CartonesPosterGridComponent } from './cartones-poster-grid/cartones-pos
     RouterModule,
     FontAwesomeModule,
     BrowserModule,
-    PipesModule
+    PipesModule,
+    FormsModule, ReactiveFormsModule
   ]
 })
 export class ComponentsModule { }

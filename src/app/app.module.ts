@@ -11,12 +11,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentsModule } from './components/components.module';
 import { PagesModule } from './pages/pages.module';
+import { NotImageDirective } from './directives/not-image.directive';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     SandboxComponent,
+    NotImageDirective,
     // CartonnComponent,
     // CartonComponent,
   ],

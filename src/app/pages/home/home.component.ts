@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
     })
   }
   putCard(card_id ): void{
-    console.log('putcard', card_id);
+    console.log('putcard home_component', card_id);
  }
 
 }

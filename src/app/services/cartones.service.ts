@@ -10,12 +10,14 @@ import { compileNgModule } from '@angular/compiler';
 })
 export class CartonesService {
   private cardPage=1;
+  private  raffle_id: string ;
   public cargando:boolean = false;
+  private baseUrl = "http://127.0.0.1:8000/api";
   constructor(private http: HttpClient ) {
 
    }
   getCartones ():Observable<CardResponse>{
-      return this.http.get<CardResponse>('http://127.0.0.1:8000/api/Card');
+      return this.http.get<CardResponse>(`${this.baseUrl}/Card`);
       // .pipe( map( (resp)=>resp.card)
       
         // tap(()=>{
@@ -25,5 +27,14 @@ export class CartonesService {
       // );
       
    }
-
+   getAvailableCards(raffle: string):Observable<CardResponse>{
+    return this.http.get<CardResponse>(
+      `${this.baseUrl}/card/getAvailableCards/${raffle}`
+    )  
+ }
+ getAvailableCardsByGroup(group: string):Observable<CardResponse>{
+  return this.http.get<CardResponse>(
+    `${this.baseUrl}/card/getAvailableCardsByGroup/${group}`
+  )  
+}
 }

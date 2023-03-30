@@ -10,10 +10,10 @@
                     <a class="nav-link" aria-current="page" routerLink="/home" routerLinkActive="active">
                         <fa-icon [icon]="faHouseChimneyUser"></fa-icon> Home</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" aria-current="page" routerLink="/cards" routerLinkActive="active">
                         <fa-icon [icon]="faChessBoard"></fa-icon> Cartones</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" routerLink="/play" routerLinkActive="active">
                         <fa-icon [icon]="faHatWizard"></fa-icon> Jugando</a>
@@ -73,6 +73,14 @@
                                 <fa-icon [icon]="faUsersRectangle"></fa-icon> Mis Referidos</a>
                         </li>
                     </ul>
+                </li>
+                <li>
+                    <button *ngIf="!auth0.loggedIn" (click)="auth0.login()" Class="btn btn-outline-primary">
+                        Ingresar
+                    </button>
+                    <button *ngIf="auth0.loggedIn" (click)="auth0.logout()" class="btn btn-outline-primary">
+                        Salir
+                    </button>
                 </li>
                 <!-- <li class="nav-item">
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>

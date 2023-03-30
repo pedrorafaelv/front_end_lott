@@ -15,6 +15,7 @@ import { LogOutComponent } from './pages/log-out/log-out.component';
 import { SingUpComponent } from './pages/sing-up/sing-up.component';
 import { PoliticsComponent } from './pages/politics/politics.component';
 import { AuthGuard } from './guards/auth.guard';
+import { CallbackComponent } from './pages/callback/callback.component';
 
 const routes: Routes = [
   { 
@@ -61,9 +62,14 @@ const routes: Routes = [
   { 
     path: 'politics', component: PoliticsComponent
   },
+  { 
+    path:'callback', component: CallbackComponent 
+  }, 
   {
     path: '**',  redirectTo: 'home'
-  }
+  },
+  
+
 ];
 
 @NgModule({

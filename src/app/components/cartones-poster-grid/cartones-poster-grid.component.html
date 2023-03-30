@@ -1,3 +1,22 @@
+<form autocomplete="off" [formGroup]="forma">
+
+    <div class="row">
+        <!-- <pre>{{grupos}}</pre> -->
+        <div class="form-group row">
+            <label class="col-1 col-form-label">Grupo</label>
+            <div class="col-2">
+                <select formControlName="grupo" class="form-select form-select-font-size-1" name="grupo" (change)=onChangeGrupo()>
+                <option [ngValue]="null" disabled>Selecciona...</option>
+                <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
+            </select>
+                <small *ngIf="grupoNoValido" class="text-danger"></small>
+            </div>
+            <div class="col-8"></div>
+        </div>
+    </div>
+</form>
+
+
 <div class="row">
     <div class="col-md-4 mb-6" *ngFor="let carton of cartones">
         <div class="row mt-3">

@@ -18,7 +18,7 @@ Fichas: string[] = [];
   constructor(private RaffleService: RaffleService) { }
 
   ngOnInit(): void {
-    this.RaffleService.getCardsRaffle('10/1')
+    this.RaffleService.getCardsRaffleByUser('10/1')
     .subscribe( resp => {
       console.log('cartones en card-raffle = ', resp.Cards);
       this.cartones = resp.Cards;

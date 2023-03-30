@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Auth0Service } from '../../services/auth0.service';
 
 @Component({
   selector: 'app-callback',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CallbackComponent implements OnInit {
 
-  constructor() { }
+  constructor(private  auth:Auth0Service) { }
 
   ngOnInit(): void {
+    //this.auth.handleAuthCallback();
   }
 
 }

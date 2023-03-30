@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Auth0Service } from '../../services/auth0.service';
 import { faUsersRectangle, faHouseChimneyUser, faChessBoard, faHatWizard, faFloppyDisk, faCommentsDollar, faDice, 
          faUserPlus, faDoorOpen, faUserCheck, faUserGear } from '@fortawesome/free-solid-svg-icons';
 
@@ -21,7 +22,7 @@ faDoorOpen = faDoorOpen;
 faUserCheck = faUserCheck;
 faUserGear = faUserGear;
   
-constructor() { }
+constructor(public auth0: Auth0Service) { }
 
   ngOnInit(): void {
   }

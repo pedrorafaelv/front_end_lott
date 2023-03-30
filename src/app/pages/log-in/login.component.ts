@@ -98,6 +98,8 @@ export class LoginComponent implements OnInit {
      this.auth.login(this.forma.get('correo').value, this.forma.get('pass1').value)
     .subscribe(resp =>{
       Swal.close();
+      console.log('resp = '+ resp);
+      // localStorage.setItem('localId', this.forma.get('localId').value);
 
      if (this.recordarme){
       localStorage.setItem('email', this.forma.get('correo').value);

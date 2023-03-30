@@ -4,6 +4,9 @@ import { RaffleService } from '../../services/raffle.service';
 import { ValidadoresService } from '../../services/validadores.service';
 import { GroupService } from '../../services/group.service';
 import { Group } from '../../interfaces/get-groups-response';
+import Swal from "sweetalert2";
+import { errorValidate } from '../../interfaces/error-validate';
+import { error } from '@angular/compiler/src/util';
 
 
 @Component({
@@ -12,8 +15,9 @@ import { Group } from '../../interfaces/get-groups-response';
   styleUrls: ['./raffle.component.css']
 })
 export class RaffleComponent implements OnInit {
-
 forma: FormGroup;
+mensaje: string;
+icono: string;
 ListaYesNo= [
     {id: 0, name: 'NO' },
     {id: 1, name: 'SI' }
@@ -69,29 +73,30 @@ listaPercent = [
   constructor(private fb: FormBuilder,
               private RaffleService: RaffleService,
               private validadores: ValidadoresService,
-              private GroupService: GroupService) {
+              private GroupService: GroupService
+            ) {
 
     this.forma = this.fb.group({
-      nombre                 : ['Sin nombre '+ this.date, [Validators.required]],
-      description            : ['Sin Descripcion '+ this.date, [Validators.required]],
+      nombre                 : ['Sorteo número  '+ this.date, [Validators.required]],
+      description            : ['Sorteo número  '+ this.date, [Validators.required]],
       grupo                  : ['', [Validators.required]],
       total_amount           : ['', []],
       card_amount            : ['1', [Validators.required]],
-      minimun_play           : ['', [Validators.required]],
-      maximun_play           : ['', [Validators.required]],
-      maximun_user_play      : ['', [Validators.required]],	
-      retention_percent	     : ['', [Validators.required]],
-      retention_amount	     : ['', [Validators.required]],
-      admin_retention_percent: ['', [Validators.required]],	
-      admin_retention_amount : ['', [Validators.required]],	
-      raffle_type	           : ['1', [Validators.required]],
-      privacy	               : ['1', [Validators.required]],
-      reward_line	           : ['1', [Validators.required]],
-      percent_line	         : ['0', [Validators.required]],
-      reward_full	           : ['', [Validators.required]],
-      percent_full           : ['0', [Validators.required]],
-      scheduled_date         : ['', [Validators.required]],
-      scheduled_hour         : ['', [Validators.required]],
+      minimun_play           : ['10',],
+      maximun_play           : ['10000',],
+      maximun_user_play      : ['10000',],	
+      retention_percent	     : ['10',],
+      retention_amount	     : ['0',],
+      admin_retention_percent: ['10',],	
+      admin_retention_amount : ['0',],	
+      raffle_type	           : ['1',[] ],
+      privacy	               : ['1', ],
+      reward_line	           : ['1', ],
+      percent_line	         : ['40', ],
+      reward_full	           : ['1', ],
+      percent_full           : ['0',],
+      scheduled_date         : [this.date, ],
+      scheduled_hour         : ['', ],
       time_zone              : ['chile'],
       start_date             : [''],
       start_hour             : [''],
@@ -267,8 +272,26 @@ listaPercent = [
     //posteo de la información
       
    console.log('ruta', ruta);
-    this.RaffleService.putRaffle(ruta);
-
+    // this.RaffleService.putRaffle(ruta);
+    this.RaffleService.putRaffle(ruta).
+    subscribe(resp =>{
+      console.log('respuesta en raffle component ='+resp['open_raffle']);
+       Swal.close();
+          Swal.fire({
+            allowOutsideClick: false,
+            icon: 'success',
+            text: resp['message'],  
+          });
+          },(err)=>{
+            console.log(err);
+            
+            Swal.fire({
+                    allowOutsideClick: false,
+                    icon: 'error',
+                    text: err.error.message,
+                  });
+          } );
+        
     this.forma.reset();
   }
 }

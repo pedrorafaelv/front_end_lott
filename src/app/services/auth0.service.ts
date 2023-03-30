@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class Auth0Service {
   // Create an observable of Auth0 instance of client
   auth0Client$ = (from(
     createAuth0Client({
@@ -117,7 +117,7 @@ export class AuthService {
     this.auth0Client$.subscribe((client: Auth0Client) => {
       // Call method to log out
       client.logout({
-        client_id: "S5PZqWTi6CzJHf1MifY9A6n6sJU6hSG7",
+        client_id: "pLCrAhRgQB9tmFEotU2ge0FO3NEKWRey",
         returnTo: `${window.location.origin}`
       });
     });

@@ -24,6 +24,8 @@ export class AuthService {
 private url= 'https://identitytoolkit.googleapis.com/v1';
 private apiKey = 'AIzaSyAB-PXIBMGdxsnw1TqIfI9ON_9GZW2D-Co';
 userToken: any;
+localId: string;
+email: string;
 localStorage: Storage;
   constructor(private http: HttpClient) { 
      this.leerToken();
@@ -43,6 +45,7 @@ localStorage: Storage;
       map( resp=>{
         // console.log('entro en el mapa de RXJS');
         this.guardarToken(  resp['idToken'] );
+        this.guardarProfile(resp['localId']);
         return resp;
       })
     );
@@ -61,6 +64,7 @@ localStorage: Storage;
       map( resp=>{
         // console.log('entro en el mapa de RXJS');
         this.guardarToken(resp['idToken'] );
+        this.guardarProfile(resp['localId']);
         return resp;
       })
     );
@@ -143,5 +147,17 @@ localStorage: Storage;
       // console.log('hola');
     // }
   }
-    
+  getEmail(){
+    this.email =localStorage.getItem('email'); 
+     return this.email; 
+  }
+  getLocalId(){
+    this.localId = localStorage.getItem('localId'); 
+    return this.localId; 
+  }
+  private guardarProfile(localId: string){
+    console.log('localId en guardarProfile = ', localId );
+    localStorage.setItem('localId',localId);
+   }
+ 
 }
