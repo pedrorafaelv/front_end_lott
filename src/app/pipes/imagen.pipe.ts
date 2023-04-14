@@ -20,7 +20,7 @@ public imagen2 : string;
         return './assets/capicon/black/'+imagen; 
       }       
     }
-    return './assets/no-image.jpg';
+    return './assets/image/no-image.jpg';
        
   }
 

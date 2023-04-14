@@ -1,49 +1,15 @@
 <div class=" row container mt-2">
-    <div class="col-2">
-        <app-publicity></app-publicity>
-    </div>
-    <div class="col-7">
-        <div class="row">
-            <div class="col-12">
-                <div class="card text-center">
-                    <div class="card-header">
-                        Sorteo : {{raffle.name}}
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Fichas en juego</h5>
-                        <!-- <p class="card-text">apareceran las fichas que estan saliendo en el sorteo</p> -->
-                        <app-records [Fichas]="fichas"></app-records>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!-- </div> -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card text-center">
-                    <div class="card-header">
-                        Mis cartones en juego </div>
-                    <div class="card-body">
-                        <!-- <h5 class="card-title">Cartones en Juego</h5>
-                        <p class="card-text">cartones con los que estoy jugando </p> -->
-                        <app-card-raffle></app-card-raffle>
-                    </div>
-                    <div class="card-footer text-muted">
-                        <a href="#" class="btn btn-primary">Gané</a> </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="col-3">
+        <app-publicity></app-publicity>
         <!-- <div class="card" style="width: 12rem;"> -->
-        <img src="..." class="card-img-top" alt="...">
+        <!-- <img src="..." class="card-img-top" alt="..."> -->
         <!-- <div class="card-body"> -->
-        <h5 class="card-title">Mis grupos </h5>
+        <!-- <a>
+             Grupos</a> -->
+        <h5 class="card-title">
+            <fa-icon [icon]="faPeopleGroup"></fa-icon> Mis grupos </h5>
         <div class="row">
             <form autocomplete="off" [formGroup]="forma">
-                <!-- <div class="row"> -->
                 <div class="form-group row">
                     <!-- <label class="col-1 col-form-label">Grupo</label> -->
                     <div class="col-10">
@@ -55,19 +21,51 @@
                     </div>
                     <div class="col-2"></div>
                 </div>
-                <!-- </div> -->
             </form>
         </div>
-        <!-- </div> -->
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Grupo en juego </li>
-            <li class="list-group-item">Buscar un Nuevo Grupo </li>
-            <li class="list-group-item">A third item</li>
         </ul>
         <div class="card-body">
-            <a href="#" class="card-link">Editar Perfil</a>
-            <a href="#" class="card-link">Mi cuenta</a>
+            <a href="#" class="card-link" routerLink="/profile" routerLinkActive="active">Editar Perfil</a>
+            <a href="#" class="card-link" routerLink="/account" routerLinkActive="active">Mi cuenta</a>
+        </div>
+    </div>
+    <div class="col-9">
+        <div class="row">
+            <!-- <div class="row" *ngIf="raffleId">Sorteo : {{raffle.name}} </div> -->
+            <div class="col-12">
+                <div class="card text-center">
+                    <div class="card-header">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Fichas que han salido</h5>
+                        <!-- <p class="card-text">apareceran las fichas que estan saliendo en el sorteo</p> -->
+                        <app-records [Fichas]="fichas"></app-records>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- </div> -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <!-- <div class="row mt-2"> -->
+                        <div class="d-grid gap-2  mx-auto center">
+                            <button type="button" (click)=getNewRecord() class="btn btn-primary btn-sm"> Nueva Ficha >></button>
+                        </div>
+                        <!-- </div> -->
+                        Mis cartones</div>
+                    <div class="card-body">
+                        <!-- <h5 class="card-title">Cartones en Juego</h5>
+                        <p class="card-text">cartones con los que estoy jugando </p> -->
+                        <app-card-raffle [raffleId]=" raffleId" [userId]="userId" [cartones]="cartones"></app-card-raffle>
+                    </div>
+                    <div class="card-footer text-muted d-grid gap-2  mx-auto center">
+                        <a href="#" class="btn btn-primary btn-sm">Gané</a> </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

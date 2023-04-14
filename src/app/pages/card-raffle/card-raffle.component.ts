@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { RaffleService } from '../../services/raffle.service';
-import { card } from '../../interfaces/card-response';
-import {GetFichasResponse} from '../../interfaces/get-fichas-response'
 import { Card } from 'src/app/interfaces/get-cards-raffle-response';
 
 @Component({
@@ -11,24 +9,23 @@ import { Card } from 'src/app/interfaces/get-cards-raffle-response';
 })
 export class CardRaffleComponent implements OnInit {
 
-cartones: Card[]=[];
+@Input() cartones: Card[]=[];
 color : string = 'black';
 Fichas: string[] = [];
+@Input() raffleId;
+@Input() userId;
 
-  constructor(private RaffleService: RaffleService) { }
-
+  constructor(private RaffleService: RaffleService) {
+  
+   }
   ngOnInit(): void {
-    this.RaffleService.getCardsRaffleByUser('10/1')
-    .subscribe( resp => {
-      console.log('cartones en card-raffle = ', resp.Cards);
-      this.cartones = resp.Cards;
-    this.RaffleService.getFichas('10')
-    .subscribe($resp=>{
-      console.log('fichas en card-raffle = ', resp.Fichas);
-
-      this.Fichas= $resp.Fichas
-    })
-  })
-  }
+    if (this.raffleId && this.userId){
+      this.RaffleService.getCardsRaffleByUser(this.raffleId,this.userId)
+      .subscribe( resp => {
+        console.log('cartones en card-raffle = ', resp.Cards);
+        this.cartones = resp.Cards;
+        })
+      }
+   }
 
 }

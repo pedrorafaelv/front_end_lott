@@ -9,7 +9,7 @@ export class NotImageDirective {
   @HostListener('error')
   onError():void{
 
-    this.elementImg.nativeElement.src = './assets/no-image.jpg'
+    this.elementImg.nativeElement.src = './assets/images/no-image.jpg';
   
   }
 

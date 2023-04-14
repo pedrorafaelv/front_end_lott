@@ -29,6 +29,10 @@ import { PipesModule } from '../pipes/pipes.module';
 import { PersonalDataComponent } from './personal-data/personal-data.component';
 import { AuthModule } from "@auth0/auth0-angular";
 import { CallbackComponent } from './callback/callback.component';
+import { ProfileComponent } from './profile/profile.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
+ 
 @NgModule({
   declarations: [
     HomeComponent,
@@ -38,7 +42,6 @@ import { CallbackComponent } from './callback/callback.component';
     DashboardComponent,
     JuegoComponent,
     GroupsComponent,
-    // MovesComponent,
     AccountComponent,
     LogOutComponent,
     LoginComponent,
@@ -50,6 +53,7 @@ import { CallbackComponent } from './callback/callback.component';
     CardRaffleComponent,
     PersonalDataComponent,
     CallbackComponent,
+    ProfileComponent,
 ],
   imports: [
     CommonModule,
@@ -63,6 +67,7 @@ import { CallbackComponent } from './callback/callback.component';
     MatInputModule,
     RouterModule,
     PipesModule,
+    FontAwesomeModule,
     AuthModule.forRoot({
       domain: 'dev-hrhrdf6p.us.auth0.com',
       clientId: 'Q9g6JLdE0DAbnc8VBSdC7LKkJbBSehZj'

@@ -30,18 +30,18 @@ export class RaffleService {
  
  getFichas(texto: string):Observable<any>{
   console.log('entrando en getFichas', texto);
-  return this.http.get<GetFichasResponse>(`${ this.baseUrl }getFichas/ ${texto}`);
+  return this.http.get<GetFichasResponse>(`${ this.baseUrl }getFichas/${texto}`);
 
 }
 
- nextFicha(raffle: number){
+ getNextFicha(raffle: number){
    console.log('obteniendo una nueva ficha');
-   return this.http.get<any>(`${this.baseUrl}Ficha/${raffle}`)
-   .subscribe(data=>{this.ficha= data});
+   return this.http.get<any>(`${this.baseUrl}getNewRecord/${raffle}`)
+   
  }
 
- getCardsRaffleByUser(texto: string){
-  return this.http.get<GetCardsRaffleResponse>(`${this.baseUrl}getCardsRaffleByUser/${texto}`)
+ getCardsRaffleByUser(raffleId: string, userId: string){
+  return this.http.get<GetCardsRaffleResponse>(`${this.baseUrl}getCardsRaffleByUser/${raffleId}/${userId}`)
  }
   
  getAutoRaffle(texto: string){
@@ -77,7 +77,7 @@ export class RaffleService {
   }
 
   async getFichasAs(raffle_id){
-   const resp = await fetch((`${ this.baseUrl }getFichas/ ${raffle_id}`))
+   const resp = await fetch((`${this.baseUrl}getFichas/${raffle_id}`))
    const fichas = resp.json();
    return  fichas; 
 

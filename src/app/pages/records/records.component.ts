@@ -16,7 +16,7 @@ export class RecordsComponent implements OnInit {
   constructor(private RaffleService: RaffleService) { }
 
   ngOnInit(): void {
-   this.getFichas('2');
+  //  this.getFichas('2');
     
   }
 

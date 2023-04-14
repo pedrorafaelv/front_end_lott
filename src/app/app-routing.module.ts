@@ -16,6 +16,7 @@ import { SingUpComponent } from './pages/sing-up/sing-up.component';
 import { PoliticsComponent } from './pages/politics/politics.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CallbackComponent } from './pages/callback/callback.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 const routes: Routes = [
   { 
@@ -61,6 +62,9 @@ const routes: Routes = [
   },
   { 
     path: 'politics', component: PoliticsComponent
+  },
+  { 
+    path: 'profile', component: ProfileComponent
   },
   { 
     path:'callback', component: CallbackComponent 

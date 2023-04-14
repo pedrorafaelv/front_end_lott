@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Auth0Service } from '../../services/auth0.service';
 import { faUsersRectangle, faHouseChimneyUser, faChessBoard, faHatWizard, faFloppyDisk, faCommentsDollar, faDice, 
-         faUserPlus, faDoorOpen, faUserCheck, faUserGear } from '@fortawesome/free-solid-svg-icons';
-
+         faUserPlus, faDoorOpen, faUserCheck, faUserGear, faMoneyBill1Wave, faPeopleGroup,  faIdBadge } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -21,7 +20,9 @@ faUserplus = faUserPlus;
 faDoorOpen = faDoorOpen;
 faUserCheck = faUserCheck;
 faUserGear = faUserGear;
-  
+faPeopleGroup = faPeopleGroup;
+faMoneyBill1Wave= faMoneyBill1Wave;
+faIdBadge=faIdBadge;
 constructor(public auth0: Auth0Service) { }
 
   ngOnInit(): void {

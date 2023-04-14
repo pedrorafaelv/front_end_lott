@@ -129,4 +129,5 @@ activeRaffleBYGroup(){
     const group = await this.UserService.getGroupByUser(this.UserId);
     this.grupos = group.Group;
 }
+ 
 }
