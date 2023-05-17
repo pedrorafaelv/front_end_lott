@@ -29,13 +29,13 @@ export class RaffleService {
  }
  
  getFichas(texto: string):Observable<any>{
-  console.log('entrando en getFichas', texto);
+  // console.log('entrando en getFichas', texto);
   return this.http.get<GetFichasResponse>(`${ this.baseUrl }getFichas/${texto}`);
 
 }
 
  getNextFicha(raffle: number){
-   console.log('obteniendo una nueva ficha');
+  //  console.log('obteniendo una nueva ficha');
    return this.http.get<any>(`${this.baseUrl}getNewRecord/${raffle}`)
    
  }
@@ -82,4 +82,11 @@ export class RaffleService {
    return  fichas; 
 
   }
+   async getNextRecord(raffle:number){
+
+    const resp =  await fetch(`${this.baseUrl}getNewRecord/${raffle}`)
+    const ficha = resp.json();
+    return ficha;
+
+   }
 }

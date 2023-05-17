@@ -38,13 +38,13 @@ localStorage: Storage;
       password: pass,
       returnSecureToken: true,
     };
-    console.log('login', authData);
+    // console.log('login', authData);
     return this.http.post(
       `${this.url}/accounts:signInWithPassword?key=${this.apiKey}`,authData
     ).pipe(
       map( resp=>{
         // console.log('entro en el mapa de RXJS');
-        this.guardarToken(  resp['idToken'] );
+        this.guardarToken(resp['idToken'] );
         this.guardarProfile(resp['localId']);
         return resp;
       })
@@ -57,7 +57,7 @@ localStorage: Storage;
       password: pass,
       returnSecureToken: true
     };
-     console.log('nuevo usuario',authData);
+    //  console.log('nuevo usuario',authData);
     return this.http.post(
       `${this.url}/accounts:signUp?key=${ this.apiKey}`,authData
     ).pipe(
@@ -76,7 +76,7 @@ localStorage: Storage;
       newPass: newPass,
       returnSecureToken: true
     };
-     console.log('cambia contrasena',authData);
+    //  console.log('cambia contrasena',authData);
     return this.http.post(
       `${this.url}/accounts:update?key=${ this.apiKey}`,authData
     );    
@@ -87,7 +87,7 @@ localStorage: Storage;
       requestType: "PASSWORD_RESET",
       email: email
     };
-    console.log('email restablecimiento constrasena',authData);
+    // console.log('email restablecimiento constrasena',authData);
     return this.http.post(
       `${this.url}/accounts:sendOobCode?key=${ this.apiKey}`,authData
     );  
@@ -143,8 +143,6 @@ localStorage: Storage;
     // {
       localStorage.removeItem('token');
       localStorage.removeItem('expira');
-
-      // console.log('hola');
     // }
   }
   getEmail(){
@@ -156,7 +154,7 @@ localStorage: Storage;
     return this.localId; 
   }
   private guardarProfile(localId: string){
-    console.log('localId en guardarProfile = ', localId );
+    // console.log('localId en guardarProfile = ', localId );
     localStorage.setItem('localId',localId);
    }
  

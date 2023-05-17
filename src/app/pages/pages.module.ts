@@ -8,7 +8,7 @@ import { PeliculasComponent } from './peliculas/peliculas.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { JuegoComponent } from './juego/juego.component';
 import { GroupsComponent } from './groups/groups.component';
-//  import { MovesComponent } from './moves/moves.component';
+import { MovesComponent } from './moves/moves.component';
 import { AccountComponent } from './account/account.component';
 import { LogOutComponent } from './log-out/log-out.component';
 import { LoginComponent } from './log-in/login.component';
@@ -31,7 +31,7 @@ import { AuthModule } from "@auth0/auth0-angular";
 import { CallbackComponent } from './callback/callback.component';
 import { ProfileComponent } from './profile/profile.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
+import { ScrollingModule } from "@angular/cdk/scrolling";
  
 @NgModule({
   declarations: [
@@ -54,6 +54,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     PersonalDataComponent,
     CallbackComponent,
     ProfileComponent,
+    MovesComponent,
 ],
   imports: [
     CommonModule,
@@ -67,6 +68,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatInputModule,
     RouterModule,
     PipesModule,
+    ScrollingModule,
     FontAwesomeModule,
     AuthModule.forRoot({
       domain: 'dev-hrhrdf6p.us.auth0.com',

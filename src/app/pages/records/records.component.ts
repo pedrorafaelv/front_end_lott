@@ -16,7 +16,6 @@ export class RecordsComponent implements OnInit {
   constructor(private RaffleService: RaffleService) { }
 
   ngOnInit(): void {
-  //  this.getFichas('2');
     
   }
 
@@ -24,7 +23,6 @@ export class RecordsComponent implements OnInit {
     this.RaffleService.getFichas(texto)
     .subscribe( resp => {
       console.log('fichas en recordComponent = ', resp.Fichas);
-      // this.Fichas = resp.Fichas;
       this.Raffle = resp.Raffle;
     })
   }

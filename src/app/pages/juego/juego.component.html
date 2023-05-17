@@ -1,28 +1,21 @@
-<div class=" row container mt-2">
-    <div class="col-3">
+<div class="container">
+    <div class="left">
         <app-publicity></app-publicity>
-        <!-- <div class="card" style="width: 12rem;"> -->
-        <!-- <img src="..." class="card-img-top" alt="..."> -->
-        <!-- <div class="card-body"> -->
-        <!-- <a>
-             Grupos</a> -->
         <h5 class="card-title">
             <fa-icon [icon]="faPeopleGroup"></fa-icon> Mis grupos </h5>
-        <div class="row">
-            <form autocomplete="off" [formGroup]="forma">
-                <div class="form-group row">
-                    <!-- <label class="col-1 col-form-label">Grupo</label> -->
-                    <div class="col-10">
-                        <select formControlName="grupo" class="form-select form-select-font-size-1" name="grupo" (change)=onChangeGrupo()>
-                                    <option [ngValue]="null" disabled>Selecciona...</option>
-                                    <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
-                                </select>
-                        <small *ngIf="grupoNoValido" class="text-danger"></small>
-                    </div>
-                    <div class="col-2"></div>
+        <form autocomplete="off" [formGroup]="forma">
+            <div class="form-group row">
+                <div class="col-10">
+                    <select formControlName="grupo" class="form-select form-select-font-size-1" name="grupo" (change)=onChangeGrupo()>
+                        <option [ngValue]="null" disabled>Selecciona...</option>
+                        <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
+                    </select>
+                    <small *ngIf="grupoNoValido" class="text-danger"></small>
                 </div>
-            </form>
-        </div>
+                <div class="col-2"></div>
+            </div>
+
+        </form>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Grupo en juego </li>
         </ul>
@@ -31,41 +24,47 @@
             <a href="#" class="card-link" routerLink="/account" routerLinkActive="active">Mi cuenta</a>
         </div>
     </div>
-    <div class="col-9">
-        <div class="row">
-            <!-- <div class="row" *ngIf="raffleId">Sorteo : {{raffle.name}} </div> -->
-            <div class="col-12">
-                <div class="card text-center">
-                    <div class="card-header">
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Fichas que han salido</h5>
-                        <!-- <p class="card-text">apareceran las fichas que estan saliendo en el sorteo</p> -->
+    <div class="center">
+        <div class="top">
+            <div class="card text-center">
+                <div class="card-header" *ngIf="raffleId"> {{raffle.name}}
+                    <h3 class="card-title">Fichas que han salido</h3>
+                </div>
+                <div class="card-body">
+                    <!-- <p class="card-text">apareceran las fichas que estan saliendo en el sorteo</p> -->
+                    <div class="records" #scroll>
                         <app-records [Fichas]="fichas"></app-records>
                     </div>
+                    <cdk-virtual-scroll-viewport itemSize="50">
+                        <div *cdkVirtualFor="let item of fichas" class="list-container"> -->
+                            <!-- <div class="records__item--image"> -->
+                            <div class="caja">
+                                <img [src]="item.image | imagen:color" class="img-thumbnail" appNotImage>
+                            </div>
+                        </div>
+                    </cdk-virtual-scroll-viewport>
+                    <!-- </div> -->
+                </div>
+                <div class="card-footer">
+                    <button type="button" (click)=getNewRecord() class="btn btn-primary btn-sm"> Nueva Ficha >></button>
                 </div>
             </div>
         </div>
-        <!-- </div> -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card text-center">
-                    <div class="card-header">
-                        <!-- <div class="row mt-2"> -->
-                        <div class="d-grid gap-2  mx-auto center">
-                            <button type="button" (click)=getNewRecord() class="btn btn-primary btn-sm"> Nueva Ficha >></button>
-                        </div>
-                        <!-- </div> -->
-                        Mis cartones</div>
-                    <div class="card-body">
-                        <!-- <h5 class="card-title">Cartones en Juego</h5>
-                        <p class="card-text">cartones con los que estoy jugando </p> -->
+        <div class="bottom">
+            <div class="card text-center">
+                <div class="card-header">
+                    <p>Mis cartones</p>
+                    <a href="#" class="btn btn-primary btn-sm">Gané</a>
+                </div>
+                <div class="card-body">
+                    <div class="cards">
+
                         <app-card-raffle [raffleId]=" raffleId" [userId]="userId" [cartones]="cartones"></app-card-raffle>
                     </div>
-                    <div class="card-footer text-muted d-grid gap-2  mx-auto center">
-                        <a href="#" class="btn btn-primary btn-sm">Gané</a> </div>
                 </div>
+
             </div>
         </div>
     </div>
+    <div class="right">right</div>
 </div>

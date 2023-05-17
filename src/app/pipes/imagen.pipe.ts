@@ -16,12 +16,10 @@ public imagen2 : string;
       }else{
         if (color){
           return './assets/capicon/' + color + '/' + imagen;
-        }                                         
+        }
         return './assets/capicon/black/'+imagen; 
-      }       
+      }
     }
     return './assets/image/no-image.jpg';
-       
   }
-
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { RaffleService } from '../../services/raffle.service';
 import { Ficha, Raffle } from '../../interfaces/get-fichas-response';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
@@ -7,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { GroupService } from 'src/app/services/group.service';
 import { faUsersRectangle, faPeopleGroup} from '@fortawesome/free-solid-svg-icons';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-juego',
   templateUrl: './juego.component.html',
@@ -22,10 +22,15 @@ export class JuegoComponent implements OnInit {
  userId: string;
  raffleId: any;
  cartones: any; 
+ lastRecord: any;
  activeRaffles: any ;
  faUsersRectangle= faUsersRectangle;
  faPeopleGroup = faPeopleGroup;
-
+ existe: number;
+ lineWinner: any;
+ fullWinner: any; 
+ public color: string = 'black';
+@ViewChild('scroll') scroll: ElementRef;
   constructor(private RaffleService: RaffleService,
               private AuthService: AuthService,
               private UserService: UserService,
@@ -50,10 +55,8 @@ export class JuegoComponent implements OnInit {
   async getInfo(){
     const user =  await this.UserService.getUserByLocalId(this.localId);
     this.userId = user.user[0]['id'];
-    // console.log('this.userId', this.userId);
     const group = await this.UserService.getGroupByUser(this.userId);
     this.grupos = group.Group;
-    // console.log('grupos', this.grupos );
     if (this.grupos.length > 0){
       const actiRaffle = await this.getActiveRaffle();
        setTimeout(async ()=>{
@@ -73,6 +76,7 @@ export class JuegoComponent implements OnInit {
     const RafByGr = await this.getRafflesBygroup();
     const CaAva = await this.getCardsRafflesByUser();
   }
+
   async getRafflesBygroup(){
     const respuesta = await this.RaffleService.getActiveRafflesByGroupAs(this.forma.get('grupo').value);
     // console.log('this.RaffleId', respuesta['raffles'][0]['id']);
@@ -80,9 +84,9 @@ export class JuegoComponent implements OnInit {
   }
 
    async getCardsRafflesByUser(){
-     const resp = await this.RaffleService.getCardsRaffleByUserAs(this.raffleId, this.userId);
-    //  console.log('this.cartones =', resp.Cards);
+    const resp = await this.RaffleService.getCardsRaffleByUserAs(this.raffleId, this.userId);
     this.cartones = resp.Cards;
+    console.log('this.cartones =', this.cartones);
    }
 
    async getFichas(){
@@ -92,29 +96,79 @@ export class JuegoComponent implements OnInit {
      this.fichas = response.Fichas;
      this.raffle = response.Raffle; 
    }
+
    async getActiveRaffle(){
      const resp =  await this.RaffleService.getActiveRafflesByUser(this.userId);
       // console.log('resp', resp['raffles'][0]['id']);
-     this.raffleId =  resp['raffles'][0]['id'];
-      
+     this.raffleId =  resp['raffles'][0]['id'];   
    }
+
    async getInfoByChangeGroup(){
     const RafByGr = await this.getRafflesBygroup();
     const fic = await this.getFichas();
     const CaAva = await this.getCardsRafflesByUser();
    }
-   getNewRecord(){
-    this.RaffleService.getNextFicha( this.raffleId)
-    .subscribe(data=>{
-      //  console.log('data =',data);
-       this.RaffleService.getFichas(this.raffleId)
-       .subscribe(resp=>{
-         //console.log('resp.Fichas', resp.Fichas);
-         console.log('resp.Raffle', resp);
-        this.fichas = resp.Fichas;
-        this.raffle = resp.Raffle; 
-       })
-     });
-  }
 
+async getNextRecord(){
+   const resp = await this.RaffleService.getNextRecord(this.raffleId);
+   this.lastRecord = resp.ficha; 
+   this.lineWinner = resp.lineWinner;
+   this.fullWinner = resp.fullWinner;
+}
+
+  async  getNewRecord(){
+    this.existe = -1;
+    const nf= await this.getNextRecord();
+    const fs= await this.getFichas();
+    this.cartones.forEach(async (carton)=>{
+           this.existe = carton.desc_combTotal.indexOf(this.lastRecord.image);
+           this.scroll.nativeElement.scrollTop= this.scroll.nativeElement.scrollHeight; 
+           console.log('lastRecord', this.lastRecord);
+           console.log('this.lineWinner', this.lineWinner);
+           console.log('this.fullWinner', this.fullWinner);
+
+           if (this.existe != -1){
+              console.log('existe', this.existe);
+              Swal.fire({
+                position: 'top-end',
+                text: 'la ficha está en el(los) cartones:'+carton.id,
+                imageUrl: './assets/capicon/black/'+this.lastRecord.image,
+                imageWidth: 30,
+                imageHeight: 30,
+                imageAlt: 'Custom image',
+                icon: 'success',
+                showConfirmButton: false,
+                timer: 1500,
+                showClass: {
+                  popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                  popup: 'animate__animated animate__fadeOutUp'
+                }
+                });
+              let car = await this.getCardsRafflesByUser(); 
+              if (this.lineWinner !="" && this.lineWinner!=0){
+                Swal.fire({
+                  icon: 'success',
+                  title:'Exito ',
+                  text: 'Carton ganador de linea:'+carton.id,
+                  confirmButtonText: 'Aceptar',
+                  confirmButtonColor: '#176585',
+                  });
+               }
+           }
+           
+          //  if (this.fullWinner !=""){
+          //   Swal.fire({
+          //     icon: 'success',
+          //     title:'Exito ',
+          //     text: 'Carton ganador de linea:'+carton.id,
+          //     confirmButtonText: 'Aceptar',
+          //     confirmButtonColor: '#176585',
+          //     });
+          //  }
+    }) 
+  }
+ 
+ 
 }

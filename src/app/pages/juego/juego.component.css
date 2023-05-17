@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 500px;
+    /* set the container height */
+}
+
+.left,
+.right {
+    width: 20%;
+    /* set the width for left and right divs */
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 60%;
+    /* set the width for center div */
+}
+
+.top {
+    flex: 1;
+    height: 200px;
+    /* set a fixed height for the div */
+    /* overflow-y: scroll; */
+    /* add vertical scrollbar */
+    /* evenly distribute the height for top and bottom divs */
+}
+
+.bottom {
+    flex: 1;
+    height: 200px;
+    /* set a fixed height for the div */
+    /* overflow-y: scroll; */
+    /* add vertical scrollbar */
+    /* evenly distribute the height for top and bottom divs */
+}
+
+.records {
+    flex: 1;
+    height: 100px;
+    /* set a fixed height for the div */
+    overflow-y: scroll;
+}
+
+.cards {
+    flex: 1;
+    height: 300px;
+    /* set a fixed height for the div */
+    overflow-y: scroll;
+}

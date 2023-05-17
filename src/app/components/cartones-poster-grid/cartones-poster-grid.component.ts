@@ -125,7 +125,7 @@ activeRaffleBYGroup(){
   async getInfo(){
     const user =  await this.UserService.getUserByLocalId(this.localId);
     this.UserId = user.user[0]['id'];
-    console.log('this.userId', this.UserId);
+    // console.log('this.userId', this.UserId);
     const group = await this.UserService.getGroupByUser(this.UserId);
     this.grupos = group.Group;
 }
