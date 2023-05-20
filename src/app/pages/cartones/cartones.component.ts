@@ -9,7 +9,7 @@ import { Card } from 'src/app/interfaces/get-cards-raffle-response';
 export class CartonesComponent implements OnInit {
  @Input() carton: Card;
   // carton : Card;
-color: string='black';
+recordGroup: string='primer';
   constructor() { }
 
   ngOnInit(): void {

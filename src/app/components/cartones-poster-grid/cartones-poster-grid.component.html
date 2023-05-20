@@ -1,22 +1,4 @@
-<form autocomplete="off" [formGroup]="forma">
-
-    <div class="row">
-        <!-- <pre>{{grupos}}</pre> -->
-        <div class="form-group row">
-            <label class="col-1 col-form-label">Grupo</label>
-            <div class="col-2">
-                <select formControlName="grupo" class="form-select form-select-font-size-1" name="grupo" (change)=onChangeGrupo()>
-                <option [ngValue]="null" disabled>Selecciona...</option>
-                <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
-            </select>
-                <small *ngIf="grupoNoValido" class="text-danger"></small>
-            </div>
-            <div class="col-8"></div>
-        </div>
-    </div>
-</form>
-
-
+<!-- 
 <div class="row">
     <div class="col-md-4 mb-6" *ngFor="let carton of cartones">
         <div class="row mt-3">
@@ -122,4 +104,212 @@
             <div class="col-4"></div>
         </div>
     </div>
+</div> -->
+<div class="continer">
+
+    <!-- <form autocomplete="off" [formGroup]="forma">
+        <div class="row">
+            <div class="form-group row">
+                <label class="col-1 col-form-label">Grupo</label>
+                <div class="col-2">
+                    <select formControlName="grupo" class="form-select form-select-font-size-1" name="grupo" (change)=onChangeGrupo()>
+                    <option [ngValue]="null" disabled>Selecciona...</option>
+                    <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
+                </select>
+                    <small *ngIf="grupoNoValido" class="text-danger"></small>
+                </div>
+            </div>
+        </div>
+    </form> -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="#!">Cartones disponibles</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <!-- <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li> -->
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Grupos
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li *ngFor="let item of grupos"><a class="dropdown-item" (change)=onChangeGrupo()>{{item.id}}-{{item.name}}</a></li>
+                            <!-- <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li> -->
+                        </ul>
+                    </div>
+                    <!-- <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#!">All Products</a></li>
+                        <li>
+                            <hr class="dropdown-divider" />
+                        </li>
+                        <li><a class="dropdown-item" href="#!">Popular Items</a></li>
+                        <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
+                    </ul>
+                </li> -->
+                </ul>
+                <form class="d-flex">
+                    <button class="btn btn-outline-dark" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            Cart
+                         <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <form autocomplete="off" [formGroup]="forma">
+        <div class="row">
+            <!-- <pre>{{grupos}}</pre> -->
+            <div class="form-group row">
+                <label class="col-1 col-form-label">Grupo</label>
+                <div class="col-2">
+                    <select formControlName="grupo" class="form-select form-select-font-size-1" name="grupo" (change)=onChangeGrupo()>
+                    <option [ngValue]="null" disabled>Selecciona...</option>
+                    <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
+                </select>
+                    <small *ngIf="grupoNoValido" class="text-danger"></small>
+                </div>
+            </div>
+        </div>
+    </form>
+    <section class="py-5 bg-light">
+        <div class="container px-4 px-lg-5 mt-5">
+            <h2 class="fw-bolder mb-4">Cards</h2>
+            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+
+                <div *ngFor="let carton of cartones" class="col mb-5">
+                    <div class="card h-100">
+                        <!-- Sale badge-->
+                        <!-- <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div> -->
+                        <!-- Product image-->
+                        <!-- <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." /> -->
+                        <!-- Product details-->
+                        <div class="row mt-3">
+                            <div class="col col-3"></div>
+                            <div class="col">
+
+                                <div class="carton">
+                                    <div class="col">
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos01 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos06 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos11 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos16 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]=" carton.desc_pos21 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos02 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos07 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos12 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos17 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos22 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos03 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos08 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos13 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos18 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos23 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos04 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos09 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos14 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos19 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos24 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos05 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos10 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos15 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos20 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                        <div class="caja">
+                                            <img [src]="carton.desc_pos25 | imagen:color" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-1 text-center">
+                            <!-- <div class="text-center"> -->
+                            <!-- Product name-->
+                            <h5 class="fw-bolder">carton: {{carton.id}} </h5>
+                            <!-- Product reviews-->
+                            <!-- <div class="d-flex justify-content-center small text-warning mb-2">
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                    <div class="bi-star-fill"></div>
+                                </div> -->
+                            <!-- Product price-->
+                            <!-- <span class="text-muted text-decoration-line-through">$20.00</span> $18.00 -->
+                            <!-- </div> -->
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-1 pt-0 border-top-0 bg-transparent text-center ">
+                            <!-- N° carton: {{carton.id}} <button type="button" (click)=putCard(carton.id) class="btn btn-primary btn-lg">Seleccionar</button> -->
+
+                            <!-- <div class="text-center"> -->
+                            <a class="btn btn-outline-dark mt-auto" (click)=putCard(carton.id)>Add to cart</a>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
 </div>

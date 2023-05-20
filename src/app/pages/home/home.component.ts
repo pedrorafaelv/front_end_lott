@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CartonesService } from '../../services/cartones.service';
 import { card, CardResponse } from '../../interfaces/card-response';
+import { Raffle } from '../../interfaces/get-fichas-response';
+import { RaffleService } from '../../services/raffle.service';
 
 @Component({
   selector: 'app-home',
@@ -10,8 +12,9 @@ import { card, CardResponse } from '../../interfaces/card-response';
 export class HomeComponent implements OnInit {
 
   public cartones:card[] =[];
-
-  constructor(private CartonesService: CartonesService){  
+  public Raffle: Raffle; 
+  constructor(private CartonesService: CartonesService, 
+              private RaffleService: RaffleService){  
  }
 
   ngOnInit():void {

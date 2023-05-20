@@ -14,7 +14,6 @@
                 </div>
                 <div class="col-2"></div>
             </div>
-
         </form>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Grupo en juego </li>
@@ -27,13 +26,14 @@
     <div class="center">
         <div class="top">
             <div class="card text-center">
-                <div class="card-header" *ngIf="raffleId"> {{raffle.name}}
+                <div class="card-header" *ngIf="raffleId">
+                    <!-- {{raffle.name}} -->
                     <h3 class="card-title">Fichas que han salido</h3>
                 </div>
                 <div class="card-body">
                     <!-- <p class="card-text">apareceran las fichas que estan saliendo en el sorteo</p> -->
                     <div class="records" #scroll>
-                        <app-records [Fichas]="fichas"></app-records>
+                        <app-records [Fichas]="fichas" [Raffle]="raffle" [fichaGroup]="fichaGroupName"></app-records>
                     </div>
                     <cdk-virtual-scroll-viewport itemSize="50">
                         <div *cdkVirtualFor="let item of fichas" class="list-container"> -->

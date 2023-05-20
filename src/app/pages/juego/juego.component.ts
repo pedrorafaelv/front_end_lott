@@ -16,7 +16,8 @@ import Swal from 'sweetalert2';
 export class JuegoComponent implements OnInit {
  fichas: Ficha[]=[];
  raffle:Raffle;
- grupos: Group[]= [];
+ grupos: Group[]=[];
+ fichaGroupName: string;
  forma: FormGroup;
  localId: string;
  userId: string;
@@ -86,7 +87,7 @@ export class JuegoComponent implements OnInit {
    async getCardsRafflesByUser(){
     const resp = await this.RaffleService.getCardsRaffleByUserAs(this.raffleId, this.userId);
     this.cartones = resp.Cards;
-    console.log('this.cartones =', this.cartones);
+    //console.log('this.cartones =', this.cartones);
    }
 
    async getFichas(){
@@ -99,8 +100,9 @@ export class JuegoComponent implements OnInit {
 
    async getActiveRaffle(){
      const resp =  await this.RaffleService.getActiveRafflesByUser(this.userId);
-      // console.log('resp', resp['raffles'][0]['id']);
-     this.raffleId =  resp['raffles'][0]['id'];   
+       console.log('resp', resp);
+     this.raffleId =  resp['raffles'][0]['id']; 
+     this.fichaGroupName= resp['raffles'][0]['groupfichas']; 
    }
 
    async getInfoByChangeGroup(){
@@ -123,9 +125,9 @@ async getNextRecord(){
     this.cartones.forEach(async (carton)=>{
            this.existe = carton.desc_combTotal.indexOf(this.lastRecord.image);
            this.scroll.nativeElement.scrollTop= this.scroll.nativeElement.scrollHeight; 
-           console.log('lastRecord', this.lastRecord);
-           console.log('this.lineWinner', this.lineWinner);
-           console.log('this.fullWinner', this.fullWinner);
+          //  console.log('lastRecord', this.lastRecord);
+          //  console.log('this.lineWinner', this.lineWinner);
+          //  console.log('this.fullWinner', this.fullWinner);
 
            if (this.existe != -1){
               console.log('existe', this.existe);
@@ -157,16 +159,6 @@ async getNextRecord(){
                   });
                }
            }
-           
-          //  if (this.fullWinner !=""){
-          //   Swal.fire({
-          //     icon: 'success',
-          //     title:'Exito ',
-          //     text: 'Carton ganador de linea:'+carton.id,
-          //     confirmButtonText: 'Aceptar',
-          //     confirmButtonColor: '#176585',
-          //     });
-          //  }
     }) 
   }
  

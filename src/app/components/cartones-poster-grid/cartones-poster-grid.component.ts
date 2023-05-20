@@ -87,7 +87,7 @@ public cartoness: any;
   return this.forma.get('grupo')?.invalid && this.forma.get('grupo')?.touched;
 }
 onChangeGrupo(){
-  console.log('cambio de grupo, id = '+ this.forma.get('grupo').value);
+  //console.log('cambio de grupo, id = '+ this.forma.get('grupo').value);
   this.getRafflesBygroup();
   setTimeout(()=>{
     this.getCardsAvailables();

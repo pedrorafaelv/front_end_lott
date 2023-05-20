@@ -11,8 +11,11 @@ import { GetFichasResponse, Ficha, Raffle } from '../../interfaces/get-fichas-re
 export class RecordsComponent implements OnInit {
 
  @Input() Fichas: Ficha[] = [];
+ @Input() Raffle: Raffle;
+ @Input() fichaGroup: string;
+
   public color: string = 'black';
-  public Raffle: Raffle;
+  //public Raffle: Raffle;
   constructor(private RaffleService: RaffleService) { }
 
   ngOnInit(): void {

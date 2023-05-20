@@ -32,7 +32,7 @@ import { CallbackComponent } from './callback/callback.component';
 import { ProfileComponent } from './profile/profile.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ScrollingModule } from "@angular/cdk/scrolling";
- 
+import { NotImageDirective } from '../directives/not-image.directive';
 @NgModule({
   declarations: [
     HomeComponent,
@@ -55,6 +55,7 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
     CallbackComponent,
     ProfileComponent,
     MovesComponent,
+    NotImageDirective
 ],
   imports: [
     CommonModule,

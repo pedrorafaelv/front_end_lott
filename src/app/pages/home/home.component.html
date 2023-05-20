@@ -1,13 +1,7 @@
-<!-- <p>home works!</p> -->
-<div class="row" *ngIf="cartones.length > 0">
-    <div class="col">
-        <app-slideshow [cartones]="cartones"></app-slideshow>
+<div class="continer">
+
+    <div class="row">
+        <!-- <h1 class="mt-1"> cartones </h1> -->
+        <app-cartones-poster-grid *ngIf="cartones.length > 0" [cartones]="cartones"> </app-cartones-poster-grid>
     </div>
-</div>
-<div class="row"></div>
-<div class="row">
-
-    <h1 class="mt-1"> cartones </h1>
-
-    <app-cartones-poster-grid *ngIf="cartones.length > 0" [cartones]="cartones"> </app-cartones-poster-grid>
 </div>

@@ -19,9 +19,9 @@
                     <a class="nav-link" aria-current="page" routerLink="/groups" routerLinkActive="active">
                         <fa-icon [icon]="faPeopleGroup"></fa-icon> Grupos</a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/my-cards" routerLinkActive="active">Mis cartones</a>
-                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" routerLink="/moves" routerLinkActive="active">
                         <fa-icon [icon]="faMoneyBill1Wave"></fa-icon> Billetera</a>
@@ -75,14 +75,14 @@
                         </li>
                     </ul>
                 </li>
-                <li>
+                <!-- <li>
                     <button *ngIf="!auth0.loggedIn" (click)="auth0.login()" Class="btn btn-outline-primary">
                         Ingresar
                     </button>
                     <button *ngIf="auth0.loggedIn" (click)="auth0.logout()" class="btn btn-outline-primary">
                         Salir
                     </button>
-                </li>
+                </li> -->
                 <!-- <li class="nav-item">
                     <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li> -->

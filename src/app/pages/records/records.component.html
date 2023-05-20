@@ -2,8 +2,8 @@
 
     <div class="row">
         <div class="col" *ngFor="let ficha of Fichas">
-            <div class="circle animated fade-in" data-toggle="tooltip" data-placement="right" title="Tooltip on right">
-                <img [src]="ficha.image | imagen:color" class="img-thumbnail" appNotImage>
+            <div class="circle animated fade-in" data-toggle="tooltip" data-placement="right" [title]="ficha.name">
+                <img [src]="ficha.image | recordImage:fichaGroup" class="img-thumbnail" appNotImage>
             </div>
         </div>
     </div>
