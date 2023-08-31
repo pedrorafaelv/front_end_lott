@@ -1,0 +1,46 @@
+.carton {
+    display: flex;
+    flex-direction: row;
+    background: #8d3863;
+    color: #f5f0f0;
+    border-radius: 10px;
+    width: 235px;
+    height: 235px;
+}
+
+.caja {
+    background: #8d3863;
+    border: 2px;
+}
+
+.carton-container {
+    align-items: center;
+    justify-content: center;
+    width: 240px;
+    height: 270px;
+    font-size: .875em;
+    background: #8d3863;
+    border-radius: 10px;
+    color: whitesmoke;
+}
+
+.publicidad {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    background: aqua;
+    background-color: #5a5746;
+}
+
+.circle-sm {
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+}
+
+.column {
+    padding: .1em;
+    margin-bottom: 1em;
+    border-radius: 5%;
+}

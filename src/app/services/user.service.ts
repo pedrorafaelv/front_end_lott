@@ -7,7 +7,6 @@ import { map } from 'rxjs';
 })
 export class UserService {
   private baseUrl= 'http://127.0.0.1:8000/api/User/';
-  private apiKey = 'AIzaSyAB-PXIBMGdxsnw1TqIfI9ON_9GZW2D-Co';
   userToken: any;
   email: string;
   localStorage: Storage;
@@ -32,6 +31,27 @@ updateDataFirebase(localId: string, token: string, last_connection: string){
  }
  async getGroupByUser(userId: string){
   const respuesta =  await fetch(`${ this.baseUrl }getGrupos/${userId}`);
+  const datos =  await respuesta.json();
+  return datos;
+}
+
+getUserLevel(userId){
+  return this.http.get(
+    `${ this.baseUrl }getUserLevel/${userId}`
+  );
+}
+getUserRoles(userId){
+  return this.http.get(
+    `${ this.baseUrl }getUserRoles/${userId}`
+  );
+}
+getUserPermissions(userId){
+  return this.http.get(
+    `${ this.baseUrl }getUserPermissions/${userId}`
+  );
+}
+async getPermissionsByUser(userId: string){
+  const respuesta =  await fetch(`${ this.baseUrl }getUserPermissions/${userId}`);
   const datos =  await respuesta.json();
   return datos;
 }

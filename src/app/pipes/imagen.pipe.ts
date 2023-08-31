@@ -10,7 +10,7 @@ public imagen2 : string;
     if ( imagen ){
       if (imagen.indexOf('@')>0){
          img = imagen.substring(0, imagen.length - 1);
-          // console.log('imagen =',img);
+         // console.log('imagen =',img);
          return './assets/images/full_'+ nombreGrupo +'/' + img;
       }else{
           return './assets/images/black_'+ nombreGrupo +'/' + imagen;

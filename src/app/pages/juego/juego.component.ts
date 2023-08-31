@@ -68,9 +68,7 @@ export class JuegoComponent implements OnInit {
   }
 
   onChangeGrupo(){
-    // console.log('cambio de grupo, id = '+ this.forma.get('grupo').value);
     this.getInfoByChangeGroup();
-    //this.getCardsAndRaffleByGroup();
   }
 
   async getCardsAndRaffleByGroup(){
@@ -80,20 +78,16 @@ export class JuegoComponent implements OnInit {
 
   async getRafflesBygroup(){
     const respuesta = await this.RaffleService.getActiveRafflesByGroupAs(this.forma.get('grupo').value);
-    // console.log('this.RaffleId', respuesta['raffles'][0]['id']);
     this.raffleId = respuesta['raffles'][0]['id'];
   }
 
    async getCardsRafflesByUser(){
     const resp = await this.RaffleService.getCardsRaffleByUserAs(this.raffleId, this.userId);
     this.cartones = resp.Cards;
-    //console.log('this.cartones =', this.cartones);
    }
 
    async getFichas(){
-    // console.log('this.raffle en get fichas = ', this.raffleId);
      const response = await this.RaffleService.getFichasAs(this.raffleId);
-    //  console.log('response de getFichas', response);
      this.fichas = response.Fichas;
      this.raffle = response.Raffle; 
    }
@@ -124,11 +118,7 @@ async getNextRecord(){
     const fs= await this.getFichas();
     this.cartones.forEach(async (carton)=>{
            this.existe = carton.desc_combTotal.indexOf(this.lastRecord.image);
-           this.scroll.nativeElement.scrollTop= this.scroll.nativeElement.scrollHeight; 
-          //  console.log('lastRecord', this.lastRecord);
-          //  console.log('this.lineWinner', this.lineWinner);
-          //  console.log('this.fullWinner', this.fullWinner);
-
+           this.scroll.nativeElement.scrollTop= this.scroll.nativeElement.scrollHeight;
            if (this.existe != -1){
               console.log('existe', this.existe);
               Swal.fire({

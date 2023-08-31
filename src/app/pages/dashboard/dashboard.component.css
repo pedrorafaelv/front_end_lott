@@ -4475,7 +4475,7 @@ fieldset:disabled .btn {
 .card {
     --bs-card-spacer-y: 1rem;
     --bs-card-spacer-x: 1rem;
-    --bs-card-title-spacer-y: 0.5rem;
+    --bs-card-title-spacer-y: 0.25rem;
     --bs-card-border-width: 1px;
     --bs-card-border-color: var(--bs-border-color-translucent);
     --bs-card-border-radius: 0.375rem;
@@ -4486,10 +4486,10 @@ fieldset:disabled .btn {
     --bs-card-cap-bg: rgba(0, 0, 0, 0.03);
     --bs-card-cap-color: ;
     --bs-card-height: ;
-    --bs-card-color: ;
-    --bs-card-bg: #fff;
+    --bs-card-color: #888787;
+    --bs-card-bg: #0c0c0c;
     --bs-card-img-overlay-padding: 1rem;
-    --bs-card-group-margin: 0.75rem;
+    --bs-card-group-margin: 0.1rem;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -4606,6 +4606,15 @@ fieldset:disabled .btn {
 .card-img-top,
 .card-img-bottom {
     width: 100%;
+}
+
+.card-img-top-min {
+    width: 80px;
+    height: 80px;
+    border-top-left-radius: var(--bs-card-inner-border-radius);
+    border-top-right-radius: var(--bs-card-inner-border-radius);
+    padding-left: 20px;
+    padding-top: 20px;
 }
 
 .card-img,

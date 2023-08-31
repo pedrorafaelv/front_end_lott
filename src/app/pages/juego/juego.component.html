@@ -1,68 +1,50 @@
-<div class="container">
+<div class="juego-container">
+    <!-- <div class="top"> top</div> -->
     <div class="left">
-        <app-publicity></app-publicity>
-        <h5 class="card-title">
-            <fa-icon [icon]="faPeopleGroup"></fa-icon> Mis grupos </h5>
+        <div class="publicidad">
+
+            <app-publicity></app-publicity>
+        </div>
+        <h3>
+            <fa-icon [icon]="faPeopleGroup"></fa-icon> Mis grupos </h3>
         <form autocomplete="off" [formGroup]="forma">
-            <div class="form-group row">
-                <div class="col-10">
-                    <select formControlName="grupo" class="form-select form-select-font-size-1" name="grupo" (change)=onChangeGrupo()>
+            <select formControlName="grupo" class="form-select form-select-font-size-1" name="grupo" (change)=onChangeGrupo()>
                         <option [ngValue]="null" disabled>Selecciona...</option>
                         <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
                     </select>
-                    <small *ngIf="grupoNoValido" class="text-danger"></small>
-                </div>
-                <div class="col-2"></div>
-            </div>
+            <small *ngIf="grupoNoValido" class="text-danger"></small>
         </form>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">Grupo en juego </li>
-        </ul>
-        <div class="card-body">
+        <div class="row">
             <a href="#" class="card-link" routerLink="/profile" routerLinkActive="active">Editar Perfil</a>
             <a href="#" class="card-link" routerLink="/account" routerLinkActive="active">Mi cuenta</a>
         </div>
     </div>
     <div class="center">
+        <div class="title">
+
+            <h3>Fichas Jugadas</h3>
+        </div>
         <div class="top">
-            <div class="card text-center">
-                <div class="card-header" *ngIf="raffleId">
-                    <!-- {{raffle.name}} -->
-                    <h3 class="card-title">Fichas que han salido</h3>
-                </div>
-                <div class="card-body">
-                    <!-- <p class="card-text">apareceran las fichas que estan saliendo en el sorteo</p> -->
-                    <div class="records" #scroll>
-                        <app-records [Fichas]="fichas" [Raffle]="raffle" [fichaGroup]="fichaGroupName"></app-records>
+            <app-records [Fichas]="fichas" [Raffle]="raffle" [fichaGroup]="fichaGroupName"></app-records>
+            <cdk-virtual-scroll-viewport itemSize="50">
+                <div *cdkVirtualFor="let item of fichas" class="list-container">
+                    <div>
+                        <img [src]="item.image | imagen:color" class="img-thumbnail record" appNotImage>
                     </div>
-                    <cdk-virtual-scroll-viewport itemSize="50">
-                        <div *cdkVirtualFor="let item of fichas" class="list-container"> -->
-                            <!-- <div class="records__item--image"> -->
-                            <div class="caja">
-                                <img [src]="item.image | imagen:color" class="img-thumbnail" appNotImage>
-                            </div>
-                        </div>
-                    </cdk-virtual-scroll-viewport>
-                    <!-- </div> -->
                 </div>
-                <div class="card-footer">
-                    <button type="button" (click)=getNewRecord() class="btn btn-primary btn-sm"> Nueva Ficha >></button>
-                </div>
-            </div>
+            </cdk-virtual-scroll-viewport>
+        </div>
+        <div>
+
         </div>
         <div class="bottom">
-            <div class="card text-center">
-                <div class="card-header">
-                    <p>Mis cartones</p>
-                    <a href="#" class="btn btn-primary btn-sm">Gané</a>
+            <button type="button" (click)=getNewRecord() class="btn btn-primary btn-sm"> Nueva Ficha </button>
+            <p>Mis cartones</p>
+            <a href="#" class="btn btn-primary btn-sm">Gané</a>
+            <div class="cartones-container">
+                <div *ngFor="let carton of cartones">
+                    <app-cartones [carton]="carton"></app-cartones>
                 </div>
-                <div class="card-body">
-                    <div class="cards">
-
-                        <app-card-raffle [raffleId]=" raffleId" [userId]="userId" [cartones]="cartones"></app-card-raffle>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>

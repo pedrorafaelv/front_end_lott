@@ -9,6 +9,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { PipesModule } from '../pipes/pipes.module';
 import { CartonesPosterGridComponent } from './cartones-poster-grid/cartones-poster-grid.component';
  import { FormsModule, ReactiveFormsModule  } from "@angular/forms";
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -16,12 +17,14 @@ import { CartonesPosterGridComponent } from './cartones-poster-grid/cartones-pos
     SlideshowComponent,
     FontawesomeComponent,
     CartonesPosterGridComponent,
+    FooterComponent,
   ],
    exports:[
      NavbarComponent,
      SlideshowComponent,
      FontawesomeComponent,
-     CartonesPosterGridComponent
+     CartonesPosterGridComponent,
+     FooterComponent
    ],
 
   imports: [

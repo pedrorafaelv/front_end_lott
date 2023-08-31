@@ -14,13 +14,12 @@ export class RaffleService {
   ficha: any;
   baseUrl = 'http://127.0.0.1:8000/api/Raffle/';
   constructor(private http: HttpClient) { 
-
   }
 
  putRaffle(texto:string ){
    //console.log('entrando en putRaffle', texto);
   return this.http.post(
-    `${this.baseUrl}NewRaffle/${texto}`,  { title: 'Angular POST Request Example' }
+    `${this.baseUrl}NewRaffle/${texto}`,  { title: 'Angular POST Request Example'}
   ).pipe(
     map( resp=>{
       return resp;
@@ -31,13 +30,11 @@ export class RaffleService {
  getFichas(texto: string):Observable<any>{
   // console.log('entrando en getFichas', texto);
   return this.http.get<GetFichasResponse>(`${ this.baseUrl }getFichas/${texto}`);
-
 }
 
  getNextFicha(raffle: number){
   //  console.log('obteniendo una nueva ficha');
    return this.http.get<any>(`${this.baseUrl}getNewRecord/${raffle}`)
-   
  }
 
  getCardsRaffleByUser(raffleId: string, userId: string){
@@ -50,8 +47,7 @@ export class RaffleService {
 
   putCard(raffle: string, card_id : string, localId: string): any {
    // console.log('asignando un carton al usuario');
-   return this.http.post(`${this.baseUrl}putCard/+${raffle}/${card_id}/${localId}`, {title:'put card post service'})
-  
+   return this.http.post(`${this.baseUrl}putCard/${raffle}/${card_id}/${localId}`, {title:'put card post service'})
   }
 
   getActiveRafflesByGroup(group_id){
@@ -62,8 +58,8 @@ export class RaffleService {
     const respuesta = await fetch( (`${this.baseUrl}getActiveRafflesByGroup/${group_id}`))
     const datos = await respuesta.json();
     return datos;
-
   }
+  
   async getCardsRaffleByUserAs(raffle_id, user_id ){
    const resp = await fetch ((`${this.baseUrl}getCardsRaffleByUser/${raffle_id}/${user_id}`))
    const data = await resp.json();
@@ -72,6 +68,12 @@ export class RaffleService {
 
   async getActiveRafflesByUser(user_id){
     const resp =  await fetch((`${this.baseUrl}getActiveRafflesByUser/${user_id}`))
+    const data= await resp.json();
+    return data;
+  }
+
+  async getDetailActiveRafflesByUser(user_id){
+    const resp =  await fetch((`${this.baseUrl}getDetailActiveRafflesByUser/${user_id}`))
     const data= await resp.json();
     return data;
   }

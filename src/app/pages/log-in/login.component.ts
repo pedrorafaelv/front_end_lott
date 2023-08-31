@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('email', this.forma.get('correo').value);
      }
 
-      this.router.navigateByUrl('/home');
+      this.router.navigateByUrl('/dashboard');
       console.log(resp);
     }, (err)=>{
        console.log(err.error.error.message);

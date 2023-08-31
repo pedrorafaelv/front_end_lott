@@ -25,7 +25,8 @@ public UserId: any;
 public RaffleId: any;
 forma: FormGroup;
 public cartoness: any;
-
+public Raffle:any;
+public fichagroup ;
   constructor(public RaffleService: RaffleService, 
     private GroupService: GroupService,
     private fb: FormBuilder,
@@ -64,7 +65,7 @@ public cartoness: any;
        console.log('putcard en cartones-poster-grid, id = ', card_id+' group_id = '+group_id+' localId= '+this.UserId);
        this.RaffleService.putCard(this.RaffleId, card_id, this.UserId)
        .subscribe(resp =>{
-          // console.log('raffleServicePutCard',resp);
+          console.log('raffleServicePutCard',resp);
           Swal.fire({
             icon: 'success',
             title:'Éxito',
@@ -83,49 +84,52 @@ public cartoness: any;
        });
     }
  }
+
  get grupoNoValido(){
   return this.forma.get('grupo')?.invalid && this.forma.get('grupo')?.touched;
 }
+
 onChangeGrupo(){
   //console.log('cambio de grupo, id = '+ this.forma.get('grupo').value);
   this.getRafflesBygroup();
   setTimeout(()=>{
     this.getCardsAvailables();
   }, 1000); 
-  }
+}
 
-  
 activeRaffleBYGroup(){
    return new Promise ((resolve,reject)=>{
     this.RaffleService.getActiveRafflesByGroup(this.forma.get('grupo').value)
     .subscribe(resp=>{
-       resolve(resp['raffles'][0]['id']);
+      console.log('getActiveRafflesByGroup=',resp);
+       //resolve(resp['raffles'][0]['id']);
+       resolve(resp);
      },(error)=>{
        reject(error);
      });
    })
 }
-   async getRafflesBygroup(){
-    this.RaffleId = await this.activeRaffleBYGroup();
-       console.log('this.RaffleId', this.RaffleId);
-   }
+async getRafflesBygroup(){
+    this.Raffle = await this.activeRaffleBYGroup();
+    this.RaffleId = this.Raffle['raffles'][0]['id'];
+    this.fichagroup= this.Raffle['raffles'][0]['groupfichas'];
+    //console.log('this.RaffleId = ', this.RaffleId);
+}
 
-   async getCardsAvailables(){
+async getCardsAvailables(){
     this.cartoness = await  this.cartonesS.getAvailableCards(this.RaffleId)
     .subscribe(resp=>{
-       console.log(resp);
+      //  console.log(resp);
        this.cartones = resp.Card;
     },
-      error=>{
+    error=>{
         console.log(error);
-      });
-   }
+    });
+}
 
-
-  async getInfo(){
+async getInfo(){
     const user =  await this.UserService.getUserByLocalId(this.localId);
     this.UserId = user.user[0]['id'];
-    // console.log('this.userId', this.UserId);
     const group = await this.UserService.getGroupByUser(this.UserId);
     this.grupos = group.Group;
 }

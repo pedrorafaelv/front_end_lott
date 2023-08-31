@@ -5,8 +5,9 @@ import { ValidadoresService } from '../../services/validadores.service';
 import { GroupService } from '../../services/group.service';
 import { Group } from '../../interfaces/get-groups-response';
 import Swal from "sweetalert2";
-import { errorValidate } from '../../interfaces/error-validate';
-import { error } from '@angular/compiler/src/util';
+// import { errorValidate } from '../../interfaces/error-validate';
+// import { error } from '@angular/compiler/src/util';
+import { GroupfichasService } from '../../services/groupfichas.service';
 
 
 @Component({
@@ -67,13 +68,17 @@ listaPercent = [
       {id: 100, name: "100" },
       ];
    public grupos: Group[]= [];
+   public grupofichas: any;
+   public grupoficha: any;
+
    date = new Date();
    texto:string = "";
    percentLineIsDisabled:Boolean = false;
   constructor(private fb: FormBuilder,
               private RaffleService: RaffleService,
               private validadores: ValidadoresService,
-              private GroupService: GroupService
+              private GroupService: GroupService,
+              private GroupFichas:GroupfichasService
             ) {
 
     this.forma = this.fb.group({
@@ -114,17 +119,29 @@ listaPercent = [
   ngOnInit(): void {
     this.GroupService.getGroups('1')
     .subscribe(resp=>{
-      console.log('grupos=', resp.Group);
-       // .subscribe( resp => {
-      //   // console.log('resp= ', resp.Card);
+      //console.log('grupos=', resp.Group);
        this.grupos = resp.Group;
-    })
-    this.deshabilitar_percent_line();
+    });
+    this.GroupFichas.getGroupFichas()
+      .subscribe(resp => 
+        {
+          this.grupofichas = resp;
+        //  console.log('groupFichas=', resp);
+        });
+    
+
+    // this.deshabilitar_percent_line();
   }
+  AddGrupofichas(grupo: string ){
+      // Swal.fire
+      this.grupoficha = grupo;
+      //console.log('grupo=', grupo);
+  }
+
    deshabilitar_percent_line(){
     this.forma.get('reward_line')?.valueChanges.subscribe( value=> {
       if (value == 0){
-        console.log(value);
+        //console.log(value);
         this.percentLineIsDisabled= true;
       }
       else{
@@ -227,10 +244,11 @@ listaPercent = [
   get endHourNoValido(){
     return this.forma.get('end_hour')?.invalid && this.forma.get('end_hour')?.touched;
   }
-  // set percentLineIsDisabled(value: boolean){
-  //    const percentLineIsDisabled = value;
-  // }
 
+  get grupofichasNoValido(){
+    return this.forma.get('grupofichas')?.invalid && this.forma.get('grupofichas')?.touched;
+  }
+  
   crearFromulario(){
   this.forma = this.fb.group({
    nombre: ['' ],
@@ -267,24 +285,22 @@ listaPercent = [
     +'/'+this.forma.get('nombre')?.value+'/'+this.forma.get('percent_full')?.value+'/'+this.forma.get('percent_line')?.value
     +'/'+this.forma.get('privacy')?.value+'/'+this.forma.get('raffle_type')?.value+'/'+this.forma.get('retention_amount')?.value
     +'/'+this.forma.get('retention_percent')?.value+'/'+this.forma.get('reward_full')?.value+'/'+this.forma.get('reward_line')?.value
-    +'/'+this.forma.get('scheduled_date')?.value+'/'+this.forma.get('scheduled_hour')?.value+'/'+this.forma.get('time_zone')?.value+'/'+ user;
+    +'/'+this.forma.get('scheduled_date')?.value+'/'+this.forma.get('scheduled_hour')?.value+'/'+this.forma.get('time_zone')?.value+'/'+this.grupoficha+'/'+ user;
 
     //posteo de la información
       
-   console.log('ruta', ruta);
+  //  console.log('ruta', ruta);
     // this.RaffleService.putRaffle(ruta);
     this.RaffleService.putRaffle(ruta).
     subscribe(resp =>{
-      console.log('respuesta en raffle component ='+resp['open_raffle']);
+      // console.log('respuesta en raffle component ='+resp['open_raffle']);
        Swal.close();
           Swal.fire({
             allowOutsideClick: false,
             icon: 'success',
             text: resp['message'],  
           });
-          },(err)=>{
-            console.log(err);
-            
+          },(err)=>{            
             Swal.fire({
                     allowOutsideClick: false,
                     icon: 'error',

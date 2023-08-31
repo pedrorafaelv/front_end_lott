@@ -11,9 +11,9 @@ export class AuthGuard implements CanActivate {
 
   }
   canActivate():  boolean {
-    console.log('guard');
+    //console.log('guard');
     if ( this.auth.estaAutenticado() ){
-      console.log('autenticado');
+      // console.log('autenticado');
        return true;
      
     }else{

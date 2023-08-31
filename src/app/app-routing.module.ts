@@ -17,6 +17,7 @@ import { PoliticsComponent } from './pages/politics/politics.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { AdminGuard } from './guards/admin.guard';
 
 const routes: Routes = [
   { 
@@ -29,7 +30,7 @@ const routes: Routes = [
     path: 'my-cards',  component: CartonesComponent, canActivate: [AuthGuard]
   },
   { 
-    path: 'groups',  component: GroupsComponent, canActivate: [AuthGuard]
+    path: 'groups',  component: GroupsComponent, canActivate: [AuthGuard, AdminGuard]
   },
   { 
     path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]
@@ -41,7 +42,7 @@ const routes: Routes = [
     path: 'search/:texto',  component: BuscarComponent
   },
   { 
-    path: 'raffle',  component: RaffleComponent, canActivate: [AuthGuard]
+    path: 'raffle',  component: RaffleComponent, canActivate: [AuthGuard,AdminGuard]
   },
   
   { 
