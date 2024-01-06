@@ -1,0 +1,20 @@
+<div class="submit-bottom">
+    <form class="d-flex">
+        <i class="bi-cart-fill me-1"></i>
+        <div class="card">
+            <div class="cart-title">
+                Cartón(es):
+            </div>
+            <div class="cart" *ngFor="let product of Cart; let indice= index;">
+                <div class="product">
+                    Nro: {{product.card_id}}
+                    <button class="btn btn-link btn-sm"> <fa-icon [icon]="faMinus"></fa-icon> </button>
+                </div>
+            </div>
+            <button class="btn btn-outline-light btn-sm" type="submit">
+                <span class="badge bg-dark text-white ms-1 rounded-pill"> <fa-icon [icon]="facartarrowdown"></fa-icon> {{total_mount}}</span>
+            </button>
+            <app-total></app-total>
+        </div>
+    </form>
+</div>

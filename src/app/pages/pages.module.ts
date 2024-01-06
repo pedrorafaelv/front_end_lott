@@ -33,6 +33,9 @@ import { ProfileComponent } from './profile/profile.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { NotImageDirective } from '../directives/not-image.directive';
+import { MessageComponent } from './message/message.component';
+import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
+import { UsersComponent } from './users/users.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +59,10 @@ import { NotImageDirective } from '../directives/not-image.directive';
     CallbackComponent,
     ProfileComponent,
     MovesComponent,
-    NotImageDirective
+    NotImageDirective,
+    MessageComponent,
+    EmailConfirmationComponent,
+    UsersComponent
 ],
   imports: [
     CommonModule,

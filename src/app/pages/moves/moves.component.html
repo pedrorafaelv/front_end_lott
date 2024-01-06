@@ -22,10 +22,34 @@
     </div>
     <div class="center">
         <div class="top"> top
-            <div class="tooltipp top">Posa el ratón encima de mi
-                <span class="tiptext">Texto del tooltip</span>
+            <div class="table">
+                <div class="row">
+                    <div class="col">
+                        Moneda
+                    </div>
+                    <div class="col">
+                        Balance
+                    </div>
+                    <div class="col">
+                        Fecha
+                    </div>
+                </div>
             </div>
-            hola
+            <div class="row" *ngFor=" let item of balance">
+                <div class="col">
+                    {{balance.currency_code}}
+                </div>
+                <div class="col">
+                    {{balance.balance}}
+                </div>
+                <div class="col">
+                    {{balance.date}}
+                </div>
+                <!-- </div> -->
+                <!-- <div class="tooltipp top">Posa el ratón encima de mi
+                <span class="tiptext">Texto del tooltip</span>
+                hola -->
+            </div>
         </div>
         <div class="bottom">bottom</div>
     </div>

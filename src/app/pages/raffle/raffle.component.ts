@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 // import { errorValidate } from '../../interfaces/error-validate';
 // import { error } from '@angular/compiler/src/util';
 import { GroupfichasService } from '../../services/groupfichas.service';
+import { UserService } from '../../services/user.service';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { GroupfichasService } from '../../services/groupfichas.service';
   styleUrls: ['./raffle.component.css']
 })
 export class RaffleComponent implements OnInit {
-forma: FormGroup;
+forma_Raffle: FormGroup;
 mensaje: string;
 icono: string;
 ListaYesNo= [
@@ -78,10 +79,11 @@ listaPercent = [
               private RaffleService: RaffleService,
               private validadores: ValidadoresService,
               private GroupService: GroupService,
-              private GroupFichas:GroupfichasService
+              private GroupFichas:GroupfichasService,
+              private UserService: UserService
             ) {
 
-    this.forma = this.fb.group({
+    this.forma_Raffle = this.fb.group({
       nombre                 : ['Sorteo número  '+ this.date, [Validators.required]],
       description            : ['Sorteo número  '+ this.date, [Validators.required]],
       grupo                  : ['', [Validators.required]],
@@ -107,6 +109,7 @@ listaPercent = [
       start_hour             : [''],
       end_date               : [''],
       end_hour               : [''],
+      grupoficha             : [''],
      }, 
      {
       // validators: this.validadores.passwordsIguales('pass1', 'pass2')
@@ -117,7 +120,7 @@ listaPercent = [
    } 
  
   ngOnInit(): void {
-    this.GroupService.getGroups('1')
+    this.UserService.getGroups('1')
     .subscribe(resp=>{
       //console.log('grupos=', resp.Group);
        this.grupos = resp.Group;
@@ -135,11 +138,11 @@ listaPercent = [
   AddGrupofichas(grupo: string ){
       // Swal.fire
       this.grupoficha = grupo;
-      //console.log('grupo=', grupo);
+      console.log('grupo=', this.grupoficha);
   }
 
    deshabilitar_percent_line(){
-    this.forma.get('reward_line')?.valueChanges.subscribe( value=> {
+    this.forma_Raffle.get('reward_line')?.valueChanges.subscribe( value=> {
       if (value == 0){
         //console.log(value);
         this.percentLineIsDisabled= true;
@@ -151,124 +154,124 @@ listaPercent = [
    }
 
    get nombreNoValido(){
-     return this.forma.get('nombre')?.invalid && this.forma.get('nombre')?.touched;
+     return this.forma_Raffle.get('nombre')?.invalid && this.forma_Raffle.get('nombre')?.touched;
    }
   
    get descriptionNoValido(){
-    return this.forma.get('description')?.invalid && this.forma.get('description')?.touched;
+    return this.forma_Raffle.get('description')?.invalid && this.forma_Raffle.get('description')?.touched;
   }
 
   get grupoNoValido(){
-    return this.forma.get('grupo')?.invalid && this.forma.get('grupo')?.touched;
+    return this.forma_Raffle.get('grupo')?.invalid && this.forma_Raffle.get('grupo')?.touched;
   }
 
   get totalAmountNoValido(){
-    return this.forma.get('total_amount')?.invalid && this.forma.get('total_amount')?.touched;
+    return this.forma_Raffle.get('total_amount')?.invalid && this.forma_Raffle.get('total_amount')?.touched;
   }
   
   get cardAmountNoValido(){
-    return this.forma.get('card_amount')?.invalid && this.forma.get('card_amount')?.touched;
+    return this.forma_Raffle.get('card_amount')?.invalid && this.forma_Raffle.get('card_amount')?.touched;
   }
 
   get minimunPlayNoValido(){
-    return this.forma.get('minimun_play')?.invalid && this.forma.get('minimun_play')?.touched;
+    return this.forma_Raffle.get('minimun_play')?.invalid && this.forma_Raffle.get('minimun_play')?.touched;
   }
 
   get maximunPlayNoValido(){
-    return this.forma.get('maximun_play')?.invalid && this.forma.get('maximun_play')?.touched;
+    return this.forma_Raffle.get('maximun_play')?.invalid && this.forma_Raffle.get('maximun_play')?.touched;
   }
 
   get maximunUserPlayNoValido(){
-    return this.forma.get('maximun_user_play')?.invalid && this.forma.get('maximun_user_play')?.touched;
+    return this.forma_Raffle.get('maximun_user_play')?.invalid && this.forma_Raffle.get('maximun_user_play')?.touched;
   }
 
   get retentionPercentNoValido(){
-    return this.forma.get('retention_percent')?.invalid && this.forma.get('retention_percent')?.touched;
+    return this.forma_Raffle.get('retention_percent')?.invalid && this.forma_Raffle.get('retention_percent')?.touched;
   }
   
   get retentionAmountNoValido(){
-    return this.forma.get('retention_amount')?.invalid && this.forma.get('retention_amount')?.touched;
+    return this.forma_Raffle.get('retention_amount')?.invalid && this.forma_Raffle.get('retention_amount')?.touched;
   }
 
   get adminRetentionPercentNoValido(){
-    return this.forma.get('admin_retention_percent')?.invalid && this.forma.get('admin_retention_percent')?.touched;
+    return this.forma_Raffle.get('admin_retention_percent')?.invalid && this.forma_Raffle.get('admin_retention_percent')?.touched;
   }
   
   get adminRetentionAmountNoValido(){
-    return this.forma.get('admin_retention_amount')?.invalid && this.forma.get('admin_retention_amount')?.touched;
+    return this.forma_Raffle.get('admin_retention_amount')?.invalid && this.forma_Raffle.get('admin_retention_amount')?.touched;
   }
 
   get raffleTypeNoValido(){
-    return this.forma.get('raffle_type')?.invalid && this.forma.get('raffle_type')?.touched;
+    return this.forma_Raffle.get('raffle_type')?.invalid && this.forma_Raffle.get('raffle_type')?.touched;
   }
   
   get privacyNoValido(){
-    return this.forma.get('privacy')?.invalid && this.forma.get('privacy')?.touched;
+    return this.forma_Raffle.get('privacy')?.invalid && this.forma_Raffle.get('privacy')?.touched;
   }
 
   get rewardLineNoValido(){
-    return this.forma.get('reward_line')?.invalid && this.forma.get('reward_line')?.touched;
+    return this.forma_Raffle.get('reward_line')?.invalid && this.forma_Raffle.get('reward_line')?.touched;
   }
   
   get percentLineNoValido(){
-    return this.forma.get('percent_line')?.invalid && this.forma.get('percent_line')?.touched;
+    return this.forma_Raffle.get('percent_line')?.invalid && this.forma_Raffle.get('percent_line')?.touched;
   }
  
   get rewardFullNoValido(){
-    return this.forma.get('reward_full')?.invalid && this.forma.get('reward_full')?.touched;
+    return this.forma_Raffle.get('reward_full')?.invalid && this.forma_Raffle.get('reward_full')?.touched;
   }
   
   get percentFullNoValido(){
-    return this.forma.get('percent_full')?.invalid && this.forma.get('percent_full')?.touched;
+    return this.forma_Raffle.get('percent_full')?.invalid && this.forma_Raffle.get('percent_full')?.touched;
   }
 
   get startDateNoValido(){
-    return this.forma.get('start_date')?.invalid && this.forma.get('start_date')?.touched;
+    return this.forma_Raffle.get('start_date')?.invalid && this.forma_Raffle.get('start_date')?.touched;
   }
 
   get startHourNoValido(){
-    return this.forma.get('start_hour')?.invalid && this.forma.get('start_hour')?.touched;
+    return this.forma_Raffle.get('start_hour')?.invalid && this.forma_Raffle.get('start_hour')?.touched;
   }
   get scheduledDateNoValido(){
-    return this.forma.get('scheduled_date')?.invalid && this.forma.get('scheduled_date')?.touched;
+    return this.forma_Raffle.get('scheduled_date')?.invalid && this.forma_Raffle.get('scheduled_date')?.touched;
   }
 
   get scheduledHourNoValido(){
-    return this.forma.get('scheduled_hour')?.invalid && this.forma.get('scheduled_hour')?.touched;
+    return this.forma_Raffle.get('scheduled_hour')?.invalid && this.forma_Raffle.get('scheduled_hour')?.touched;
   }
 
   get endDateNoValido(){
-    return this.forma.get('end_date')?.invalid && this.forma.get('end_date')?.touched;
+    return this.forma_Raffle.get('end_date')?.invalid && this.forma_Raffle.get('end_date')?.touched;
   }
 
   get endHourNoValido(){
-    return this.forma.get('end_hour')?.invalid && this.forma.get('end_hour')?.touched;
+    return this.forma_Raffle.get('end_hour')?.invalid && this.forma_Raffle.get('end_hour')?.touched;
   }
 
   get grupofichasNoValido(){
-    return this.forma.get('grupofichas')?.invalid && this.forma.get('grupofichas')?.touched;
+    return this.forma_Raffle.get('grupoficha')?.invalid && this.forma_Raffle.get('grupoficha')?.touched;
   }
   
   crearFromulario(){
-  this.forma = this.fb.group({
+  this.forma_Raffle = this.fb.group({
    nombre: ['' ],
    description: ['' ],
   });
   }
    
   crearListeners(...args: []) {
-    this.forma.valueChanges.subscribe(valor => {
+    this.forma_Raffle.valueChanges.subscribe(valor => {
 
       console.log(valor);
     });
-    //  this.forma.statusChanges.subscribe(status => console.log({status}));
-    this.forma.get('percent_line')?.valueChanges.subscribe(console.log);
+    //  this.forma_Raffle.statusChanges.subscribe(status => console.log({status}));
+    this.forma_Raffle.get('percent_line')?.valueChanges.subscribe(console.log);
   }
 
   guardar(){
-    console.log(this.forma.value);
-    if (this.forma.invalid){
-      return Object.values(this.forma.controls).forEach(control=>{
+    console.log(this.forma_Raffle.value);
+    if (this.forma_Raffle.invalid){
+      return Object.values(this.forma_Raffle.controls).forEach(control=>{
         control.markAsTouched();
         if (control instanceof FormGroup){
           Object.values(control.controls).forEach(control=>control.markAsTouched());
@@ -279,15 +282,15 @@ listaPercent = [
       });
     }
      const user = 1;
-    const ruta = this.forma.get('admin_retention_amount')?.value +'/'+this.forma.get('admin_retention_percent')?.value
-    +'/'+this.forma.get('card_amount')?.value +'/'+this.forma.get('description')?.value +'/'+this.forma.get('grupo')?.value
-    +'/'+this.forma.get('maximun_play')?.value+'/'+this.forma.get('maximun_user_play')?.value+'/'+this.forma.get('minimun_play')?.value
-    +'/'+this.forma.get('nombre')?.value+'/'+this.forma.get('percent_full')?.value+'/'+this.forma.get('percent_line')?.value
-    +'/'+this.forma.get('privacy')?.value+'/'+this.forma.get('raffle_type')?.value+'/'+this.forma.get('retention_amount')?.value
-    +'/'+this.forma.get('retention_percent')?.value+'/'+this.forma.get('reward_full')?.value+'/'+this.forma.get('reward_line')?.value
-    +'/'+this.forma.get('scheduled_date')?.value+'/'+this.forma.get('scheduled_hour')?.value+'/'+this.forma.get('time_zone')?.value+'/'+this.grupoficha+'/'+ user;
+    const ruta = this.forma_Raffle.get('admin_retention_amount')?.value +'/'+this.forma_Raffle.get('admin_retention_percent')?.value
+    +'/'+this.forma_Raffle.get('card_amount')?.value +'/'+this.forma_Raffle.get('description')?.value +'/'+this.forma_Raffle.get('grupo')?.value
+    +'/'+this.forma_Raffle.get('maximun_play')?.value+'/'+this.forma_Raffle.get('maximun_user_play')?.value+'/'+this.forma_Raffle.get('minimun_play')?.value
+    +'/'+this.forma_Raffle.get('nombre')?.value+'/'+this.forma_Raffle.get('percent_full')?.value+'/'+this.forma_Raffle.get('percent_line')?.value
+    +'/'+this.forma_Raffle.get('privacy')?.value+'/'+this.forma_Raffle.get('raffle_type')?.value+'/'+this.forma_Raffle.get('retention_amount')?.value
+    +'/'+this.forma_Raffle.get('retention_percent')?.value+'/'+this.forma_Raffle.get('reward_full')?.value+'/'+this.forma_Raffle.get('reward_line')?.value
+    +'/'+this.forma_Raffle.get('scheduled_date')?.value+'/'+this.forma_Raffle.get('scheduled_hour')?.value+'/'+this.forma_Raffle.get('time_zone')?.value+'/'+this.grupoficha+'/'+ user;
 
-    //posteo de la información
+    //posteo de la informa_Raffleción
       
   //  console.log('ruta', ruta);
     // this.RaffleService.putRaffle(ruta);
@@ -308,6 +311,6 @@ listaPercent = [
                   });
           } );
         
-    this.forma.reset();
-  }
+    this.forma_Raffle.reset();
+   }
 }

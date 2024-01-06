@@ -4,6 +4,7 @@ import { ValidadoresService } from 'src/app/services/validadores.service';
 import { AuthService } from 'src/app/services/auth.service';
 import Swal from "sweetalert2";
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginComponent implements OnInit {
   constructor(private fb:FormBuilder,
              private validadores : ValidadoresService,
              private auth: AuthService,
-             private router:Router ) {
+             private router:Router,
+             private UserService: UserService) {
     this.crearFormulario();
    }
 
@@ -98,9 +100,15 @@ export class LoginComponent implements OnInit {
      this.auth.login(this.forma.get('correo').value, this.forma.get('pass1').value)
     .subscribe(resp =>{
       Swal.close();
-      console.log('resp = '+ resp);
-      // localStorage.setItem('localId', this.forma.get('localId').value);
-
+      console.log('se debe  validar  la confirmación del email  = '+ resp);
+      this.UserService.getUserEmailConfirm(this.forma.get('correo').value)
+      .subscribe(resp=>{
+        console.log("esta es la respuesta de la confirmacion "+ resp);
+      },
+       (err)=>{
+        console.log('no esta confirmado el email');
+       }
+      )
      if (this.recordarme){
       localStorage.setItem('email', this.forma.get('correo').value);
      }
@@ -117,5 +125,8 @@ export class LoginComponent implements OnInit {
     });
   return true;
    }
+    loginUser(){
+       this.UserService.getByLocalId('1');
+    }
   
 }

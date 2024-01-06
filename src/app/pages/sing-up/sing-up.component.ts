@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { UserService } from 'src/app/services/user.service';
 import { ValidadoresService } from 'src/app/services/validadores.service';
 import Swal from 'sweetalert2';
 
@@ -17,7 +18,9 @@ export class SingUpComponent implements OnInit {
   constructor(private auth: AuthService, 
               private fb:FormBuilder,
               private validadores : ValidadoresService,
-              private router : Router ) {
+              private router : Router,
+              private user: UserService
+           ) {
     this.crearFormulario();
     // this.cargarDataFormulario();
     // this.crearListeners();
@@ -105,8 +108,19 @@ export class SingUpComponent implements OnInit {
      Swal.showLoading();
   this.auth.nuevoUsuario(this.forma.get('correo').value, this.forma.get('pass1').value)
     .subscribe(resp =>{
-      Swal.close();
-      console.log(resp);
+      this.user.singUpUser(resp['email'], this.forma.get('usuario').value, this.forma.get('pass1').value, resp['localId'], resp['idToken'])
+      .subscribe(resp=>{
+        Swal.fire({
+          icon: 'success',
+          title:'Éxito, te has registrado en la Lottery, ahora debes confirmar tu email',
+          });
+
+      });
+      // Swal.fire({
+      //   icon: 'success',
+      //   title:'Éxito, te has registrado',
+      //   //text: err.error.error.message,
+      //   });
     }, (err)=>{
 
       console.log(err.error.error.message);

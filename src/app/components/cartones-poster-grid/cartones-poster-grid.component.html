@@ -5,21 +5,13 @@
             <form autocomplete="off" [formGroup]="forma">
                 <div class="input-group-prepend">
                     <select class="custom-select form-select form-select-font-size-1" id="inputGroupSelect" formControlName="grupo" name="grupo" (change)=onChangeGrupo()>
-                                        <option selected>Choose...</option>
-                                        <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
-                                    </select>
+                        <option selected>Choose...</option>
+                        <option  *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
+                    </select>
                 </div>
             </form>
         </div>
-        <div class="submit-bottom">
-            <form class="d-flex">
-                <button class="btn btn-outline-light" type="submit">
-                    <i class="bi-cart-fill me-1"></i>
-                    Cart
-                    <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                </button>
-            </form>
-        </div>
+        <app-cart></app-cart>
     </section>
     <section class="cartones-container  bg-dark" *ngIf="fichagroup">
         <h2 class="fw-bold">Cartones</h2>

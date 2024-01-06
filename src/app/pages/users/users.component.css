@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 500px;
+    /* set the container height */
+}
+
+.left,
+.right {
+    width: 20%;
+    /* set the width for left and right divs */
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 60%;
+    /* set the width for center div */
+}
+
+.top,
+.bottom {
+    flex: 1;
+    /* evenly distribute the height for top and bottom divs */
+}

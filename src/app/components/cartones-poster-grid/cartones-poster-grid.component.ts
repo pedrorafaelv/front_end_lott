@@ -9,6 +9,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { CartonesService } from 'src/app/services/cartones.service';
+import { CartService } from '../../services/cart.service';
+import { Product } from '../../interfaces/product';
 
 @Component({
   selector: 'app-cartones-poster-grid',
@@ -27,13 +29,16 @@ forma: FormGroup;
 public cartoness: any;
 public Raffle:any;
 public fichagroup ;
+public product: Product;
+public p: [];
   constructor(public RaffleService: RaffleService, 
     private GroupService: GroupService,
     private fb: FormBuilder,
     private AuthService: AuthService,
     private router: Router,
     private UserService: UserService,
-    private cartonesS: CartonesService
+    private cartonesS: CartonesService,
+    private CartService:CartService
     ) { 
       this.forma = this.fb.group({
         grupo: ['', [Validators.required]],
@@ -50,7 +55,7 @@ public fichagroup ;
   putCard(card_id: any): any{
     if (!this.AuthService.estaAutenticado()){
         this.router.navigateByUrl('/home');
-       }
+    }
   
   let group_id = this.forma.get('grupo').value;
   if (group_id ==""){
@@ -62,7 +67,8 @@ public fichagroup ;
         confirmButtonColor: '#176585',
         });
     }else{
-       console.log('putcard en cartones-poster-grid, id = ', card_id+' group_id = '+group_id+' localId= '+this.UserId);
+       console.log('card_id = ',card_id);      
+      this.CartService.addNewProduct(this.UserId,this.RaffleId, card_id, 1);
        this.RaffleService.putCard(this.RaffleId, card_id, this.UserId)
        .subscribe(resp =>{
           console.log('raffleServicePutCard',resp);
@@ -90,7 +96,6 @@ public fichagroup ;
 }
 
 onChangeGrupo(){
-  //console.log('cambio de grupo, id = '+ this.forma.get('grupo').value);
   this.getRafflesBygroup();
   setTimeout(()=>{
     this.getCardsAvailables();
@@ -101,8 +106,6 @@ activeRaffleBYGroup(){
    return new Promise ((resolve,reject)=>{
     this.RaffleService.getActiveRafflesByGroup(this.forma.get('grupo').value)
     .subscribe(resp=>{
-      console.log('getActiveRafflesByGroup=',resp);
-       //resolve(resp['raffles'][0]['id']);
        resolve(resp);
      },(error)=>{
        reject(error);
@@ -113,13 +116,11 @@ async getRafflesBygroup(){
     this.Raffle = await this.activeRaffleBYGroup();
     this.RaffleId = this.Raffle['raffles'][0]['id'];
     this.fichagroup= this.Raffle['raffles'][0]['groupfichas'];
-    //console.log('this.RaffleId = ', this.RaffleId);
 }
 
 async getCardsAvailables(){
     this.cartoness = await  this.cartonesS.getAvailableCards(this.RaffleId)
     .subscribe(resp=>{
-      //  console.log(resp);
        this.cartones = resp.Card;
     },
     error=>{

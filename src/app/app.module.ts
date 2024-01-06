@@ -12,12 +12,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentsModule } from './components/components.module';
 import { PagesModule } from './pages/pages.module';
 import { NotImageDirective } from './directives/not-image.directive';
+import { UserPermissionsDirective } from './directives/user-permissions.directive';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     SandboxComponent,
+    UserPermissionsDirective,
     ////NotImageDirective,
     // CartonnComponent,
     // CartonComponent,

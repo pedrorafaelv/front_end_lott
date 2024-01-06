@@ -18,6 +18,9 @@ import { AuthGuard } from './guards/auth.guard';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AdminGuard } from './guards/admin.guard';
+import { MessageComponent } from './pages/message/message.component';
+import { EmailConfirmationComponent } from './pages/email-confirmation/email-confirmation.component';
+import { UsersComponent } from './pages/users/users.component';
 
 const routes: Routes = [
   { 
@@ -42,7 +45,7 @@ const routes: Routes = [
     path: 'search/:texto',  component: BuscarComponent
   },
   { 
-    path: 'raffle',  component: RaffleComponent, canActivate: [AuthGuard,AdminGuard]
+    path: 'raffle',  component: RaffleComponent, canActivate: [AuthGuard, AdminGuard]
   },
   
   { 
@@ -62,10 +65,19 @@ const routes: Routes = [
     path: 'sing-up', component: SingUpComponent
   },
   { 
+    path: 'email-confirmation', component: EmailConfirmationComponent, canActivate:[AuthGuard]
+  },
+  { 
     path: 'politics', component: PoliticsComponent
   },
   { 
-    path: 'profile', component: ProfileComponent
+    path: 'profile', component: ProfileComponent, canActivate:[AuthGuard]
+  },
+  { 
+    path: 'message', component: MessageComponent, canActivate:[AuthGuard]
+  },
+  { 
+    path: 'users', component: UsersComponent, canActivate:[AuthGuard]
   },
   { 
     path:'callback', component: CallbackComponent 

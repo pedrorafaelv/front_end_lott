@@ -1,0 +1,69 @@
+<div class="container">
+    <div class="left">
+        <app-publicity></app-publicity>
+    </div>
+    <div class="center">
+        <div class="top"> top
+            <div class="table">
+                <div class="row">
+                    <div class="col">
+                        Id
+                    </div>
+                    <div class="col">
+                        Nombre
+                    </div>
+                    <div class="col">
+                        Email
+                    </div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
+
+            </div>
+            <div class="row" *ngFor=" let item of usersData">
+                <div class="col">
+                    {{item.id}}
+                </div>
+                <div class="col">
+                    {{item.name}}
+                </div>
+                <div class="col">
+                    {{item.email}}
+                </div>
+                <div class="col">
+                    <button (click)="addGroup()" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#GroupModal">Grupos</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="bottom">bottom</div>
+    </div>
+    <div class="right">right</div>
+    <form autocomplete="off" [formGroup]="form_Groups" (ngSubmit)="addGroup()" class="form-floating">
+        <div class="modal fade" id="GroupModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar/Remover Grupos</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="list-group">
+                            <label class="list-group-item d-flex gap-3" *ngFor="let gr of userGroups">
+                            <input class="form-check-input flex-shrink-0" type="checkbox"  style="font-size: 1.375em;" value= "gr.id">
+                            <span class="pt-1 from-checked-content">
+                                <strong>{{gr.name}}</strong>
+                            </span>
+                        </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" (click)="onSubmit()" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

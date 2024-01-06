@@ -25,22 +25,15 @@ public UserId: string;
   canActivate():  boolean {
     if ( this.auth.estaAutenticado() ){
       this.localId = this.Auth.getLocalId();
-      console.log('entro al admin guard');
+      // console.log('entro al admin guard');
       this.usr.getUserByLocalId(this.localId).then
      ((res)=>{
       this.UserId = res.user[0]['id'];
       this.getInfoPermissions();
       console.log('this.permissions => ', this.permission);
-      // this.usr.getUserPermissions(res.user[0].id)
-      //  .subscribe(resp=>{
-      //   console.log(resp);
-      //  });
-      
      }, error=>{
-
       console.error("Error en el servicio de usuario");
       return false;
-
      });
        return true;
      

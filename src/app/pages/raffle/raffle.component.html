@@ -8,7 +8,7 @@
         </section>
         <section class="main">
             <!-- <h1>main</h1> -->
-            <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()" class="form-floating">
+            <form autocomplete="off" [formGroup]="forma_Raffle" (ngSubmit)="guardar()" class="form-floating">
                 <section class="formulario">
                     <div class="lineas">
                         <div class="form-group input-group">
@@ -264,8 +264,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="lineas">
+                    <!-- <div class="lineas">
                         <div class="col-4 form-group input-group">
                             <span class="input-group-text">Fecha/Hora final</span>
                             <div class="col-2 form-floating">
@@ -279,44 +278,42 @@
                                 <small *ngIf="endHourNoValido" class="text-danger">Hora final no valida </small>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- <div class="lineas"> -->
-
                     <div class="lineas">
-                        <div class="form-group input-group">
+                        <!-- <div class="form-group input-group">
                             <span class="input-group-text">Fichas para el juego</span>
                             <div class="col-2 form-floating">
-                                <input class="form-control" type="text" id="grupofichas" placeholder="Fichas" formControlName="groupfichas">
-                                <label for="grupofichas" class="form-floating">Fichas </label>
+                                <input class="form-control" type="text" id="groupficha" placeholder="Fichas" formControlName="grupoficha" value="[(grupoficha)]">
+                                <label for="grupoficha" class="form-floating">Fichas </label>
                                 <small *ngIf="grupofichasNoValido" class="text-danger">Debe seleccionar un grupo de fichas</small>
                             </div>
-                        </div>
-                    </div>
-                    <div *ngIf="grupofichas.GrupoInifichas">
-                        <div *ngFor="let gf of grupofichas.GrupoInifichas" class="card">
-                            <img [src]="gf.ficha_image | recordImage:gf.groupfichas_name" class="card-img-top imag animate__fadeIn" (click)="AddGrupofichas(gf.groupfichas_id)" appNotImage>
-                            <div class="card-body">
-                                <h6>selecciona :{{gf.groupfichas_description}}</h6>
-                                <p class="card-text">{{gf.description}}</p>
+                        </div> -->
+                        <div *ngIf="grupofichas.GrupoInifichas">
+                            <div *ngFor="let gf of grupofichas.GrupoInifichas" class="card">
+                                <img [src]="gf.ficha_image | recordImage:gf.groupfichas_name" class="card-img-top imag animate__fadeIn" (click)="AddGrupofichas(gf.groupfichas_id)" appNotImage>
+                                <!-- <div class="card-body">
+                                    <h6>selecciona :{{gf.groupfichas_description}}</h6>
+                                    <p class="card-text">{{gf.description}}</p>
+                                </div> -->
                             </div>
                         </div>
                     </div>
                     <!-- </div> -->
                 </section>
-            </form>
-        </section>
-        <section class="bottom">
-            <!-- <h1>bottom</h1> -->
-            <div class="lineas">
-                <div class="form-group row">
-                    <label class="col-2 col-form-label">&nbsp;</label>
-                    <div class="input-group col-md-8">
-                        <button type="submit" class="btn btn-primary btn-block">
-                            Guardar
-                        </button>
+                <section class="bottom">
+                    <div class="lineas">
+                        <div class="form-group row">
+                            <label class="col-2 col-form-label">&nbsp;</label>
+                            <div class="input-group col-md-8">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    Guardar
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </section>
+            </form>
         </section>
     </section>
     <section class="right">
@@ -324,11 +321,11 @@
     </section>
     <br>
     <pre>
-                Estado del formulario {{forma.valid}}
+                Estado del formulario {{forma_Raffle.valid}}
                 <br>
-                Status: {{forma.status}}
+                Status: {{forma_Raffle.status}}
             </pre>
     <pre>
-                {{forma.value | json }}
+                {{forma_Raffle.value | json }}
             </pre>
 </div>
