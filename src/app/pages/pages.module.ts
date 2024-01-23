@@ -17,8 +17,9 @@ import { RaffleComponent } from './raffle/raffle.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from "@angular/material/legacy-input";
+// import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+ //import { MatLegacyInputModule as MatInputModule } from "@angular/material/legacy-input";
+ import {  MatInputModule} from "@angular/material/input";
 import { MatNativeDateModule } from "@angular/material/core";
 import { RouterModule } from '@angular/router';
 import { PoliticsComponent } from './politics/politics.component';
@@ -36,6 +37,7 @@ import { NotImageDirective } from '../directives/not-image.directive';
 import { MessageComponent } from './message/message.component';
 import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
 import { UsersComponent } from './users/users.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
