@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import createAuth0Client from '@auth0/auth0-spa-js';
-import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
+import { Auth0Client }from '@auth0/auth0-spa-js';
+import { createAuth0Client} from '@auth0/auth0-spa-js';
 import { from, of, Observable, BehaviorSubject, combineLatest, throwError } from 'rxjs';
 import { tap, catchError, concatMap, shareReplay } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -13,8 +13,10 @@ export class Auth0Service {
   auth0Client$ = (from(
     createAuth0Client({
       domain: "dev-hrhrdf6p.us.auth0.com",
-      client_id: "Q9g6JLdE0DAbnc8VBSdC7LKkJbBSehZj",
+      clientId: "Q9g6JLdE0DAbnc8VBSdC7LKkJbBSehZj",
+      authorizationParams: {
       redirect_uri: `${window.location.origin}`
+      }
     })
   ) as Observable<Auth0Client>).pipe(
     shareReplay(1), // Every subscription receives the same shared value
@@ -49,7 +51,7 @@ export class Auth0Service {
   // https://auth0.github.io/auth0-spa-js/classes/auth0client.html#getuser
   getUser$(options?): Observable<any> {
     return this.auth0Client$.pipe(
-      concatMap((client: Auth0Client) => from(client.getUser(options))),
+      concatMap((client: Auth0Client) => from(client.getUser())),
       tap(user => this.userProfileSubject$.next(user))
     );
   }
@@ -78,7 +80,9 @@ export class Auth0Service {
     this.auth0Client$.subscribe((client: Auth0Client) => {
       // Call method to log in
       client.loginWithRedirect({
-        redirect_uri: `${window.location.origin}`,
+        authorizationParams: {
+        redirect_uri: `${window.location.origin}`
+        },
         appState: { target: redirectPath }
       });
     });
@@ -117,8 +121,10 @@ export class Auth0Service {
     this.auth0Client$.subscribe((client: Auth0Client) => {
       // Call method to log out
       client.logout({
-        client_id: "pLCrAhRgQB9tmFEotU2ge0FO3NEKWRey",
-        returnTo: `${window.location.origin}`
+        clientId: "pLCrAhRgQB9tmFEotU2ge0FO3NEKWRey",
+        logoutParams:{
+          returnTo: `${window.location.origin}`
+        }
       });
     });
   }

@@ -17,9 +17,7 @@ import { RaffleComponent } from './raffle/raffle.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-// import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
- //import { MatLegacyInputModule as MatInputModule } from "@angular/material/legacy-input";
- import {  MatInputModule} from "@angular/material/input";
+// import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field'; import { MatLegacyInputModule as MatInputModule } from "@angular/material/legacy-input";
 import { MatNativeDateModule } from "@angular/material/core";
 import { RouterModule } from '@angular/router';
 import { PoliticsComponent } from './politics/politics.component';
@@ -38,6 +36,9 @@ import { MessageComponent } from './message/message.component';
 import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
 import { UsersComponent } from './users/users.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { HttpClientModule } from '@angular/common/http';
+import { FontawesomeComponent } from '../components/fontawesome/fontawesome.component';
 
 @NgModule({
   declarations: [
@@ -76,10 +77,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatFormFieldModule,
     MatNativeDateModule,
     MatInputModule,
+    HttpClientModule,
     RouterModule,
     PipesModule,
-    ScrollingModule,
     FontAwesomeModule,
+    ScrollingModule,
     AuthModule.forRoot({
       domain: 'dev-hrhrdf6p.us.auth0.com',
       clientId: 'Q9g6JLdE0DAbnc8VBSdC7LKkJbBSehZj'
