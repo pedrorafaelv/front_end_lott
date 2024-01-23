@@ -20,8 +20,16 @@ export class UsersComponent implements OnInit {
   constructor( private UserService: UserService,
      private AuthService: AuthService,
     //  private modalRef: BsModalRef,
-    //  private GroupService: GroupService,
-    ) { }
+      private fb: FormBuilder,
+    ) {
+
+      this.form_Groups = this.fb.group({
+       
+        grupoficha             : [''],
+       }, 
+       ); 
+
+     }
 
   ngOnInit(): void {
     this.localId = this.AuthService.getLocalId();
@@ -42,25 +50,25 @@ export class UsersComponent implements OnInit {
     this.UserService.getGroups(id).subscribe((data)=>{
        console.log('data', data.Group);
        this.userGroups = data.Group;
-
     });
 
   }
   getGroupAvailable(id: string){
-    this.getGroups(id)
-
+    this.getGroups(id);
+    // const groups = this.userGroups;
   }
    addGroup(){
- console.log('agregando grupo');
- this.getGroups(1);
+     console.log('agregando grupo');
+     this.getGroups(1);
    }
    removeGroups() {
-    console.log('removiendo grupo');
+      console.log('removiendo grupo');
    }
    onSubmit() {
-    console.log('onSubmit');
-
+      console.log('onSubmit');
     // this.addGroupModal.hide();
-
+   }
+   onClickGroup(id: string){
+      console.log('hiciste click en el grupo ', id);
    }
 }
