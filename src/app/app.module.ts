@@ -4,7 +4,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 // import { CartonComponent } from './trash/carton/carton.component';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SandboxComponent } from './sandbox/sandbox.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 // import { CartonnComponent } from './pages/cartonn/cartonn.component';
@@ -15,26 +15,19 @@ import { NotImageDirective } from './directives/not-image.directive';
 import { UserPermissionsDirective } from './directives/user-permissions.directive';
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    SandboxComponent,
-    UserPermissionsDirective,
-    ////NotImageDirective,
-    // CartonnComponent,
-    // CartonComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    DragDropModule,
-    HttpClientModule,
-    FontAwesomeModule,
-    BrowserAnimationsModule,
-    ComponentsModule,
-    PagesModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        SandboxComponent,
+        UserPermissionsDirective,
+        ////NotImageDirective,
+        // CartonnComponent,
+        // CartonComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        DragDropModule,
+        FontAwesomeModule,
+        BrowserAnimationsModule,
+        ComponentsModule,
+        PagesModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

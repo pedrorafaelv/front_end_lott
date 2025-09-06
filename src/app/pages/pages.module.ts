@@ -37,55 +37,49 @@ import { EmailConfirmationComponent } from './email-confirmation/email-confirmat
 import { UsersComponent } from './users/users.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FontawesomeComponent } from '../components/fontawesome/fontawesome.component';
 
-@NgModule({
-  declarations: [
-    HomeComponent,
-    CartonesComponent,
-    BuscarComponent,
-    PeliculasComponent,
-    DashboardComponent,
-    JuegoComponent,
-    GroupsComponent,
-    AccountComponent,
-    LogOutComponent,
-    LoginComponent,
-    SingUpComponent ,
-    RaffleComponent,
-    PoliticsComponent,
-    PublicityComponent,
-    RecordsComponent,
-    CardRaffleComponent,
-    PersonalDataComponent,
-    CallbackComponent,
-    ProfileComponent,
-    MovesComponent,
-    NotImageDirective,
-    MessageComponent,
-    EmailConfirmationComponent,
-    UsersComponent
-],
-  imports: [
-    CommonModule,
-    ComponentsModule,
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatNativeDateModule,
-    MatInputModule,
-    HttpClientModule,
-    RouterModule,
-    PipesModule,
-    FontAwesomeModule,
-    ScrollingModule,
-    AuthModule.forRoot({
-      domain: 'dev-hrhrdf6p.us.auth0.com',
-      clientId: 'Q9g6JLdE0DAbnc8VBSdC7LKkJbBSehZj'
-    }),
-  ]
-})
+@NgModule({ declarations: [
+        HomeComponent,
+        CartonesComponent,
+        BuscarComponent,
+        PeliculasComponent,
+        DashboardComponent,
+        JuegoComponent,
+        GroupsComponent,
+        AccountComponent,
+        LogOutComponent,
+        LoginComponent,
+        SingUpComponent,
+        RaffleComponent,
+        PoliticsComponent,
+        PublicityComponent,
+        RecordsComponent,
+        CardRaffleComponent,
+        PersonalDataComponent,
+        CallbackComponent,
+        ProfileComponent,
+        MovesComponent,
+        NotImageDirective,
+        MessageComponent,
+        EmailConfirmationComponent,
+        UsersComponent
+    ], imports: [CommonModule,
+        ComponentsModule,
+        BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatDatepickerModule,
+        MatFormFieldModule,
+        MatNativeDateModule,
+        MatInputModule,
+        RouterModule,
+        PipesModule,
+        FontAwesomeModule,
+        ScrollingModule,
+        AuthModule.forRoot({
+            domain: 'dev-hrhrdf6p.us.auth0.com',
+            clientId: 'Q9g6JLdE0DAbnc8VBSdC7LKkJbBSehZj'
+        })], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class PagesModule { }
