@@ -107,5 +107,8 @@
             }
         }
     },
-    "defaultProject": "lottery-app"
+    "defaultProject": "lottery-app",
+    "cli": {
+      "analytics": "eca0546e-8aa3-40ab-a479-269bef62a338"
+    }
 }

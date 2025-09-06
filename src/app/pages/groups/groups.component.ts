@@ -149,7 +149,7 @@ export class GroupsComponent implements OnInit {
     +'/'+this.forma.get('active')?.value +'/'+this.forma.get('privacy')?.value +'/'+this.forma.get('start_date')?.value 
     +'/'+this.forma.get('end_date')?.value;
      this.forma.reset();
-   this.GroupService.newGroup(ruta).subscribe(resp=>{
+   this.GroupService.newGroup(this.forma.value).subscribe(resp=>{
     Swal.close();
       Swal.fire({
         allowOutsideClick: false,
