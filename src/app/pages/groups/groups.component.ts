@@ -9,9 +9,10 @@ import { GroupService } from '../../services/group.service';
 import Swal from "sweetalert2";
 
 @Component({
-  selector: 'app-groups',
-  templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.css']
+    selector: 'app-groups',
+    templateUrl: './groups.component.html',
+    styleUrls: ['./groups.component.css'],
+    standalone: false
 })
 export class GroupsComponent implements OnInit {
 

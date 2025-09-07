@@ -3,9 +3,10 @@ import { PeliculasService } from '../../services/peliculas.service';
 import { Movie } from '../../interfaces/cartelera-response';
 
 @Component({
-  selector: 'app-peliculas',
-  templateUrl: './peliculas.component.html',
-  styleUrls: ['./peliculas.component.css']
+    selector: 'app-peliculas',
+    templateUrl: './peliculas.component.html',
+    styleUrls: ['./peliculas.component.css'],
+    standalone: false
 })
 export class PeliculasComponent implements OnInit {
 

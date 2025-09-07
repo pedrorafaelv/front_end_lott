@@ -1,7 +1,8 @@
 import { Directive } from '@angular/core';
 
 @Directive({
-  selector: '[appUserPermissions]'
+    selector: '[appUserPermissions]',
+    standalone: false
 })
 export class UserPermissionsDirective {
 

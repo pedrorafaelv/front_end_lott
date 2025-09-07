@@ -7,9 +7,10 @@ import { UserService } from '../../services/user.service';
 
 
 @Component({
-  selector: 'app-moves',
-  templateUrl: './moves.component.html',
-  styleUrls: ['./moves.component.css']
+    selector: 'app-moves',
+    templateUrl: './moves.component.html',
+    styleUrls: ['./moves.component.css'],
+    standalone: false
 })
 export class MovesComponent implements OnInit {
 

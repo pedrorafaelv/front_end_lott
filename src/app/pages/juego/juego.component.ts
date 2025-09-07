@@ -9,9 +9,10 @@ import { GroupService } from 'src/app/services/group.service';
 import { faUsersRectangle, faPeopleGroup} from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 @Component({
-  selector: 'app-juego',
-  templateUrl: './juego.component.html',
-  styleUrls: ['./juego.component.css']
+    selector: 'app-juego',
+    templateUrl: './juego.component.html',
+    styleUrls: ['./juego.component.css'],
+    standalone: false
 })
 export class JuegoComponent implements OnInit {
  fichas: Ficha[]=[];

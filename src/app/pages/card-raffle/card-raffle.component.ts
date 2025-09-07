@@ -3,9 +3,10 @@ import { RaffleService } from '../../services/raffle.service';
 import { Card } from 'src/app/interfaces/get-cards-raffle-response';
 
 @Component({
-  selector: 'app-card-raffle',
-  templateUrl: './card-raffle.component.html',
-  styleUrls: ['./card-raffle.component.css']
+    selector: 'app-card-raffle',
+    templateUrl: './card-raffle.component.html',
+    styleUrls: ['./card-raffle.component.css'],
+    standalone: false
 })
 export class CardRaffleComponent implements OnInit {
 

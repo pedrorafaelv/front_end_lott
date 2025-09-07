@@ -13,9 +13,10 @@ import { CartService } from '../../services/cart.service';
 import { Product } from '../../interfaces/product';
 
 @Component({
-  selector: 'app-cartones-poster-grid',
-  templateUrl: './cartones-poster-grid.component.html',
-  styleUrls: ['./cartones-poster-grid.component.css']
+    selector: 'app-cartones-poster-grid',
+    templateUrl: './cartones-poster-grid.component.html',
+    styleUrls: ['./cartones-poster-grid.component.css'],
+    standalone: false
 })
 export class CartonesPosterGridComponent implements OnInit {
 @Input() cartones:card[]=[];

@@ -12,9 +12,10 @@ import { UserService } from '../../services/user.service';
 
 
 @Component({
-  selector: 'app-raffle',
-  templateUrl: './raffle.component.html',
-  styleUrls: ['./raffle.component.css']
+    selector: 'app-raffle',
+    templateUrl: './raffle.component.html',
+    styleUrls: ['./raffle.component.css'],
+    standalone: false
 })
 export class RaffleComponent implements OnInit {
 forma_Raffle: FormGroup;

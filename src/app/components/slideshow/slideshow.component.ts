@@ -9,9 +9,10 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 // import { FontawesomeComponent } from '../fontawesome/fontawesome.component';
 
 @Component({
-  selector: 'app-slideshow',
-  templateUrl: './slideshow.component.html',
-  styleUrls: ['./slideshow.component.css']
+    selector: 'app-slideshow',
+    templateUrl: './slideshow.component.html',
+    styleUrls: ['./slideshow.component.css'],
+    standalone: false
 })
 export class SlideshowComponent implements OnInit, AfterViewInit {
  

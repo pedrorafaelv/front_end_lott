@@ -3,9 +3,10 @@ import { RaffleService } from '../../services/raffle.service';
 import { GetFichasResponse, Ficha, Raffle } from '../../interfaces/get-fichas-response';
 
 @Component({
-  selector: 'app-records',
-  templateUrl: './records.component.html',
-  styleUrls: ['./records.component.css']
+    selector: 'app-records',
+    templateUrl: './records.component.html',
+    styleUrls: ['./records.component.css'],
+    standalone: false
 })
 
 export class RecordsComponent implements OnInit {

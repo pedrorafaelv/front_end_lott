@@ -4,9 +4,10 @@ import { AuthService } from 'src/app/services/auth.service';
 import { ValidadoresService } from 'src/app/services/validadores.service';
 
 @Component({
-  selector: 'app-personal-data',
-  templateUrl: './personal-data.component.html',
-  styleUrls: ['./personal-data.component.css']
+    selector: 'app-personal-data',
+    templateUrl: './personal-data.component.html',
+    styleUrls: ['./personal-data.component.css'],
+    standalone: false
 })
 export class PersonalDataComponent implements OnInit {
 

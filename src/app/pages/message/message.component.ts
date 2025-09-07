@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-message',
-  templateUrl: './message.component.html',
-  styleUrls: ['./message.component.css']
+    selector: 'app-message',
+    templateUrl: './message.component.html',
+    styleUrls: ['./message.component.css'],
+    standalone: false
 })
 export class MessageComponent implements OnInit {
 

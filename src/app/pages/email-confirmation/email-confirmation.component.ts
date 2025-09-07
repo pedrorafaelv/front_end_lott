@@ -4,9 +4,10 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Router} from '@angular/router';
 
 @Component({
-  selector: 'app-email-confirmation',
-  templateUrl: './email-confirmation.component.html',
-  styleUrls: ['./email-confirmation.component.css']
+    selector: 'app-email-confirmation',
+    templateUrl: './email-confirmation.component.html',
+    styleUrls: ['./email-confirmation.component.css'],
+    standalone: false
 })
 export class EmailConfirmationComponent implements OnInit {
  forma:FormGroup;

@@ -7,9 +7,10 @@ import { ValidadoresService } from 'src/app/services/validadores.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-sing-up',
-  templateUrl: './sing-up.component.html',
-  styleUrls: ['./sing-up.component.css']
+    selector: 'app-sing-up',
+    templateUrl: './sing-up.component.html',
+    styleUrls: ['./sing-up.component.css'],
+    standalone: false
 })
 export class SingUpComponent implements OnInit {
 

@@ -4,9 +4,10 @@ import { map } from 'rxjs';
 import { Product } from '../../interfaces/product';
 
 @Component({
-  selector: 'app-total',
-  templateUrl: './total.component.html',
-  styleUrls: ['./total.component.css']
+    selector: 'app-total',
+    templateUrl: './total.component.html',
+    styleUrls: ['./total.component.css'],
+    standalone: false
 })
 export class TotalComponent implements OnInit {
 public Product: Product;

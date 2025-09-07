@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'recordImage'
+    name: 'recordImage',
+    standalone: false
 })
 export class RecordImagePipe implements PipeTransform {
   transform(imagen: string, nombreGrupo: string): string {

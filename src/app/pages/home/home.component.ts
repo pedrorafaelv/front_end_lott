@@ -5,9 +5,10 @@ import { Raffle } from '../../interfaces/get-fichas-response';
 import { RaffleService } from '../../services/raffle.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css'],
+    standalone: false
 })
 export class HomeComponent implements OnInit {
 

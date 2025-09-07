@@ -3,9 +3,10 @@ import { RaffleService } from '../../services/raffle.service';
 import { Raffle } from '../../interfaces/get-fichas-response';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.css'],
+    standalone: false
 })
 
 export class DashboardComponent implements OnInit {

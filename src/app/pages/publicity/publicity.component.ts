@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-publicity',
-  templateUrl: './publicity.component.html',
-  styleUrls: ['./publicity.component.css']
+    selector: 'app-publicity',
+    templateUrl: './publicity.component.html',
+    styleUrls: ['./publicity.component.css'],
+    standalone: false
 })
 export class PublicityComponent implements OnInit {
 
