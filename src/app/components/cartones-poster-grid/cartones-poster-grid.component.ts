@@ -11,6 +11,7 @@ import { UserService } from 'src/app/services/user.service';
 import { CartonesService } from 'src/app/services/cartones.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../interfaces/product';
+import { CarruselCartonesComponent } from '../carrusel-cartones/carrusel-cartones.component';
 
 @Component({
     selector: 'app-cartones-poster-grid',
@@ -22,16 +23,16 @@ export class CartonesPosterGridComponent implements OnInit {
 @Input() cartones:card[]=[];
 color: string = 'black';
 public grupos: Group[]= [];
-public profile: [];
-public localId : string;
-public UserId: any;
-public RaffleId: any;
+public profile: any[] = [];
+public localId : string = '';
+public UserId: any = null;
+public RaffleId: any = null;
 forma: FormGroup;
-public cartoness: any;
-public Raffle:any;
-public fichagroup ;
-public product: Product;
-public p: [];
+public cartoness: any = [];
+public Raffle:any = null;
+public fichagroup: any = null;
+public product: Product | null = null;
+public p: any[] = [];
   constructor(public RaffleService: RaffleService, 
     private GroupService: GroupService,
     private fb: FormBuilder,
@@ -58,8 +59,10 @@ public p: [];
         this.router.navigateByUrl('/home');
     }
   
-  let group_id = this.forma.get('grupo').value;
-  if (group_id ==""){
+  const grupoControl = this.forma.get('grupo');
+  const group_id = grupoControl?.value ?? '';
+
+  if (group_id === ''){
       Swal.fire({
         icon: 'error',
         title:'Error',
@@ -71,7 +74,7 @@ public p: [];
        console.log('card_id = ',card_id);      
       this.CartService.addNewProduct(this.UserId,this.RaffleId, card_id, 1);
        this.RaffleService.putCard(this.RaffleId, card_id, this.UserId)
-       .subscribe(resp =>{
+       .subscribe((resp: any) => {
           console.log('raffleServicePutCard',resp);
           Swal.fire({
             icon: 'success',
@@ -80,7 +83,7 @@ public p: [];
             confirmButtonText: 'Aceptar',
             confirmButtonColor: '#176585',
             });
-       }, error =>{
+       }, (error: any) => {
         Swal.fire({
           icon: 'error',
           title:'Error',
@@ -103,15 +106,21 @@ onChangeGrupo(){
   }, 1000); 
 }
 
-activeRaffleBYGroup(){
-   return new Promise ((resolve,reject)=>{
-    this.RaffleService.getActiveRafflesByGroup(this.forma.get('grupo').value)
-    .subscribe(resp=>{
-       resolve(resp);
-     },(error)=>{
-       reject(error);
-     });
-   })
+activeRaffleBYGroup(): Promise<any> {
+  const grupoControl = this.forma.get('grupo');
+  const groupId = grupoControl?.value ?? null;
+
+  if (!groupId) {
+    return Promise.reject(new Error('Debe seleccionar un grupo válido'));
+  }
+
+  return new Promise((resolve, reject) => {
+    this.RaffleService.getActiveRafflesByGroup(groupId)
+      .subscribe({
+        next: (resp) => resolve(resp),
+        error: (error) => reject(error)
+      });
+  });
 }
 async getRafflesBygroup(){
     this.Raffle = await this.activeRaffleBYGroup();
@@ -131,6 +140,7 @@ async getCardsAvailables(){
 
 async getInfo(){
     const user =  await this.UserService.getUserByLocalId(this.localId);
+    console.log('user =', user);
     this.UserId = user.user[0]['id'];
     const group = await this.UserService.getGroupByUser(this.UserId);
     this.grupos = group.Group;

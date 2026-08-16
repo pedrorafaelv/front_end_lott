@@ -1,0 +1,17 @@
+<div class="selected-card-item">
+  <div class="selected-card-mini">
+    @for (celda of carton.grid; track celda) {
+      <div class="mini-cell" [class.free]="celda.libre">
+        {{ celda.figura }}
+      </div>
+    }
+  </div>
+  <div class="selected-card-info">
+    <strong>{{ carton.nombre }}</strong>
+    @if (tieneComodin()) {
+      <span class="comodin-info">⭐ Comodín</span>
+    }
+    <div class="player-badge">👤 Tú</div>
+  </div>
+  <button class="remove-card" (click)="eliminarCarton()">✕</button>
+</div>

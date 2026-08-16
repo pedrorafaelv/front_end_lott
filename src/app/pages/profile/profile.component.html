@@ -1,1 +1,299 @@
-<p>profile works!</p>
+<div class="profile-container">
+  <div class="profile-layout">
+    <!-- Panel izquierdo para publicidad -->
+    <aside class="profile-sidebar left">
+      <app-publicity></app-publicity>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="profile-main">
+      <div class="profile-card">
+        <!-- Header del perfil -->
+        <div class="profile-header">
+          <div class="profile-cover">
+            <div class="cover-image"></div>
+            <div class="profile-avatar">
+              <!-- <img [src]="user.avatar || 'assets/default-avatar.png'" alt="Avatar" class="avatar-image"> -->
+              <!-- <button class="avatar-edit" (click)="changeAvatar()"> -->
+                <i class="fas fa-camera"></i>
+              <!-- </button> -->
+            </div>
+          </div>
+          
+          <!-- <div class="profile-info">
+            <h1 class="profile-name">{{ user.name }} {{ user.lastName }}</h1> -->
+            <!-- <p class="profile-username">@{{ user.username }}</p> -->
+             <!-- <div class="profile-stats">
+              <div class="stat-item">
+               <span class="stat-number">{{ user.stats?.gamesPlayed || 0 }}</span> 
+                <span class="stat-label">Juegos</span>
+              </div>
+              <div class="stat-item">
+                 <span class="stat-number">{{ user.stats?.wins || 0 }}</span>
+                <span class="stat-label">Victorias</span>
+              </div>
+              <div class="stat-item">
+                 <span class="stat-number">{{ user.stats?.prizesWon || 0 }}</span> 
+                <span class="stat-label">Premios</span>
+              </div>
+            </div>
+          </div>-->
+        </div>
+
+        <!-- Contenido del perfil -->
+        <div class="profile-content">
+          <!-- Menú de navegación -->
+          <nav class="profile-nav">
+            <!-- <button class="nav-item active" (click)="setActiveTab('info')"> -->
+              <i class="fas fa-user"></i> Información
+            <!-- </button> -->
+            <!-- <button class="nav-item" (click)="setActiveTab('stats')"> -->
+              <i class="fas fa-chart-bar"></i> Estadísticas
+            <!-- </button> -->
+            <!-- <button class="nav-item" (click)="setActiveTab('history')"> -->
+              <i class="fas fa-history"></i> Historial
+            <!-- </button> -->
+            <!-- <button class="nav-item" (click)="setActiveTab('settings')"> -->
+              <i class="fas fa-cog"></i> Configuración
+            <!-- </button> -->
+          </nav>
+
+          <!-- Sección de Información Personal -->
+          <!-- <div class="tab-content" [class.active]="activeTab === 'info'"> -->
+            <div class="tab-header">
+              <h2><i class="fas fa-user"></i> Información Personal</h2>
+              <!-- <button class="btn-edit" (click)="editProfile()"> -->
+                <i class="fas fa-edit"></i> Editar
+              <!-- </button> -->
+            </div>
+
+            <div class="info-grid">
+              <div class="info-group">
+                <label class="info-label">Nombre completo</label>
+                <!-- <p class="info-value">{{ user.name }} {{ user.lastName }}</p> -->
+              </div>
+
+              <div class="info-group">
+                <label class="info-label">Nombre de usuario</label>
+                <!-- <p class="info-value">@{{ user.username }}</p> -->
+              </div>
+
+              <div class="info-group">
+                <label class="info-label">Email</label>
+                <!-- <p class="info-value">{{ user.email }}</p> -->
+              </div>
+
+              <div class="info-group">
+                <label class="info-label">Teléfono</label>
+                <!-- <p class="info-value">{{ user.phone || 'No especificado' }}</p> -->
+              </div>
+
+              <div class="info-group">
+                <label class="info-label">Fecha de nacimiento</label>
+                <!-- <p class="info-value">{{ user.birthDate | date:'longDate' }}</p> -->
+              </div>
+
+              <div class="info-group">
+                <label class="info-label">Miembro desde</label>
+                <!-- <p class="info-value">{{ user.joinDate | date:'MMMM yyyy' }}</p> -->
+              </div>
+            </div>
+
+            <div class="badges-section">
+              <h3>Logros y Insignias</h3>
+              <div class="badges-grid">
+                <!-- <div class="badge-item" *ngFor="let badge of user.badges"> -->
+                  <!-- <div class="badge-icon" [style.background]="badge.color"> -->
+                    <!-- <i class="fas" [class]="badge.icon"></i> -->
+                  </div>
+                  <!-- <span class="badge-name">{{ badge.name }}</span> -->
+                </div>
+              </div>
+            </div>
+          <!-- </div> -->
+
+          <!-- Sección de Estadísticas -->
+          <!-- <div class="tab-content" [class.active]="activeTab === 'stats'"> -->
+            <div class="tab-header">
+              <h2><i class="fas fa-chart-bar"></i> Estadísticas de Juego</h2>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon win">
+                  <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-title">Porcentaje de victorias</span>
+                  <!-- <span class="stat-value">{{ (user.stats?.winRate || 0) * 100 }}%</span> -->
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon games">
+                  <i class="fas fa-dice"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-title">Juegos jugados</span>
+                  <!-- <span class="stat-value">{{ user.stats?.gamesPlayed || 0 }}</span> -->
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon prizes">
+                  <i class="fas fa-gift"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-title">Premios ganados</span>
+                  <!-- <span class="stat-value">${{ (user.stats?.totalPrize || 0) | number }}</span> -->
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon streak">
+                  <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-info">
+                  <span class="stat-title">Racha actual</span>
+                  <!-- <span class="stat-value">{{ user.stats?.currentStreak || 0 }} días</span> -->
+                </div>
+              </div>
+            </div>
+
+            <div class="charts-section">
+              <div class="chart-container">
+                <h3>Actividad mensual</h3>
+                <div class="chart-placeholder">
+                  <i class="fas fa-chart-line"></i>
+                  <p>Gráfico de actividad</p>
+                </div>
+              </div>
+
+              <div class="chart-container">
+                <h3>Distribución de juegos</h3>
+                <div class="chart-placeholder">
+                  <i class="fas fa-chart-pie"></i>
+                  <p>Gráfico de distribución</p>
+                </div>
+              </div>
+            </div>
+          <!-- </div> -->
+
+          <!-- Sección de Historial -->
+          <!-- <div class="tab-content" [class.active]="activeTab === 'history'"> -->
+            <div class="tab-header">
+              <h2><i class="fas fa-history"></i> Historial de Juegos</h2>
+            </div>
+
+            <div class="history-filters">
+              <!-- <select class="filter-select" [(ngModel)]="historyFilter"> -->
+                <option value="all">Todos los juegos</option>
+                <option value="wins">Solo victorias</option>
+                <option value="month">Este mes</option>
+              <!-- </select> -->
+            </div>
+
+            <div class="history-list">
+              <!-- <div class="history-item" *ngFor="let game of filteredHistory"> -->
+                <div class="game-icon">
+                  <!-- <i class="fas" [class.fa-trophy]="game.won" [class.fa-times]="!game.won"></i> -->
+                </div>
+                <div class="game-info">
+                  <!-- <h4>{{ game.name }}</h4> -->
+                  <!-- <p>{{ game.date | date:'medium' }}</p> -->
+                </div>
+                <div class="game-result">
+                  <!-- <span class="result-amount" [class.won]="game.won"> -->
+                    <!-- {{ game.won ? '+$' + game.prize : '-$' + game.bet }} -->
+                  <!-- </span> -->
+                </div>
+              </div>
+            <!-- </div> -->
+
+            <div class="load-more">
+              <button class="btn-load">Cargar más</button>
+            </div>
+          <!-- </div> -->
+
+          <!-- Sección de Configuración -->
+          <!-- <div class="tab-content" [class.active]="activeTab === 'settings'"> -->
+            <div class="tab-header">
+              <h2><i class="fas fa-cog"></i> Configuración de Cuenta</h2>
+            </div>
+
+            <div class="settings-grid">
+              <div class="setting-group">
+                <h3>Preferencias de notificaciones</h3>
+                <div class="setting-item">
+                  <label class="switch">
+                    <!-- <input type="checkbox" [(ngModel)]="user.settings.notifications"> -->
+                    <span class="slider"></span>
+                  </label>
+                  <span class="setting-label">Notificaciones por email</span>
+                </div>
+
+                <div class="setting-item">
+                  <label class="switch">
+                    <!-- <input type="checkbox" [(ngModel)]="user.settings.sounds"> -->
+                    <span class="slider"></span>
+                  </label>
+                  <span class="setting-label">Efectos de sonido</span>
+                </div>
+
+                <div class="setting-item">
+                  <label class="switch">
+                    <!-- <input type="checkbox" [(ngModel)]="user.settings.promotions"> -->
+                    <span class="slider"></span>
+                  </label>
+                  <span class="setting-label">Promociones especiales</span>
+                </div>
+              </div>
+
+              <div class="setting-group">
+                <h3>Privacidad</h3>
+                <div class="setting-item">
+                  <label class="switch">
+                    <!-- <input type="checkbox" [(ngModel)]="user.settings.profilePublic"> -->
+                    <span class="slider"></span>
+                  </label>
+                  <span class="setting-label">Perfil público</span>
+                </div>
+
+                <div class="setting-item">
+                  <label class="switch">
+                    <!-- <input type="checkbox" [(ngModel)]="user.settings.showEmail"> -->
+                    <span class="slider"></span>
+                  </label>
+                  <span class="setting-label">Mostrar email públicamente</span>
+                </div>
+              </div>
+
+              <div class="setting-group">
+                <h3>Seguridad</h3>
+                <!-- <button class="btn-security" (click)="changePassword()"> -->
+                  <i class="fas fa-key"></i> Cambiar contraseña
+                <!-- </button> -->
+                <!-- <button class="btn-security" (click)="enable2FA()"> -->
+                  <i class="fas fa-shield-alt"></i> Autenticación de dos factores
+                <!-- </button> -->
+              </div>
+
+              <div class="setting-group danger-zone">
+                <h3>Zona de peligro</h3>
+                <!-- <button class="btn-danger" (click)="deleteAccount()"> -->
+                  <i class="fas fa-trash"></i> Eliminar cuenta
+                <!-- </button> -->
+                <p class="danger-warning">Esta acción no se puede deshacer</p>
+              </div>
+            </div>
+          <!-- </div> -->
+        <!-- </div> -->
+      <!-- </div> -->
+    </main>
+
+    <!-- Panel derecho para publicidad -->
+    <aside class="profile-sidebar right">
+      <app-publicity></app-publicity>
+    </aside>
+  </div>
+</div>

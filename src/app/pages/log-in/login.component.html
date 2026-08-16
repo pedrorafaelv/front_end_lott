@@ -1,4 +1,4 @@
-<main class="form-signin w-100 m-auto">
+<!-- <main class="form-signin w-100 m-auto">
 
     <div class="row">
         <div class="col-md-4">
@@ -65,4 +65,76 @@
 
 <pre>
     
-    {{forma.value |json}}
+    {{forma.value |json}} -->
+
+
+
+<!-- <body> -->
+    <div class="login-container">
+        <div class="login-header">
+            <i class="bi bi-dice-5-fill lottery-icon"></i>
+            <h2>Loterías App</h2>
+            <p>Ingresa a tu cuenta para continuar</p>
+        </div>
+        
+        <div class="login-form">
+            <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo electrónico</label>
+                    <input 
+                        type="email" 
+                        class="form-control" 
+                        id="email" 
+                        placeholder="nombre@ejemplo.com"
+                        formControlName="correo"
+                        [class.is-invalid]="correoNoValido">
+                    <div class="invalid-feedback" *ngIf="correoNoValido">
+                        Por favor ingresa un correo válido
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="contrasena" class="form-label">Contraseña</label>
+                    <input 
+                        type="password" 
+                        class="form-control" 
+                        id="contrasena" 
+                        placeholder="Tu contraseña"
+                        formControlName="pass1"
+                        [class.is-invalid]="pass1NoValido">
+                    <div class="invalid-feedback" *ngIf="pass1NoValido">
+                        La contraseña es requerida
+                    </div>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input 
+                        type="checkbox" 
+                        class="form-check-input" 
+                        id="recordarme"
+                        [(ngModel)]="recordarme"
+                        [ngModelOptions]="{standalone: true}">
+                    <label class="form-check-label" for="recordarme">Recordar mi usuario</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary mb-3">Ingresar</button>
+                
+                <div class="form-links">
+                    <a routerLink="/sing-up">¿No tienes cuenta? Regístrate</a>
+                    <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
+                </div>
+            </form>
+            
+            <div class="divider">
+                <span>O intenta tu suerte</span>
+            </div>
+            
+            <div class="lottery-balls">
+                <div class="ball">15</div>
+                <div class="ball">22</div>
+                <div class="ball">37</div>
+                <div class="ball">41</div>
+                <div class="ball">58</div>
+            </div>
+        </div>
+    </div>

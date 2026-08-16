@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { GetFichasResponse, Ficha } from '../interfaces/get-fichas-response';
 import { Observable, map } from 'rxjs';
 import { GetCardsRaffleResponse } from '../interfaces/get-cards-raffle-response';
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,9 +11,9 @@ import { GetCardsRaffleResponse } from '../interfaces/get-cards-raffle-response'
 export class RaffleService {
   postId: any;
   record: any; 
-  fichas: Ficha[];
+  fichas: Ficha[] = [];
   ficha: any;
-  baseUrl = 'http://127.0.0.1:8000/api/Raffle/';
+  baseUrl = `${environment.apiUrl}raffle/`;
   constructor(private http: HttpClient) { 
   }
 
@@ -50,35 +51,36 @@ export class RaffleService {
    return this.http.post(`${this.baseUrl}putCard/${raffle}/${card_id}/${localId}`, {title:'put card post service'})
   }
 
-  getActiveRafflesByGroup(group_id){
+  getActiveRafflesByGroup(group_id: number){
     return this.http.get(`${this.baseUrl}getActiveRafflesByGroup/${group_id}`)
   }
 
-  async getActiveRafflesByGroupAs(group_id){
+  async getActiveRafflesByGroupAs(group_id:number){
     const respuesta = await fetch( (`${this.baseUrl}getActiveRafflesByGroup/${group_id}`))
     const datos = await respuesta.json();
     return datos;
   }
   
-  async getCardsRaffleByUserAs(raffle_id, user_id ){
+  async getCardsRaffleByUserAs(raffle_id: number, user_id: string){
    const resp = await fetch ((`${this.baseUrl}getCardsRaffleByUser/${raffle_id}/${user_id}`))
    const data = await resp.json();
    return data;
   }
 
-  async getActiveRafflesByUser(user_id){
+  async getActiveRafflesByUser(user_id: string ){
     const resp =  await fetch((`${this.baseUrl}getActiveRafflesByUser/${user_id}`))
     const data= await resp.json();
     return data;
   }
 
-  async getDetailActiveRafflesByUser(user_id){
+  async getDetailActiveRafflesByUser(user_id: number){
+    console.log('obteniendo detalle de rifas activas por usuario', user_id);
     const resp =  await fetch((`${this.baseUrl}getDetailActiveRafflesByUser/${user_id}`))
     const data= await resp.json();
     return data;
   }
 
-  async getFichasAs(raffle_id){
+  async getFichasAs(raffle_id: number){
    const resp = await fetch((`${this.baseUrl}getFichas/${raffle_id}`))
    const fichas = resp.json();
    return  fichas; 

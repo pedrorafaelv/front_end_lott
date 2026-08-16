@@ -13,7 +13,7 @@ import { CartService } from 'src/app/services/cart.service';
 export class CartComponent implements OnInit {
 
 public Cart: Product[]= [];
-public cantidad: number; 
+public cantidad: number = 0;
 public total_mount: number =0;
 facartarrowdown = faCartArrowDown;
 faMinus= faMinus;

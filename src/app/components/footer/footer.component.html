@@ -1,1 +1,106 @@
-<p>footer works!</p>
+<footer class="app-footer">
+  <div class="footer-content">
+    <!-- Sección principal del footer -->
+    <div class="footer-main">
+      <div class="footer-section">
+        <div class="footer-logo">
+          <i class="bi bi-dice-5"></i>
+          <span>Lotería App</span>
+        </div>
+        <p class="footer-description">
+          La mejor plataforma para disfrutar de juegos de lotería en línea. Juega responsablemente.
+        </p>
+        <div class="social-links">
+           <!-- <fa-icon [icon]="faSquareEnvelope"></fa-icon> Mensajes</a> -->
+          <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-twitter"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
+        </div>
+      </div>
+      
+      <!-- <div class="footer-section">
+        <h3>Enlaces rápidos</h3>
+        <ul class="footer-links">
+          <li><a routerLink="/inicio">Inicio</a></li>
+          <li><a routerLink="/juegos">Juegos</a></li>
+          <li><a routerLink="/resultados">Resultados</a></li>
+          <li><a routerLink="/premios">Premios</a></li>
+          <li><a routerLink="/terminos">Términos y condiciones</a></li>
+        </ul>
+      </div> -->
+      
+      <div class="footer-section">
+        <h3>Ayuda y soporte</h3>
+        <ul class="footer-links">
+          <li><a routerLink="/faq">Preguntas frecuentes</a></li>
+          <li><a routerLink="/como-jugar">Cómo jugar</a></li>
+          <li><a routerLink="/contacto">Contacto</a></li>
+          <li><a routerLink="/soporte">Soporte técnico</a></li>
+          <li><a routerLink="/juego-responsable">Juego responsable</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Información legal</h3>
+        <ul class="footer-links">
+          <li><a routerLink="/politica-privacidad">Política de privacidad</a></li>
+          <li><a routerLink="/terminos-condiciones">Términos y condiciones</a></li>
+          <li><a routerLink="/politica-cookies">Política de cookies</a></li>
+          <li><a routerLink="/licencias">Licencias</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Boletín informativo</h3>
+        <p>Suscríbete para recibir promociones y resultados</p>
+        <form class="newsletter-form">
+          <div class="input-group">
+            <input type="email" class="form-control" placeholder="Tu correo electrónico" aria-label="Email">
+            <button class="btn-newsletter" type="submit">
+              <i class="bi bi-send"></i>
+            </button>
+          </div>
+        </form>
+        <div class="payment-methods">
+          <h4>Métodos de pago</h4>
+          <div class="payment-icons">
+            <i class="bi bi-credit-card" title="Tarjetas de crédito"></i>
+            <i class="bi bi-paypal" title="PayPal"></i>
+            <i class="bi bi-bank" title="Transferencia bancaria"></i>
+            <i class="bi bi-wallet2" title="Billetera digital"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Línea separadora -->
+    <div class="footer-divider"></div>
+    
+    <!-- Sección inferior del footer -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <div class="copyright">
+          <p>&copy; {{ currentYear }} Lotería App. Todos los derechos reservados.</p>
+        </div>
+        <div class="legal-info">
+          <p>
+            <span class="age-restriction">+18</span> 
+            Juego permitido solo para mayores de edad. Juega responsablemente. 
+            <a routerLink="/juego-responsable" class="responsible-link">¿Problemas con el juego?</a>
+          </p>
+        </div>
+        <div class="security-badges">
+          <div class="badge">
+            <i class="bi bi-shield-check"></i>
+            <span>Sitio seguro</span>
+          </div>
+          <div class="badge">
+            <i class="bi bi-patch-check"></i>
+            <span>Verificado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

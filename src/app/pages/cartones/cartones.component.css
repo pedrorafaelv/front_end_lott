@@ -44,3 +44,166 @@
     margin-bottom: 1em;
     border-radius: 5%;
 }
+:root {
+  --primary-color: #3a7ebf;
+  --secondary-color: #f8f9fa;
+  --accent-color: #ff6b6b;
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --text-color: #333;
+  --light-text: #6c757d;
+}
+
+.carton-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px var(--shadow-color);
+  padding: 16px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.carton-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.carton-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.carton-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.carton-tooltip {
+  color: var(--light-text);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.carton-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.carton-cell {
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carton-item {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.carton-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+  z-index: 2;
+}
+
+.carton-item:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(58, 126, 191, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%);
+  pointer-events: none;
+}
+
+.carton-image {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.carton-footer {
+  text-align: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.carton-name {
+  font-size: 0.85rem;
+  color: var(--light-text);
+  font-style: italic;
+}
+
+/* Estado de casilla marcada (puedes añadir esta clase dinámicamente) */
+.carton-item.marked {
+  background-color: rgba(255, 107, 107, 0.1);
+  border-color: var(--accent-color);
+}
+
+.carton-item.marked::before {
+  content: '✓';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: var(--accent-color);
+  color: white;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .carton-card {
+    padding: 12px;
+    max-width: 280px;
+  }
+  
+  .carton-grid {
+    gap: 4px;
+  }
+  
+  .carton-title {
+    font-size: 1rem;
+  }
+}
+
+/* Animación para cuando se carga un nuevo cartón */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.carton-card {
+  animation: fadeIn 0.5s ease-out;
+}

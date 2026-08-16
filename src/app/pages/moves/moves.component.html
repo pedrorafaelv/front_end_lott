@@ -15,7 +15,7 @@
     <iframe src="right.html" style="width: 20%; border: none;"></iframe>
 </div> -->
 
-
+<!-- 
 <div class="container">
     <div class="left">
         <app-publicity></app-publicity>
@@ -45,13 +45,68 @@
                 <div class="col">
                     {{balance.date}}
                 </div>
-                <!-- </div> -->
-                <!-- <div class="tooltipp top">Posa el ratón encima de mi
-                <span class="tiptext">Texto del tooltip</span>
-                hola -->
+               
             </div>
         </div>
         <div class="bottom">bottom</div>
     </div>
     <div class="right">right</div>
+</div> -->
+<div class="wallet-container">
+    <div class="wallet-left">
+        <!-- <app-publicity></app-publicity> -->
+    </div>
+    
+    <div class="wallet-center">
+        <div class="wallet-header">
+            <h2>Mi Billetera</h2>
+            <p>Resumen de tus saldos y movimientos</p>
+        </div>
+        
+        <div class="wallet-balances">
+            <div class="balances-table">
+                <div class="table-header">
+                    <div class="table-col currency-col">Moneda</div>
+                    <div class="table-col balance-col">Balance</div>
+                    <div class="table-col date-col">Fecha de actualización</div>
+                </div>
+                
+                <div class="table-row" *ngFor="let item of balance">
+                    <div class="table-col currency-col">
+                        <span class="currency-code">{{item.currency_code}}</span>
+                        <span class="currency-tooltip">
+                            <!-- {{getCurrencyName(item.currency_code)}} -->
+                        </span>
+                    </div>
+                    <div class="table-col balance-col">
+                        <!-- {{formatBalance(item.balance)}} -->
+                    </div>
+                    <div class="table-col date-col">
+                        <!-- {{formatDate(item.date)}} -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="wallet-actions">
+            <button class="wallet-btn primary">Agregar fondos</button>
+            <button class="wallet-btn secondary">Retirar fondos</button>
+            <button class="wallet-btn outline">Ver historial</button>
+        </div>
+    </div>
+    
+    <div class="wallet-right">
+        <div class="wallet-sidebar">
+            <h3>Resumen total</h3>
+            <div class="total-balance">
+                <!-- {{calculateTotal()}} -->
+            </div>
+            <div class="quick-access">
+                <h4>Accesos rápidos</h4>
+                <button class="quick-btn">Enviar dinero</button>
+                <button class="quick-btn">Solicitar pago</button>
+                <button class="quick-btn">Convertir moneda</button>
+            </div>
+        </div>
+    </div>
 </div>

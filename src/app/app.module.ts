@@ -7,27 +7,38 @@ import { AppComponent } from './app.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SandboxComponent } from './sandbox/sandbox.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 // import { CartonnComponent } from './pages/cartonn/cartonn.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentsModule } from './components/components.module';
 import { PagesModule } from './pages/pages.module';
 import { NotImageDirective } from './directives/not-image.directive';
 import { UserPermissionsDirective } from './directives/user-permissions.directive';
+import { FooterComponent } from './components/footer/footer.component';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+
 
 
 @NgModule({ declarations: [
         AppComponent,
         SandboxComponent,
         UserPermissionsDirective,
-        ////NotImageDirective,
+        //NotImageDirective,
         // CartonnComponent,
         // CartonComponent,
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [AppComponent], 
+    imports: [BrowserModule,
         AppRoutingModule,
         DragDropModule,
         FontAwesomeModule,
         BrowserAnimationsModule,
         ComponentsModule,
-        PagesModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        PagesModule,
+        FooterComponent,     
+        SweetAlert2Module.forRoot()   
+    ],
+     
+    providers: [provideHttpClient(withInterceptorsFromDi())]
+})
 export class AppModule { }

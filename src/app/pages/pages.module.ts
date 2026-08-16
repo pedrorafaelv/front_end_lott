@@ -62,10 +62,10 @@ import { FontawesomeComponent } from '../components/fontawesome/fontawesome.comp
         ProfileComponent,
         MovesComponent,
         NotImageDirective,
-        MessageComponent,
         EmailConfirmationComponent,
         UsersComponent
     ], imports: [CommonModule,
+        MessageComponent,
         ComponentsModule,
         BrowserModule,
         FormsModule,

@@ -1,0 +1,455 @@
+:root {
+    /* Nueva paleta de colores */
+    --primary-color: #e94560;    /* Rojo vibrante */
+    --secondary-color: #0f3460;  /* Azul marino */
+    --accent-color: #f5c518;     /* Amarillo brillante */
+    --bg-color: #1a1a2e;         /* Azul profundo */
+    --text-color: #ffffff;       /* Blanco */
+    --text-muted: #ffffff;      /* Dorado */
+    --card-bg: rgba(255, 255, 255, 0.08);
+    --card-border: rgba(255, 255, 255, 0.12);
+    --shadow-color: rgba(233, 69, 96, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.dashboard-container {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 50%, #1a1a2e 100%);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    padding: 20px 0;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Efecto de fondo con partículas sutiles */
+.dashboard-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(233, 69, 96, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(245, 197, 24, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Cards - Estilo moderno con vidrio */
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(233, 69, 96, 0.05) 0%, 
+        rgba(245, 197, 24, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    border-color: var(--primary-color);
+}
+
+.card-img-container {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    background: var(--secondary-color);
+}
+
+.card-img-top {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.08);
+}
+
+/* Badge EN VIVO - Rojo vibrante con animación */
+.live-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--primary-color);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 30px rgba(233, 69, 96, 0.4);
+    animation: pulse 2s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.live-badge i {
+    font-size: 10px;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 20px rgba(233, 69, 96, 0.4);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(233, 69, 96, 0.8), 0 0 60px rgba(233, 69, 96, 0.2);
+        transform: scale(1.05);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(233, 69, 96, 0.4);
+        transform: scale(1);
+    }
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: var(--text-color);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    letter-spacing: 0.3px;
+}
+
+/* Contador de jugadores */
+.players-count {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    gap: 6px;
+    font-size: 0.85rem;
+}
+
+.players-count i {
+    color: var(--accent-color);
+}
+
+/* Textos de premios y valores */
+.text-warning {
+    color: var(--accent-color) !important;
+    font-weight: 600;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Botón Jugar Ahora - Rojo vibrante */
+.btn-play {
+    background: linear-gradient(135deg, var(--primary-color), #c62828);
+    border: none;
+    color: white;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-play::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-play:hover::before {
+    left: 100%;
+}
+
+.btn-play:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
+}
+
+.btn-play:active {
+    transform: scale(0.95);
+}
+
+/* Botón Notificarme - Secundario */
+.btn-outline-primary {
+    border: 2px solid var(--primary-color);
+    color: var(--text-color);
+    background: transparent;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+}
+
+/* Sección de estadísticas */
+.stats-bar {
+    background: rgba(15, 52, 96, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px 15px;
+    margin-bottom: 30px;
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-item {
+    text-align: center;
+    padding: 10px;
+    position: relative;
+}
+
+.stat-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    /* background: linear-gradient(135deg, var(--accent-color), #f5c518); */
+    /* -webkit-background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
+    background-clip: text;
+    margin-bottom: 5px;
+
+    /* text-shadow: 0 0 30px rgba(245, 197, 24, 0.2); */
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* Títulos de sección */
+.section-title {
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    color: var(--text-color);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+}
+
+/* Avatar de usuario */
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(233, 69, 96, 0.3);
+}
+
+.user-avatar:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 40px rgba(233, 69, 96, 0.5);
+}
+
+/* Header */
+.fw-bold {
+    color: var(--text-color);
+}
+
+.text-success {
+    color: var(--accent-color) !important;
+    font-weight: 700;
+}
+
+.h3 {
+    color: var(--text-color);
+}
+
+/* Texto de saldo */
+.text-end .fw-bold {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.text-end .text-success {
+    font-size: 1.2rem;
+}
+
+/* Ajustes para el texto "Valor por cartón" */
+.fw-bold.text-warning {
+    font-size: 1.1rem;
+}
+
+/* Espaciado para los sorteos próximos */
+.mb-3 .fw-bold {
+    color: var(--text-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 10px 0;
+    }
+    
+    .card-img-container {
+        height: 160px;
+    }
+    
+    .stat-item:not(:last-child)::after {
+        display: none;
+    }
+    
+    .stat-item {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 15px 0;
+    }
+    
+    .stat-item:last-child {
+        border-bottom: none;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        border-radius: 16px;
+    }
+    
+    .card-img-container {
+        height: 140px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn-play, .btn-outline-primary {
+        font-size: 0.8rem;
+        padding: 8px 16px;
+    }
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--secondary-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
+/* Animación de entrada para las tarjetas */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.raffle-card {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.raffle-card:nth-child(1) { animation-delay: 0.1s; }
+.raffle-card:nth-child(2) { animation-delay: 0.2s; }
+.raffle-card:nth-child(3) { animation-delay: 0.3s; }
+.raffle-card:nth-child(4) { animation-delay: 0.4s; }
+.raffle-card:nth-child(5) { animation-delay: 0.5s; }
+.raffle-card:nth-child(6) { animation-delay: 0.6s; }

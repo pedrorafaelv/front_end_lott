@@ -1,5 +1,4 @@
-<div class="juego-container">
-    <!-- <div class="top"> top</div> -->
+<!-- <div class="juego-container">
     <div class="left">
         <div class="publicidad">
 
@@ -49,4 +48,140 @@
         </div>
     </div>
     <div class="right">right</div>
+</div> -->
+
+<div class="juego-container">
+  <!-- Encabezado estilo lotería -->
+  <div class="loteria-header">
+    <div class="loteria-title">
+      <h1><span class="loteria-text">LOTERÍA</span></h1>
+      <div class="decorative-border"></div>
+    </div>
+    
+    <!-- Publicidad en header -->
+    <div class="header-publicidad">
+      <div class="publicidad-content">
+        <div class="ad-flag"><i class="fas fa-flag"></i></div>
+        <div class="ad-text">¡Sorteo especial este viernes! Premio mayor de $100,000</div>
+        <div class="ad-flag"><i class="fas fa-flag"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Panel izquierdo -->
+    <div class="left-panel">
+      <div class="panel-card">
+        <h3><fa-icon [icon]="faPeopleGroup"></fa-icon> Mis grupos</h3>
+        <form autocomplete="off" [formGroup]="forma">
+          <select formControlName="grupo" class="lotto-select" name="grupo" (change)=onChangeGrupo()>
+            <option [ngValue]="null" disabled>Selecciona un grupo...</option>
+            <option *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
+          </select>
+          <small *ngIf="grupoNoValido" class="error-text">Selecciona un grupo válido</small>
+        </form>
+        
+        <div class="user-links">
+          <a routerLink="/profile" class="lotto-link">
+            <i class="fas fa-user-edit"></i> Editar Perfil
+          </a>
+          <a routerLink="/account" class="lotto-link">
+            <i class="fas fa-wallet"></i> Mi cuenta
+          </a>
+        </div>
+      </div>
+
+      <!-- Publicidad en panel lateral -->
+      <div class="side-publicidad">
+        <app-publicity></app-publicity>
+      </div>
+    </div>
+
+    <!-- Panel central -->
+    <div class="center-panel">
+      <div class="game-card">
+        <div class="card-header">
+          <h2><i class="fas fa-ticket-alt"></i> Fichas Jugadas</h2>
+          <button type="button" (click)=getNewRecord() class="lotto-button primary">
+            <i class="fas fa-plus"></i> Nueva Ficha
+          </button>
+        </div>
+        
+        <app-records [Fichas]="fichas" [Raffle]="raffle" [fichaGroup]="fichaGroupName"></app-records>
+        
+        <div class="fichas-container">
+          <cdk-virtual-scroll-viewport itemSize="70" class="viewport">
+            <div *cdkVirtualFor="let item of fichas" class="ficha-item">
+              <img [src]="item.image | imagen:color" class="ficha-img" appNotImage>
+            </div>
+          </cdk-virtual-scroll-viewport>
+        </div>
+      </div>
+
+      <!-- Publicidad entre secciones -->
+      
+
+      <div class="game-card">
+        <div class="card-header">
+          <h2><i class="fas fa-grid"></i> Mis Cartones</h2>
+          <button class="lotto-button success">
+            <i class="fas fa-trophy"></i> ¡Gané!
+          </button>
+        </div>
+        
+        <div class="cartones-container">
+            <cdk-virtual-scroll-viewport itemSize="70" class="viewport">
+                <div *ngFor="let carton of cartones" class="carton-item">
+                    <app-cartones [carton]="carton"></app-cartones>
+                </div>
+            </cdk-virtual-scroll-viewport>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel derecho -->
+    <div class="right-panel">
+      <div class="panel-card">
+        <h3><i class="fas fa-info-circle"></i> Información del Sorteo</h3>
+        <div class="sorteo-info">
+          <div class="info-item">
+            <span class="label">Sorteo actual:</span>
+            <span class="value">{{raffle?.name || 'No disponible'}}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Premio mayor:</span>
+            <span class="value">$50,000 MXN</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Tiempo restante:</span>
+            <span class="value">02:45:12</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="panel-card">
+        <h3><i class="fas fa-chart-line"></i> Mis Estadísticas</h3>
+        <div class="stats-container">
+          <div class="stat">
+            <div class="stat-value">{{fichas?.length || 0}}</div>
+            <div class="stat-label">Fichas jugadas</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">{{cartones?.length || 0}}</div>
+            <div class="stat-label">Cartones activos</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">$350</div>
+            <div class="stat-label">Invertido</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Publicidad en panel derecho -->
+      <div class="side-publicidad">
+        <app-publicity></app-publicity>
+      </div>
+    </div>
+  </div>
+
 </div>

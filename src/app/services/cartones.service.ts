@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { card, CardResponse } from '../interfaces/card-response';
 import { map, tap } from 'rxjs/operators';
 import { compileNgModule } from '@angular/compiler';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +14,14 @@ export class CartonesService {
   private cardPage=1;
   private  raffle_id: string ;
   public cargando:boolean = false;
-  private baseUrl = "http://127.0.0.1:8000/api";
+  public baseUrl = `${environment.apiUrl}`;
+
+  // private baseUrl = "http://127.0.0.1:8000/api";
   constructor(private http: HttpClient ) {
 
    }
   getCartones ():Observable<CardResponse>{
-      return this.http.get<CardResponse>(`${this.baseUrl}/Card`);
+      return this.http.get<CardResponse>(`${this.baseUrl}card`);
       // .pipe( map( (resp)=>resp.card)
       
         // tap(()=>{

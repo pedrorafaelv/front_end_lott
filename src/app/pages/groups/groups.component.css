@@ -1,0 +1,144 @@
+/* Estilos para el componente de Grupo */
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #3f51b5;
+}
+
+.header i {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+
+.header h2 {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.header p {
+  color: #6c757d;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+.admin-header {
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.form-control {
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ced4da;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #3f51b5;
+  box-shadow: 0 0 0 0.2rem rgba(63, 81, 181, 0.25);
+}
+
+.radio-group {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.form-check-input {
+  margin-top: 0;
+}
+
+.form-check-input:checked {
+  background-color: #3f51b5;
+  border-color: #3f51b5;
+}
+
+.btn-primary {
+  background-color: #3f51b5;
+  border-color: #3f51b5;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s;
+  border-radius: 0.375rem;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #303f9f;
+  border-color: #303f9f;
+  transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+  background-color: #9fa8da;
+  border-color: #9fa8da;
+  cursor: not-allowed;
+}
+
+.debug-info {
+  background-color: #f8f9fa;
+  border-left: 4px solid #3f51b5;
+  padding: 15px;
+  margin-top: 30px;
+  border-radius: 0 5px 5px 0;
+}
+
+.debug-info h5 {
+  color: #3f51b5;
+  margin-bottom: 15px;
+}
+
+.debug-info pre {
+  background-color: #e9ecef;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .radio-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .form-group.row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .form-group.row .col-3 {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  .form-group.row .col-9 {
+    width: 100%;
+  }
+}

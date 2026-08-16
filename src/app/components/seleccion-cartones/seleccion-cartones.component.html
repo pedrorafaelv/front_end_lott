@@ -1,0 +1,42 @@
+<div class="seleccion-container">
+  <h1>🎨 <span>Lotería</span> de Figuras</h1>
+  <p class="subtitle">
+    Selecciona tus cartones · 
+    <span class="counter">{{ seleccionados.length }}</span> elegidos
+    <span class="max-cartones">(Máximo 6)</span>
+  </p>
+
+  <div class="demo-controls">
+    <button class="demo-btn" (click)="simularOtroJugador()">
+      🎭 Simular selección de otro jugador
+    </button>
+  </div>
+
+  <app-carrusel-cartones
+    [cartones]="cartones"
+    [seleccionados]="seleccionados"
+    [jugadorId]="jugadorId"
+    (seleccionar)="onSeleccionarCarton($event)">
+  </app-carrusel-cartones>
+
+  <div class="selected-area">
+    <div class="selected-header">
+      <span>📋 Mis cartones</span>
+      <span class="selected-count">{{ seleccionados.length }}</span>
+    </div>
+    <div class="selected-cards">
+      @if (seleccionados.length > 0) {
+        @for (id of seleccionados; track id) {
+          <app-carton-seleccionado
+            [carton]="getCartonById(id)"
+            (eliminar)="onEliminarSeleccionado($event)">
+          </app-carton-seleccionado>
+        }
+      } @else {
+        <div class="empty-selected">
+          Todavía no has seleccionado ningún cartón
+        </div>
+      }
+    </div>
+  </div>
+</div>

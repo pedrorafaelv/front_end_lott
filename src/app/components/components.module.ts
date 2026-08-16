@@ -12,6 +12,8 @@ import { FormsModule, ReactiveFormsModule  } from "@angular/forms";
 import { FooterComponent } from './footer/footer.component';
 import { CartComponent } from './cart/cart.component';
 import { TotalComponent } from './total/total.component';
+import { SeleccionCartonesComponent } from './seleccion-cartones/seleccion-cartones.component';
+import { CarruselCartonesComponent } from "./carrusel-cartones/carrusel-cartones.component";
 
 @NgModule({
   declarations: [
@@ -19,7 +21,7 @@ import { TotalComponent } from './total/total.component';
     SlideshowComponent,
     FontawesomeComponent,
     CartonesPosterGridComponent,
-    FooterComponent,
+    // FooterComponent,
     CartComponent,
     TotalComponent,
   ],
@@ -28,7 +30,8 @@ import { TotalComponent } from './total/total.component';
      SlideshowComponent,
      FontawesomeComponent,
      CartonesPosterGridComponent,
-     FooterComponent
+    
+     //  FooterComponent
    ],
 
   imports: [
@@ -37,7 +40,9 @@ import { TotalComponent } from './total/total.component';
     FontAwesomeModule,
     BrowserModule,
     PipesModule,
-    FormsModule, ReactiveFormsModule
-  ]
+    FormsModule,
+    ReactiveFormsModule,
+    CarruselCartonesComponent
+]
 })
 export class ComponentsModule { }

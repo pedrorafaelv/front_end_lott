@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { switchMap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { ValidadoresService } from '../../services/validadores.service';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { Permissions } from '../../interfaces/get-user-permissions-response';
 import { GroupService } from '../../services/group.service';
+import { Group } from '../../interfaces/get-groups-response';
+
 import Swal from "sweetalert2";
 
 @Component({
@@ -15,17 +19,21 @@ import Swal from "sweetalert2";
     standalone: false
 })
 export class GroupsComponent implements OnInit {
+   groupData: Group;
+  loading = false;
+  errorMessage = '';
+  successMessage = '';
 
   forma!: FormGroup;
   date = new Date();
   events: string[] = [];
   listaPublicPrivate = [
-    {id: 0, name: 'Publico' },
-    {id: 1, name: 'Privado' }
+    {id: "0", name: 'Publico' },
+    {id: "1", name: 'Privado' }
   ];
   ListaYesNo= [
-    {id: 0, name: 'NO' },
-    {id: 1, name: 'SI' }
+    {id: "0", name: 'NO' },
+    {id: "1", name: 'SI' }
   ];
    public userId: string;
    public localId: string;
@@ -48,10 +56,10 @@ export class GroupsComponent implements OnInit {
 
    crearFormulario(){
    this.forma=this.fb.group({
-     nombre     : ['', [Validators.required] ],
+     name     : ['', [Validators.required] ],
      description: ['', ,  this.validadores.existeUsuario],
-     active     : ['', [Validators.required] ],
-     privacy    : ['', [Validators.required] ],
+     active     : ['1', [Validators.required] ],
+     privacy    : ['1', [Validators.required] ],
      start_date : [],
      end_date   : [],
      created_at : [this.date],
@@ -61,7 +69,6 @@ export class GroupsComponent implements OnInit {
 
    crearListeners(){
     this.forma.valueChanges.subscribe((valor: any) => {
-
       console.log(valor);
     })
    }
@@ -71,7 +78,7 @@ export class GroupsComponent implements OnInit {
         name: "",
         description: "",
         active:'1',
-        privacy: 1,
+        privacy: '1',
         start_date: this.date,
         end_date: this.date,
         created_at: this.date,
@@ -81,30 +88,37 @@ export class GroupsComponent implements OnInit {
    }
 
   ngOnInit(): void {
-     console.log('Permissions en pagina de creacion de grupos =', Permissions);
+    //  console.log('Permissions en pagina de creacion de grupos =', this.localId);
+
     this.localId = this.AuthService.getLocalId();
     if (this.localId){
     this.getInfo();
+
     } 
   }
-  async  getInfo(){
-    // const user =  await this.UserService.getUserByLocalId(this.localId);
-    const user = await this.UserService.getByLocalId(this.localId);
-    user.subscribe(resp=>{
-        this.usuario = resp;
-        this.userId = this.usuario.user[0]['id'];
-        console.log('usuario', this.usuario.user[0]['id']);
-     },
-     error=>{
-         console.log(error);
-     });
-    // console.log('user en groups.component = ',user);
-    // this.userId = user.user[0]['id'];
-    // const group = await this.UserService.getGroupByUser(this.UserId);
-    // this.grupos = group.Group;
-  }
-  get nombreNoValido(){
-    return this.forma.get('nombre')!.invalid && this.forma.get('nombre')!.touched
+  async getInfo(){
+          //  console.log('ngOniInit?groups ', this.localId);
+
+  const user = await this.UserService.getByLocalId(this.localId);
+  user.subscribe(
+    resp => {
+      this.usuario = resp;
+      this.userId = this.usuario.user[0]['id'];
+      // console.log('Usuario ID:', this.userId);
+      
+      // Actualiza los campos del formulario con el user_id
+      this.forma.patchValue({
+        user_id: this.userId,
+        user_admin: this.userId
+      });
+    },
+    error => {
+      console.log(error);
+    }
+  );
+}
+  get nameNoValido(){
+    return this.forma.get('name')!.invalid && this.forma.get('name')!.touched
   }
 
   get adminNoValido(){
@@ -132,39 +146,50 @@ export class GroupsComponent implements OnInit {
   }
 
   
-  guardar(){
-//  this.userId 
-    if (this.forma.invalid ){
-      Object.values(this.forma.controls).forEach (control =>{
+guardar(){
+  if (this.forma.invalid){
+    this.getInfo();
+    Object.values(this.forma.controls).forEach(control => {
+      if (control instanceof FormGroup){
+        Object.values(control.controls).forEach(ctrl => ctrl.markAsTouched());
+      } else {
+        control.markAsTouched();
+      }
+    });
+    return; // Importante: salir si el formulario es inválido
+  }
 
-        if (control instanceof FormGroup){
+  // Prepara los datos con TODOS los campos requeridos
+  const groupData = {
+    ...this.forma.value,
+    user_id: this.userId, // Asegúrate de que esto tenga valor
+    user_admin: this.userId, // Normalmente el admin es el mismo user_id
+    name: this.forma.get('name')?.value, // Usa 'name' no 'nombre'
+    active: this.forma.get('active')?.value === '1', // Convertir a boolean si es necesario
+    privacy: this.forma.get('privacy')?.value
+  };
 
-          Object.values(control.controls).forEach(control => control.markAsTouched());
-        }else {
-          
-          control.markAsTouched();
-        }
-      });
-    }
-    const ruta = this.userId +'/'+ this.userId+'/'+this.forma.get('nombre')?.value +'/'+this.forma.get('description')?.value 
-    +'/'+this.forma.get('active')?.value +'/'+this.forma.get('privacy')?.value +'/'+this.forma.get('start_date')?.value 
-    +'/'+this.forma.get('end_date')?.value;
-     this.forma.reset();
-   this.GroupService.newGroup(this.forma.value).subscribe(resp=>{
-    Swal.close();
+  // console.log('Datos que se enviarán:', groupData); // Verifica en consola
+
+  this.GroupService.newGroup(groupData).subscribe(
+    resp => {
+      Swal.close();
       Swal.fire({
         allowOutsideClick: false,
         icon: 'success',
         text: resp['message'],  
       });
-   },(err)=>{            
-    Swal.fire({
+      this.forma.reset(); // Reset después del éxito
+    },
+    (err) => {            
+      Swal.fire({
         allowOutsideClick: false,
         icon: 'error',
         text: err.error.message,
       });
-  })
-  }
+    }
+  );
+}
 
  
 }

@@ -16,27 +16,27 @@ import Swal from 'sweetalert2';
 })
 export class JuegoComponent implements OnInit {
  fichas: Ficha[]=[];
- raffle:Raffle;
+ raffle!: Raffle;
  grupos: Group[]=[];
- fichaGroupName: string;
+ fichaGroupName: string = '';
  forma: FormGroup;
- localId: string;
- userId: string;
+ localId: string = '';
+ userId: string= '';
  raffleId: any;
  cartones: any; 
  lastRecord: any;
  activeRaffles: any ;
  faUsersRectangle= faUsersRectangle;
  faPeopleGroup = faPeopleGroup;
- existe: number;
+ existe: number = -1;
  lineWinner: any;
  fullWinner: any; 
  public color: string = 'black';
-@ViewChild('scroll') scroll: ElementRef;
+@ViewChild('scroll') scroll!: ElementRef;
   constructor(private RaffleService: RaffleService,
               private AuthService: AuthService,
               private UserService: UserService,
-              private GroupService: GroupService,
+              // private GroupService: GroupService,
               private fb : FormBuilder) { 
               this.forma = this.fb.group({
                   grupo: ['', [Validators.required]],
@@ -78,7 +78,7 @@ export class JuegoComponent implements OnInit {
   }
 
   async getRafflesBygroup(){
-    const respuesta = await this.RaffleService.getActiveRafflesByGroupAs(this.forma.get('grupo').value);
+    const respuesta = await this.RaffleService.getActiveRafflesByGroupAs(this.forma.get('grupo')?.value);
     this.raffleId = respuesta['raffles'][0]['id'];
   }
 
@@ -117,7 +117,7 @@ async getNextRecord(){
     this.existe = -1;
     const nf= await this.getNextRecord();
     const fs= await this.getFichas();
-    this.cartones.forEach(async (carton)=>{
+    this.cartones.forEach(async (carton: any)=>{
            this.existe = carton.desc_combTotal.indexOf(this.lastRecord.image);
            this.scroll.nativeElement.scrollTop= this.scroll.nativeElement.scrollHeight;
            if (this.existe != -1){

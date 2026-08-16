@@ -13,7 +13,7 @@ import { RaffleService } from '../../services/raffle.service';
 export class HomeComponent implements OnInit {
 
   public cartones:card[] =[];
-  public Raffle: Raffle; 
+  public Raffle!: Raffle;
   constructor(private CartonesService: CartonesService, 
               private RaffleService: RaffleService){  
  }
@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
       
     })
   }
-  putCard(card_id ): void{
+  putCard(card_id: string | number): void{
     console.log('putcard home_component', card_id);
  }
 

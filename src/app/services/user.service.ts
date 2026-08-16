@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { GetGroupsResponse } from '../interfaces/get-groups-response';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl= 'http://127.0.0.1:8000/api/User/';
+  private baseUrl= `${environment.apiUrl}user/`;
   userToken: any;
   email: string;
   localStorage: Storage;
@@ -18,7 +20,7 @@ export class UserService {
       `${ this.baseUrl }getUserByFirebase/${localId}`
     );
 }
-j
+
 updateDataFirebase(localId: string, token: string, last_connection: string){
   return this.http.post<any>(`${this.baseUrl}updateDataFirebase/${localId}/${token}/${last_connection}`, { title: 'Angular POST Request ' });
 }

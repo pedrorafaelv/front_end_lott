@@ -17,10 +17,19 @@ import { UserService } from '../../services/user.service';
     styleUrls: ['./raffle.component.css'],
     standalone: false
 })
+
+
 export class RaffleComponent implements OnInit {
 forma_Raffle: FormGroup;
 mensaje: string;
 icono: string;
+  showDebugInfo: boolean = false;
+
+  // Agrega este método
+  toggleDebugInfo(): void {
+    this.showDebugInfo = !this.showDebugInfo;
+  }
+
 ListaYesNo= [
     {id: 0, name: 'NO' },
     {id: 1, name: 'SI' }

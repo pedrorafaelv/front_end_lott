@@ -30,7 +30,8 @@
                             "src/assets"
                         ],
                         "styles": [
-                            "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+                            "node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+                            "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
                             "src/styles.css"
                         ],
                         "scripts": [],
@@ -59,7 +60,13 @@
                           "optimization": false,
                             "extractLicenses": false,
                             "sourceMap": true,
-                            "namedChunks": true
+                            "namedChunks": true,
+                            "fileReplacements": [
+                              {
+                                "replace": "src/environments/environment.ts",
+                                "with": "src/environments/environment.development.ts"
+                              }
+                            ]
                         }
                     },
                     "defaultConfiguration": "production"
@@ -109,7 +116,6 @@
             }
         }
     },
-    "defaultProject": "lottery-app",
     "cli": {
       "analytics": "eca0546e-8aa3-40ab-a479-269bef62a338"
     }

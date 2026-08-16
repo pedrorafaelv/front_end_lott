@@ -1,10 +1,10 @@
-<div class="container">
+<!-- <div class="container">
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6">
             <p>Grupo</p>
 
-            <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()">
+            <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()"> -->
                 <!-- <div class="form-group row">
                     <label class="col-2 col-form-label">Administrador Grupo</label>
                     <div class="col">
@@ -12,7 +12,7 @@
                         <small *ngIf="adminNoValido" class="text-danger">Ingrese 5 letras </small>
                     </div>
                 </div> -->
-                <div class="form-group row">
+                <!-- <div class="form-group row">
                     <label class="col-2 col-form-label">Nombre</label>
                     <div class="col">
                         <input class="form-control" type="text" placeholder="Nombre" formControlName="nombre" [class.is-invalid]="nombreNoValido">
@@ -58,7 +58,7 @@
                     <label class="col-2 col-form-label">Start Date</label>
                     <div class="col">
                         <input class="form-control" type="date" placeholder="Fecha Fin" formControlName="start_date" [class.is-invalid]="startDateNoValido">
-                        <small *ngIf="startDateNoValido" class="text-danger">Fecha Inicio no valida </small>
+                        <small *ngIf="startDateNoValido" class="text-danger">Fecha Inicio no valida </small> -->
                         <!-- <mat-form-field appearance="fill">
                 <mat-label>Input & change events</mat-label>
                 <input matInput [matDatepicker]="start_date" fromControlName="start_date" (dateInput)="addEvent('input', $event)" (dateChange)="addEvent('change', $event)">
@@ -66,7 +66,7 @@
             <mat-datepicker-toggle matSuffix [for]="start_date"></mat-datepicker-toggle>
             <mat-datepicker #start_date></mat-datepicker>
         </mat-form-field> -->
-                    </div>
+                    <!-- </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-2 col-form-label">End Date</label>
@@ -98,4 +98,108 @@ Status: {{forma.status}}
 <pre>
 
 {{forma.value |json}}
-</pre>
+</pre> -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+      <div class="admin-header">
+        <i class="bi bi-people-fill"></i>
+        <h2>Gestión de Grupo</h2>
+        <p class="text-muted">Crear o editar información del grupo</p>
+      </div>
+
+      <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()" class="needs-validation" novalidate>
+        <div class="form-group row">
+          <label class="col-3 col-form-label">Nombre</label>
+          <div class="col-9">
+            <input class="form-control" type="text" placeholder="Nombre del grupo" formControlName="name" [class.is-invalid]="nameNoValido">
+            <small *ngIf="nameNoValido" class="text-danger">El nombre debe tener al menos 5 caracteres</small>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label class="col-3 col-form-label">Descripción</label>
+          <div class="col-9">
+            <textarea class="form-control" placeholder="Descripción del grupo" formControlName="description" rows="3" [class.is-invalid]="descriptionNoValido"></textarea>
+            <small *ngIf="descriptionNoValido" class="text-danger">Por favor ingrese una descripción válida</small>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label class="col-3 col-form-label">Activo</label>
+          <div class="col-9">
+            <div class="radio-group">
+              <div class="radio-option" *ngFor="let option of ListaYesNo">
+                <input type="radio" class="form-check-input" formControlName="active" [value]="option.id" [id]="'active'+option.id">
+                <label class="form-check-label" [for]="'active'+option.id">
+                  {{ option.name }}
+                </label>
+              </div>
+            </div>
+            <small *ngIf="activeNoValido" class="text-danger">Seleccione una opción</small>
+          </div>
+        <!-- </div>
+        
+        <div class="form-group row"> -->
+          <label class="col-3 col-form-label">Privacidad</label>
+          <div class="col-9">
+            <div class="radio-group">
+              <div class="radio-option" *ngFor="let option of listaPublicPrivate">
+                <input type="radio" class="form-check-input" formControlName="privacy" [value]="option.id" [id]="'privacy'+option.id">
+                <label class="form-check-label" [for]="'privacy'+option.id">
+                  {{ option.name }}
+                </label>
+              </div>
+            </div>
+            <small *ngIf="privacyNoValido" class="text-danger">Seleccione una opción</small>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label class="col-3 col-form-label">Fecha Inicio</label>
+          <div class="col-9">
+            <input class="form-control" type="date" formControlName="start_date" [class.is-invalid]="startDateNoValido">
+            <small *ngIf="startDateNoValido" class="text-danger">Fecha de inicio no válida</small>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <label class="col-3 col-form-label">Fecha Fin</label>
+          <div class="col-9">
+            <input class="form-control" type="date" formControlName="end_date" [class.is-invalid]="endDateNoValido">
+            <small *ngIf="endDateNoValido" class="text-danger">Fecha de fin no válida</small>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <div class="col-3"></div>
+          <div class="col-9">
+            <button type="submit" class="btn btn-primary" [disabled]="!forma.valid">
+              <i class="bi bi-check-circle"></i> Guardar
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="debug-info">
+        <h5>Estado del formulario</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Válido:</strong> <span [class.text-success]="forma.valid" [class.text-danger]="!forma.valid">{{ forma.valid ? 'Sí' : 'No' }}</span></p>
+            <p><strong>Estado:</strong> {{ forma.status }}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Enviado:</strong> No</p>
+            <p><strong>Modificado:</strong> No</p>
+          </div>
+        </div>
+        
+        <h5>Valores del Formulario</h5>
+        <pre>{{ forma.value | json }}</pre>
+      </div>
+    </div>
+    <div class="col-md-3"></div>
+  </div>
+</div>

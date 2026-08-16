@@ -1,4 +1,4 @@
-<div class="raffle-container">
+<!-- <div class="raffle-container">
     <section class="left">
         <app-publicity></app-publicity>
     </section>
@@ -7,7 +7,7 @@
             <h2 class="badge bg-primary">Nuevo Sorteo</h2>
         </section>
         <section class="main">
-            <!-- <h1>main</h1> -->
+             <h1>main</h1> 
             <form autocomplete="off" [formGroup]="forma_Raffle" (ngSubmit)="guardar()" class="form-floating">
                 <section class="formulario">
                     <div class="lineas">
@@ -278,28 +278,26 @@
                                 <small *ngIf="endHourNoValido" class="text-danger">Hora final no valida </small>
                             </div>
                         </div>
-                    </div> -->
-                    <!-- <div class="lineas"> -->
+                    </div> 
                     <div class="lineas">
-                        <!-- <div class="form-group input-group">
+                        < <div class="form-group input-group">
                             <span class="input-group-text">Fichas para el juego</span>
                             <div class="col-2 form-floating">
                                 <input class="form-control" type="text" id="groupficha" placeholder="Fichas" formControlName="grupoficha" value="[(grupoficha)]">
                                 <label for="grupoficha" class="form-floating">Fichas </label>
                                 <small *ngIf="grupofichasNoValido" class="text-danger">Debe seleccionar un grupo de fichas</small>
                             </div>
-                        </div> -->
+                        </div> 
                         <div *ngIf="grupofichas.GrupoInifichas">
                             <div *ngFor="let gf of grupofichas.GrupoInifichas" class="card">
                                 <img [src]="gf.ficha_image | recordImage:gf.groupfichas_name" class="card-img-top imag animate__fadeIn" (click)="AddGrupofichas(gf.groupfichas_id)" appNotImage>
-                                <!-- <div class="card-body">
+                                 <div class="card-body">
                                     <h6>selecciona :{{gf.groupfichas_description}}</h6>
                                     <p class="card-text">{{gf.description}}</p>
-                                </div> -->
+                                </div> 
                             </div>
                         </div>
                     </div>
-                    <!-- </div> -->
                 </section>
                 <section class="bottom">
                     <div class="lineas">
@@ -328,4 +326,440 @@
     <pre>
                 {{forma_Raffle.value | json }}
             </pre>
+</div> -->
+
+<div class="raffle-container">
+  <div class="raffle-layout">
+    <!-- Panel izquierdo para publicidad -->
+    <aside class="raffle-sidebar left">
+      <app-publicity></app-publicity>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="raffle-main">
+      <div class="raffle-card">
+        <!-- Header con progreso -->
+        <div class="admin-header">
+          <div class="header-content">
+            <h1><i class="fas fa-ticket-alt"></i> Crear Nuevo Sorteo</h1>
+            <p>Complete todos los campos para configurar su sorteo</p>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar">
+              <!-- <div class="progress-fill" [style.width]="progress + '%'"></div> -->
+            </div>
+            <!-- <span class="progress-text">{{progress}}% completado</span> -->
+          </div>
+        </div>
+
+        <form autocomplete="off" [formGroup]="forma_Raffle" (ngSubmit)="guardar()" class="raffle-form">
+          <!-- Sección de información básica -->
+          <div class="form-section">
+            <div class="section-header">
+              <div class="section-number">1</div>
+              <div>
+                <h3><i class="fas fa-info-circle"></i> Información Básica</h3>
+                <p>Datos principales del sorteo</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="nombre" class="form-label">Nombre del Sorteo <span class="required">*</span></label>
+                <input type="text" id="nombre" class="form-control" placeholder="Ingrese un nombre atractivo para el sorteo"
+                  formControlName="nombre" [class.is-invalid]="nombreNoValido">
+                <div class="form-hint">Ej: Gran Sorteo Navideño 2023</div>
+                <div *ngIf="nombreNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> El nombre debe tener al menos 5 caracteres
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="description" class="form-label">Descripción <span class="required">*</span></label>
+                <textarea id="description" class="form-control" rows="3" 
+                  placeholder="Describa los detalles y atractivos del sorteo"
+                  formControlName="description" [class.is-invalid]="descriptionNoValido"></textarea>
+                <div class="form-hint">Esta descripción será visible para los participantes</div>
+                <div *ngIf="descriptionNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> La descripción debe tener al menos 10 caracteres
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="grupo" class="form-label">Grupo <span class="required">*</span></label>
+                <div class="select-wrapper">
+                  <select id="grupo" class="form-select" formControlName="grupo" [class.is-invalid]="grupoNoValido">
+                    <option value="" disabled selected>Seleccione un grupo</option>
+                    <option *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
+                  </select>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div *ngIf="grupoNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Seleccione un grupo válido
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección de montos y jugadas -->
+          <div class="form-section">
+            <div class="section-header">
+              <div class="section-number">2</div>
+              <div>
+                <h3><i class="fas fa-money-bill-wave"></i> Configuración Financiera</h3>
+                <p>Configure los montos y límites del sorteo</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="montototal" class="form-label">Monto Total ($) <span class="required">*</span></label>
+                <div class="input-with-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                  <input type="number" id="montototal" class="form-control" placeholder="0.00" step="0.01"
+                    formControlName="total_amount" [class.is-invalid]="totalAmountNoValido">
+                </div>
+                <div *ngIf="totalAmountNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Ingrese un monto válido
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="montocarton" class="form-label">Monto por Cartón ($) <span class="required">*</span></label>
+                <div class="input-with-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                  <input type="number" id="montocarton" class="form-control" placeholder="0.00" step="0.01"
+                    formControlName="card_amount" [class.is-invalid]="cardAmountNoValido">
+                </div>
+                <div class="form-hint">Precio de venta de cada cartón</div>
+                <div *ngIf="cardAmountNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Ingrese un monto válido
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="minimojugadas" class="form-label">Mínimo de Jugadas</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-ticket-alt"></i>
+                  <input type="number" id="minimojugadas" class="form-control" placeholder="0"
+                    formControlName="minimun_play" [class.is-invalid]="minimunPlayNoValido">
+                </div>
+                <div *ngIf="minimunPlayNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Ingrese un valor válido
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="maximoJugadas" class="form-label">Máximo de Jugadas</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-ticket-alt"></i>
+                  <input type="number" id="maximoJugadas" class="form-control" placeholder="0"
+                    formControlName="maximun_play" [class.is-invalid]="maximunPlayNoValido">
+                </div>
+                <div *ngIf="maximunPlayNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Ingrese un valor válido
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="maximojugadores" class="form-label">Máximo de Jugadores</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-users"></i>
+                  <input type="number" id="maximojugadores" class="form-control" placeholder="0"
+                    formControlName="maximun_user_play" [class.is-invalid]="maximunUserPlayNoValido">
+                </div>
+                <div *ngIf="maximunUserPlayNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Ingrese un valor válido
+                </div>
+              </div>
+            </div>
+
+            <div class="section-subheader">
+              <h4><i class="fas fa-percentage"></i> Retenciones y Porcentajes</h4>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="porcentajeretencion" class="form-label">% de Retención</label>
+                <div class="select-wrapper">
+                  <select id="porcentajeretencion" class="form-select" formControlName="retention_percent"
+                    [class.is-invalid]="retentionPercentNoValido">
+                    <option value="" disabled selected>Seleccione porcentaje</option>
+                    <option *ngFor="let p of listaPercent" [ngValue]="p.id">{{p.name}}</option>
+                  </select>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div *ngIf="retentionPercentNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Seleccione entre 0% y 20%
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="mtoretencion" class="form-label">Monto de Retención ($)</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                  <input type="number" id="mtoretencion" class="form-control" placeholder="0.00" step="0.01"
+                    formControlName="retention_amount" [class.is-invalid]="retentionAmountNoValido">
+                </div>
+                <div *ngIf="retentionAmountNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Ingrese un monto válido
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="admin_retention_percent" class="form-label">% Retención Admin</label>
+                <div class="select-wrapper">
+                  <select id="admin_retention_percent" class="form-select" formControlName="admin_retention_percent"
+                    [class.is-invalid]="adminRetentionPercentNoValido">
+                    <option value="" disabled selected>Seleccione porcentaje</option>
+                    <option *ngFor="let p of listaPercent" [ngValue]="p.id">{{p.name}}</option>
+                  </select>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div *ngIf="adminRetentionPercentNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Seleccione entre 0% y 10%
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="admin_retention_amount" class="form-label">Monto Retención Admin ($)</label>
+                <div class="input-with-icon">
+                  <i class="fas fa-dollar-sign"></i>
+                  <input type="number" id="admin_retention_amount" class="form-control" placeholder="0.00" step="0.01"
+                    formControlName="admin_retention_amount" [class.is-invalid]="adminRetentionAmountNoValido">
+                </div>
+                <div *ngIf="adminRetentionAmountNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Ingrese un monto válido
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección de premios -->
+          <div class="form-section">
+            <div class="section-header">
+              <div class="section-number">3</div>
+              <div>
+                <h3><i class="fas fa-trophy"></i> Configuración de Premios</h3>
+                <p>Establezca los premios para los ganadores</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Premio por Línea</label>
+                <div class="toggle-group">
+                  <label *ngFor="let option of ListaYesNo" class="toggle-option">
+                    <input type="radio" [value]="option.id" formControlName="reward_line">
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-text">{{option.name}}</span>
+                  </label>
+                </div>
+                <div *ngIf="rewardLineNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Seleccione una opción
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Premio por Cartón Lleno</label>
+                <div class="toggle-group">
+                  <label *ngFor="let option of ListaYesNo" class="toggle-option">
+                    <input type="radio" [value]="option.id" formControlName="reward_full">
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-text">{{option.name}}</span>
+                  </label>
+                </div>
+                <div *ngIf="rewardFullNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Seleccione una opción
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="percentline" class="form-label">% por Línea</label>
+                <div class="select-wrapper">
+                  <select id="percentline" class="form-select" formControlName="percent_line"
+                    [class.is-invalid]="percentLineNoValido">
+                    <option value="" disabled selected>Seleccione porcentaje</option>
+                    <option *ngFor="let item of listaPercent2" [ngValue]="item.id">{{item.name}}</option>
+                  </select>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div *ngIf="percentLineNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Seleccione un porcentaje válido
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="porcentajecartonlleno" class="form-label">% Cartón Lleno</label>
+                <div class="select-wrapper">
+                  <select id="porcentajecartonlleno" class="form-select" formControlName="percent_full"
+                    [class.is-invalid]="percentFullNoValido">
+                    <option value="" disabled selected>Seleccione porcentaje</option>
+                    <option *ngFor="let p of listaPercent2" [ngValue]="p.id">{{p.name}}</option>
+                  </select>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div *ngIf="percentFullNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Seleccione un porcentaje válido
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección de tipo y privacidad -->
+          <div class="form-section">
+            <div class="section-header">
+              <div class="section-number">4</div>
+              <div>
+                <h3><i class="fas fa-cog"></i> Configuración General</h3>
+                <p>Opciones adicionales del sorteo</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Tipo de Sorteo <span class="required">*</span></label>
+                <div class="card-options">
+                  <label *ngFor="let option of listaRaffleType" class="card-option">
+                    <input type="radio" [value]="option.id" formControlName="raffle_type">
+                    <div class="card-option-content">
+                      <i class="fas fa-dice"></i>
+                      <span>{{option.name}}</span>
+                    </div>
+                  </label>
+                </div>
+                <div *ngIf="raffleTypeNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Seleccione un tipo de sorteo
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Privacidad <span class="required">*</span></label>
+                <div class="card-options">
+                  <label *ngFor="let option of listaPublicPrivate" class="card-option">
+                    <input type="radio" [value]="option.id" formControlName="privacy">
+                    <div class="card-option-content">
+                      <!-- <i class="fas" [class.fa-globe]="option.id === 'public'" [class.fa-lock]="option.id === 'private'"></i> -->
+                      <span>{{option.name}}</span>
+                    </div>
+                  </label>
+                </div>
+                <div *ngIf="privacyNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Seleccione el nivel de privacidad
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección de fechas -->
+          <div class="form-section">
+            <div class="section-header">
+              <div class="section-number">5</div>
+              <div>
+                <h3><i class="fas fa-calendar-alt"></i> Fechas y Horarios</h3>
+                <p>Programe el sorteo</p>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="fechaprogramada" class="form-label">Fecha Programada</label>
+                <div class="date-time-group">
+                  <div class="input-with-icon">
+                    <i class="fas fa-calendar"></i>
+                    <input type="date" id="fechaprogramada" class="form-control" formControlName="scheduled_date"
+                      [class.is-invalid]="scheduledDateNoValido">
+                  </div>
+                  <div class="input-with-icon">
+                    <i class="fas fa-clock"></i>
+                    <input type="time" class="form-control" formControlName="scheduled_hour"
+                      [class.is-invalid]="scheduledHourNoValido">
+                  </div>
+                </div>
+                <div *ngIf="scheduledDateNoValido || scheduledHourNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Fecha u hora programada no válida
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="horainicio" class="form-label">Fecha de Inicio</label>
+                <div class="date-time-group">
+                  <div class="input-with-icon">
+                    <i class="fas fa-calendar"></i>
+                    <input type="date" class="form-control" formControlName="start_date"
+                      [class.is-invalid]="startDateNoValido">
+                  </div>
+                  <div class="input-with-icon">
+                    <i class="fas fa-clock"></i>
+                    <input type="time" id="horainicio" class="form-control" formControlName="start_hour"
+                      [class.is-invalid]="startHourNoValido">
+                  </div>
+                </div>
+                <div *ngIf="startDateNoValido || startHourNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Fecha u hora de inicio no válida
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección de fichas -->
+          <div class="form-section" *ngIf="grupofichas?.GrupoInifichas">
+            <div class="section-header">
+              <div class="section-number">6</div>
+              <div>
+                <h3><i class="fas fa-images"></i> Seleccione Fichas para el Juego</h3>
+                <p>Elija las imágenes para los cartones</p>
+              </div>
+            </div>
+            <div class="fichas-grid">
+              <div *ngFor="let gf of grupofichas.GrupoInifichas" class="ficha-card" (click)="AddGrupofichas(gf.groupfichas_id)">
+                <div class="ficha-image-container">
+                  <img [src]="gf.ficha_image | recordImage:gf.groupfichas_name" class="ficha-image" appNotImage>
+                  <div class="ficha-overlay">
+                    <div class="ficha-info">
+                      <h4>{{gf.groupfichas_description}}</h4>
+                      <p>{{gf.description}}</p>
+                      <button class="ficha-select-btn">
+                        <i class="fas fa-check"></i> Seleccionar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="toggleDebugInfo()">
+              <i class="fas fa-code"></i> Info Debug
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="!forma_Raffle.valid">
+              <i class="fas fa-save"></i> Crear Sorteo
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <!-- Panel derecho para publicidad -->
+    <aside class="raffle-sidebar right">
+      <app-publicity></app-publicity>
+    </aside>
+  </div>
+
+  <!-- Debug information (opcional) -->
+  <div class="debug-info" *ngIf="showDebugInfo">
+    <div class="debug-header" (click)="showDebugInfo = !showDebugInfo">
+      <span>Información de Depuración</span>
+      <i class="fas" [class.fa-chevron-down]="!showDebugInfo" [class.fa-chevron-up]="showDebugInfo"></i>
+    </div>
+    <div class="debug-content">
+      <div class="debug-status">
+        <span class="status-label">Estado del formulario:</span>
+        <span class="status-value" [class.valid]="forma_Raffle.valid" [class.invalid]="!forma_Raffle.valid">
+          {{forma_Raffle.valid ? 'Válido' : 'Inválido'}}
+        </span>
+      </div>
+      <div class="debug-status">
+        <span class="status-label">Status:</span>
+        <span class="status-value">{{forma_Raffle.status}}</span>
+      </div>
+      <pre>{{forma_Raffle.value | json}}</pre>
+    </div>
+  </div>
 </div>

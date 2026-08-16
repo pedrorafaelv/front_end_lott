@@ -1,5 +1,5 @@
-<div class="continer">
-    <section class="botton-container bg-dark">
+ <div class="continer">
+     <section class="botton-container bg-dark">
         <h3 class="navbar-brand">Grupos disponibles</h3>
         <div class="input-group mb-3">
             <form autocomplete="off" [formGroup]="forma">
@@ -11,6 +11,7 @@
                 </div>
             </form>
         </div>
+        <app-carrusel-cartones></app-carrusel-cartones>
         <app-cart></app-cart>
     </section>
     <section class="cartones-container  bg-dark" *ngIf="fichagroup">
@@ -112,5 +113,152 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> 
+</div>
+
+
+<div class="lottery-container">
+  <!-- Sección de selección de grupo -->
+  <section class="group-section">
+    <div class="section-header">
+      <i class="bi bi-collection-play"></i>
+      <h2>Grupos disponibles</h2>
+      <p>Selecciona un grupo para ver sus cartones</p>
+    </div>
+    
+    <div class="group-selector">
+      <form autocomplete="off" [formGroup]="forma">
+        <div class="select-container">
+          <select class="form-select" id="inputGroupSelect" formControlName="grupo" name="grupo" (change)=onChangeGrupo()>
+            <option value="" selected disabled>Selecciona un grupo...</option>
+            <option *ngFor="let item of grupos" [ngValue]="item.id">{{item.name}}</option>
+          </select>
+          <i class="bi bi-chevron-down select-arrow"></i>
+        </div>
+      </form>
+    </div>
+    
+    <app-cart></app-cart>
+  </section> 
+
+  <!-- Sección de cartones -->
+  <section class="cards-section" *ngIf="fichagroup">
+    <div class="section-header">
+      <i class="bi bi-grid-3x3-gap"></i>
+      <h2>Cartones disponibles</h2>
+      <p>Selecciona los cartones que deseas agregar a tu carrito</p>
+    </div>
+    
+    <div class="cards-grid">
+      <div *ngFor="let carton of cartones" class="card-item">
+        <div class="card-header">
+          <h3>Cartón #{{carton.id}}</h3>
+          <span class="card-badge">{{carton.name}}</span>
+        </div>
+        
+        <div class="bingo-card"> 
+          <!-- Fila B -->
+         <div class="bingo-row">
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos01 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos02 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos03 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos04 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos05 | imagen:fichagroup" appNotImage>
+            </div>
+          </div>
+          
+          <!-- Fila I -->
+          <div class="bingo-row">
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos06 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos07 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos08 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos09 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos10 | imagen:fichagroup" appNotImage>
+            </div>
+          </div> 
+          
+          <!-- Fila N -->
+          <div class="bingo-row">
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos11 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos12 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell free-cell">
+              <span>FREE</span>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos14 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos15 | imagen:fichagroup" appNotImage>
+            </div>
+          </div>
+          
+          <!-- Fila G -->
+          <div class="bingo-row">
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos16 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos17 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos18 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos19 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos20 | imagen:fichagroup" appNotImage>
+            </div>
+          </div> 
+          
+          <!-- Fila O -->
+          <div class="bingo-row">
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos21 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos22 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos23 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos24 | imagen:fichagroup" appNotImage>
+            </div>
+            <div class="bingo-cell tooltipp" data-toggle="tooltip" data-placement="top" [title]="carton.name">
+              <img [src]="carton.desc_pos25 | imagen:fichagroup" appNotImage>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-actions">
+          <button class="btn-add-cart" (click)="putCard(carton.id)">
+            <i class="bi bi-cart-plus"></i> Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>

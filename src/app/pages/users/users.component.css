@@ -1,15 +1,12 @@
-.container {
+/* .container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 500px;
-    /* set the container height */
 }
 
 .left,
 .right {
     width: 20%;
-    /* set the width for left and right divs */
 }
 
 .center {
@@ -17,11 +14,406 @@
     flex-direction: column;
     justify-content: space-between;
     width: 60%;
-    /* set the width for center div */
 }
 
 .top,
 .bottom {
     flex: 1;
-    /* evenly distribute the height for top and bottom divs */
+} */
+ /* Estilos para el módulo de administración de usuarios */
+.admin-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.admin-header {
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header h2 {
+  margin: 0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-header p {
+  margin: 5px 0 0;
+  opacity: 0.9;
+}
+
+.admin-content {
+  display: grid;
+  grid-template-columns: 250px 1fr 250px;
+  gap: 20px;
+}
+
+.admin-sidebar {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Tabla de usuarios */
+.users-table-container {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.table-header {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.table-header h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.table-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box i {
+  position: absolute;
+  left: 12px;
+  color: #6c757d;
+}
+
+.search-box input {
+  padding: 8px 12px 8px 35px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  width: 250px;
+  font-size: 14px;
+}
+
+.btn-refresh {
+  background: #4ca1af;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.btn-refresh:hover {
+  background: #3d8b99;
+}
+
+/* Estilos de la tabla */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  display: table;
+}
+
+.table-row {
+  display: table-row;
+}
+
+.table-row.header {
+  background: #f8f9fa;
+  font-weight: 600;
+}
+
+.table-row:not(.header):hover {
+  background: #f8f9fa;
+}
+
+.table-cell {
+  display: table-cell;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+/* Badges de estado */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge:not(.active) {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Botones de acción */
+.btn-action {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.btn-action.groups {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.btn-action.edit {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.btn-action.delete {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.btn-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Footer de la tabla */
+.table-footer {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-pagination {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-pagination:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Panel de grupos */
+.groups-panel {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.groups-panel h4 {
+  margin: 0 0 15px;
+  color: #2c3e50;
+}
+
+.group-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.group-search i {
+  position: absolute;
+  left: 12px;
+  color: #6c757d;
+}
+
+.group-search input {
+  padding: 10px 12px 10px 35px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  width: 100%;
+  font-size: 14px;
+}
+
+/* Tarjeta de estadísticas */
+.stats-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.stats-card h4 {
+  margin: 0 0 10px;
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-item i {
+  font-size: 20px;
+  color: #4ca1af;
+  width: 30px;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-weight: 600;
+  font-size: 18px;
+  color: #2c3e50;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* Modal de grupos */
+.modal-content {
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  color: white;
+  border-radius: 10px 10px 0 0;
+  padding: 15px 20px;
+  border: none;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-description {
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+.groups-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.group-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.group-item:last-child {
+  border-bottom: none;
+}
+
+.form-check {
+  margin: 0;
+}
+
+.form-check-input {
+  width: 48px;
+  height: 24px;
+}
+
+.group-description {
+  font-size: 12px;
+  color: #6c757d;
+  margin-left: 30px;
+}
+
+/* Responsividad */
+@media (max-width: 1200px) {
+  .admin-content {
+    grid-template-columns: 200px 1fr;
+  }
+  
+  .admin-sidebar.right {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-sidebar {
+    display: none;
+  }
+  
+  .table-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .search-box input {
+    width: 100%;
+  }
+  
+  .table-footer {
+    flex-direction: column;
+    gap: 15px;
+  }
 }
