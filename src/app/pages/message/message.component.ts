@@ -20,6 +20,7 @@ interface Message {
 
 @Component({
   selector: 'app-message',
+  standalone: true,
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.css'],
   imports: [CommonModule]

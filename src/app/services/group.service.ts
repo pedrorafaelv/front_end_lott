@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Group } from '../interfaces/get-groups-response';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 
 // Interface para la respuesta de putGroup
 interface PutGroupResponse {
@@ -103,7 +103,7 @@ export class GroupService {
 
 
 
-// import { Group } from '../interfaces/get-groups-response'; import { environment } from 'src/environments/environment';
+// import { Group } from '../interfaces/get-groups-response'; import { environment } from '../../environments/environment';
 // import { error } from 'console';
 // // import { u } from '@angular/cdk/scrolling-module.d-ud2XrbF8';
 

@@ -4,16 +4,16 @@ import { Observable } from 'rxjs';
 import { card, CardResponse } from '../interfaces/card-response';
 import { map, tap } from 'rxjs/operators';
 import { compileNgModule } from '@angular/compiler';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartonesService {
-  private cardPage=1;
-  private  raffle_id: string ;
-  public cargando:boolean = false;
+  private cardPage = 1;
+  private raffle_id!: number;
+  public cargando: boolean = false;
   public baseUrl = `${environment.apiUrl}`;
 
   // private baseUrl = "http://127.0.0.1:8000/api";
@@ -33,12 +33,12 @@ export class CartonesService {
    }
    getAvailableCards(raffle: string):Observable<CardResponse>{
     return this.http.get<CardResponse>(
-      `${this.baseUrl}/card/getAvailableCards/${raffle}`
+      `${this.baseUrl}card/getAvailableCards/${raffle}`
     )  
  }
  getAvailableCardsByGroup(group: string):Observable<CardResponse>{
   return this.http.get<CardResponse>(
-    `${this.baseUrl}/card/getAvailableCardsByGroup/${group}`
+    `${this.baseUrl}card/getAvailableCardsByGroup/${group}`
   )  
 }
 }

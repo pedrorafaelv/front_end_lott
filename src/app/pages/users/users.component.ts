@@ -1,20 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-
-// import { GroupService } from '../../services/group.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { PublicityComponent } from "../../components/publicity/publicity.component";
 
 @Component({
     selector: 'app-users',
     templateUrl: './users.component.html',
     styleUrls: ['./users.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, 
+              PublicityComponent,
+              ReactiveFormsModule ]
 })
 export class UsersComponent implements OnInit {
-  public localId: string;
-  public usersData;
-  public userGroups;
+  public localId: string = '';
+  public usersData: any[] = [];
+  public userGroups: any[] = [];
   // form_removeGroups: FormGroup;
   form_Groups: FormGroup;
 
@@ -40,14 +43,14 @@ export class UsersComponent implements OnInit {
   }
   getInfo(){
     this.UserService.getUsersList(this.localId).subscribe( resp =>{
-      console.log("usuarios", resp['usuarios']);
-      this.usersData=resp['usuarios'];
+      console.log("usuarios", resp);
+      this.usersData = resp;
     })
     this.usersData
     console.log('getinfo ');
   }
 
-  getGroups(id){
+  getGroups(id:any){
     this.UserService.getGroups(id).subscribe((data)=>{
        console.log('data', data.Group);
        this.userGroups = data.Group;

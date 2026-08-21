@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray,FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AuthService } from 'src/app/services/auth.service';
-import { ValidadoresService } from 'src/app/services/validadores.service';
+import { ValidadoresService } from '../../services/validadores.service';
 
 @Component({
     selector: 'app-personal-data',

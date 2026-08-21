@@ -5,24 +5,27 @@ import { ValidadoresService } from '../../services/validadores.service';
 import { GroupService } from '../../services/group.service';
 import { Group } from '../../interfaces/get-groups-response';
 import Swal from "sweetalert2";
-// import { errorValidate } from '../../interfaces/error-validate';
-// import { error } from '@angular/compiler/src/util';
 import { GroupfichasService } from '../../services/groupfichas.service';
 import { UserService } from '../../services/user.service';
+import { CommonModule } from '@angular/common';
+import { PublicityComponent } from "../../components/publicity/publicity.component";
+import { ReactiveFormsModule } from '@angular/forms';
+import { PipesModule } from "../../pipes/pipes.module";
 
 
 @Component({
     selector: 'app-raffle',
     templateUrl: './raffle.component.html',
     styleUrls: ['./raffle.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, PublicityComponent, ReactiveFormsModule, PipesModule]
 })
 
 
 export class RaffleComponent implements OnInit {
 forma_Raffle: FormGroup;
-mensaje: string;
-icono: string;
+mensaje: string = '';
+icono: string= '';
   showDebugInfo: boolean = false;
 
   // Agrega este método
@@ -311,7 +314,7 @@ listaPercent = [
           Swal.fire({
             allowOutsideClick: false,
             icon: 'success',
-            text: resp['message'],  
+            text: (resp as { message: string }).message,
           });
           },(err)=>{            
             Swal.fire({

@@ -10,8 +10,8 @@ import { Product } from '../../interfaces/product';
     standalone: false
 })
 export class TotalComponent implements OnInit {
-public Product: Product;
-public tot: number;
+public Product!: Product;
+public tot!: number;
   constructor(private CartService: CartService) { }
 
   ngOnInit(): void {

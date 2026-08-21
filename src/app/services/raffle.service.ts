@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { GetFichasResponse, Ficha } from '../interfaces/get-fichas-response';
 import { Observable, map } from 'rxjs';
 import { GetCardsRaffleResponse } from '../interfaces/get-cards-raffle-response';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })

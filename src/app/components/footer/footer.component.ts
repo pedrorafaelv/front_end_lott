@@ -4,6 +4,7 @@ import { faCoffee, faSquareEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-footer',
+  standalone: true,
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css']
 })

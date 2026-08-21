@@ -1,20 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, NgForm } from "@angular/forms";
-import { ValidadoresService } from 'src/app/services/validadores.service';
-import { AuthService } from 'src/app/services/auth.service';
+import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { ValidadoresService } from '../../services/validadores.service';
+import { AuthService } from '../../services/auth.service';
 import Swal from "sweetalert2";
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
+ import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [ReactiveFormsModule, 
+              FormsModule,
+            CommonModule]
 })
 export class LoginComponent implements OnInit {
 
-  forma: FormGroup;
+  forma!: FormGroup;
   recordarme =false;
 
 
@@ -26,13 +31,14 @@ export class LoginComponent implements OnInit {
     this.crearFormulario();
    }
 
-   crearFormulario(){
-   this.forma=this.fb.group({
-     correo  : ['', [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$")] ],
-     usuario : ['', ],
-     pass1   : ['', [Validators.required] ]
-     });
-   }
+  crearFormulario() {
+    this.forma = this.fb.group({
+        correo: ['', [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$")]],
+        usuario: [''],
+        pass1: ['', [Validators.required]],
+        recordarme: [false]  // <-- Agregar campo
+    });
+}
 
    crearListeners(){
     this.forma.valueChanges.subscribe((valor: any) => {
@@ -51,12 +57,15 @@ export class LoginComponent implements OnInit {
     
    }
 
-  ngOnInit(): void {
-    if(localStorage.getItem('email')){
-      this.forma.setValue({'correo': localStorage.getItem('email')});
-      this.recordarme = true; 
+ ngOnInit(): void {
+    const email = localStorage.getItem('email');
+    if (email) {
+        this.forma.patchValue({ 
+            correo: email,
+            recordarme: true 
+        });
     }
-  }
+}
 
   get correoNoValido(){
     return this.forma.get('correo')!.invalid && this.forma.get('correo')!.touched
@@ -98,11 +107,11 @@ export class LoginComponent implements OnInit {
       });
        Swal.showLoading();
 
-     this.auth.login(this.forma.get('correo').value, this.forma.get('pass1').value)
+    this.auth.login(this.forma.get('correo')!.value, this.forma.get('pass1')!.value)
     .subscribe(resp =>{
       Swal.close();
       console.log('se debe  validar  la confirmación del email  = '+ resp);
-      this.UserService.getUserEmailConfirm(this.forma.get('correo').value)
+      this.UserService.getUserEmailConfirm(this.forma.get('correo')!.value)
       .subscribe(resp=>{
         console.log("esta es la respuesta de la confirmacion "+ resp);
       },
@@ -111,7 +120,7 @@ export class LoginComponent implements OnInit {
        }
       )
      if (this.recordarme){
-      localStorage.setItem('email', this.forma.get('correo').value);
+      localStorage.setItem('email', this.forma.get('correo')!.value);
      }
 
       this.router.navigateByUrl('/dashboard');

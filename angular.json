@@ -15,15 +15,12 @@
             "prefix": "app",
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:application",
+                    "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": {
-                          "base": "dist/lottery-app"
-                        },
+                        "outputPath": "dist/lottery-app",
                         "index": "src/index.html",
-                        "polyfills": [
-                          "src/polyfills.ts"
-                        ],
+                        "main": "src/main.ts",
+                        "polyfills": "src/polyfills.ts",
                         "tsConfig": "tsconfig.app.json",
                         "assets": [
                             "src/favicon.ico",
@@ -34,12 +31,12 @@
                             "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
                             "src/styles.css"
                         ],
-                        "scripts": [],
-                        "browser": "src/main.ts"
+                        "scripts": []
                     },
                     "configurations": {
                         "production": {
-                            "budgets": [{
+                            "budgets": [
+                                {
                                     "type": "initial",
                                     "maximumWarning": "500kb",
                                     "maximumError": "1mb"
@@ -50,22 +47,24 @@
                                     "maximumError": "4kb"
                                 }
                             ],
-                            "fileReplacements": [{
-                                "replace": "src/environments/environment.ts",
-                                "with": "src/environments/environment.prod.ts"
-                            }],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ],
                             "outputHashing": "all"
                         },
                         "development": {
-                          "optimization": false,
+                            "optimization": false,
                             "extractLicenses": false,
                             "sourceMap": true,
                             "namedChunks": true,
                             "fileReplacements": [
-                              {
-                                "replace": "src/environments/environment.ts",
-                                "with": "src/environments/environment.development.ts"
-                              }
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.development.ts"
+                                }
                             ]
                         }
                     },
@@ -73,12 +72,15 @@
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "buildTarget": "lottery-app:build:development"
+                    },
                     "configurations": {
                         "production": {
-                          "buildTarget": "lottery-app:build:production"
+                            "buildTarget": "lottery-app:build:production"
                         },
                         "development": {
-                          "buildTarget": "lottery-app:build:development"
+                            "buildTarget": "lottery-app:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -86,7 +88,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                      "buildTarget": "lottery-app:build"
+                        "buildTarget": "lottery-app:build"
                     }
                 },
                 "test": {
@@ -109,7 +111,6 @@
                         ],
                         "scripts": [
                             "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-
                         ]
                     }
                 }
@@ -117,6 +118,6 @@
         }
     },
     "cli": {
-      "analytics": "eca0546e-8aa3-40ab-a479-269bef62a338"
+        "analytics": "eca0546e-8aa3-40ab-a479-269bef62a338"
     }
 }

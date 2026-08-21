@@ -1,7 +1,10 @@
 import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Carton } from '../../models/carton.model';
-
+import { CardResponse } from '../../interfaces/card-response';
+import { Observable, tap } from 'rxjs';
+import { CartonesService } from '../../services/cartones.service';
 @Component({
   selector: 'app-carrusel-cartones',
   standalone: true,
@@ -19,6 +22,15 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
 
   currentIndex = 0;
   cardsPerView = 4;
+  private readonly http: HttpClient;
+  baseUrl = '';
+
+  constructor(
+    private cartonesService: CartonesService,
+    http: HttpClient
+  ) {
+    this.http = http;
+  }
 
   ngOnInit(): void {}
 
@@ -32,6 +44,15 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
     return this.cartones;
   }
 
+  getAvailableCards(raffle: string): Observable<CardResponse> {
+  return this.http.get<CardResponse>(`${this.baseUrl}/card/getAvailableCards/${raffle}`)
+    .pipe(
+      tap((data: CardResponse) => {
+        console.log('📦 Datos desde el servicio: getAvailableCards', data);
+        console.log('🔍 Data en JSON:', JSON.stringify(data, null, 2));
+      })
+    );
+}
   isSelectedByMe(id: number): boolean {
     return this.seleccionados.includes(id);
   }

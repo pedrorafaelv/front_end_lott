@@ -87,7 +87,7 @@ export interface Card {
     desc_comb14:    string;
     desc_combTotal: string;
     active:         string;
-    groupFicha_id:  null;
+    groupFicha_id?:  null;
     start_date:     Date;
     end_date:       null;
     created_at:     Date;

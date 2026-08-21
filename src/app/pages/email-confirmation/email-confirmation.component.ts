@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/services/auth.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 import { Router} from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-email-confirmation',
     templateUrl: './email-confirmation.component.html',
     styleUrls: ['./email-confirmation.component.css'],
-    standalone: false
+    standalone: true,
+    imports:[ReactiveFormsModule, CommonModule]
 })
 export class EmailConfirmationComponent implements OnInit {
- forma:FormGroup;
+ forma!:FormGroup;
   constructor(private fb:FormBuilder,
     private auth: AuthService,
     private router:Router,

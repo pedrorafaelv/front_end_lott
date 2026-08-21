@@ -3,12 +3,14 @@ import { CartonesService } from '../../services/cartones.service';
 import { card, CardResponse } from '../../interfaces/card-response';
 import { Raffle } from '../../interfaces/get-fichas-response';
 import { RaffleService } from '../../services/raffle.service';
+import { ComponentsModule } from "../../components/components.module";
 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [ComponentsModule]
 })
 export class HomeComponent implements OnInit {
 

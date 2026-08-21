@@ -1,29 +1,50 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { RaffleService } from '../../services/raffle.service';
 import { Ficha, Raffle } from '../../interfaces/get-fichas-response';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Group } from '../../interfaces/get-groups-response';
 import { AuthService } from '../../services/auth.service';
-import { UserService } from 'src/app/services/user.service';
-import { GroupService } from 'src/app/services/group.service';
+import { UserService } from '../../services/user.service';
+import { GroupService } from '../../services/group.service';
 import { faUsersRectangle, faPeopleGroup} from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import { CartonesService } from '../../services/cartones.service';
+import { Card } from '../../interfaces/get-cards-raffle-response';
+import { CartonComponent } from '../../components/carton/carton.component';
+import { DirectivesModule } from '../../directives/directives.module';
+import { CarruselCartonesComponent } from '../../components/carrusel-cartones/carrusel-cartones.component';
+import { PublicityComponent } from '../../components/publicity/publicity.component';
+import { RecordsComponent } from '../../components/records/records.component';
+// import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
+import { PipesModule } from "../../pipes/pipes.module";
+
 @Component({
     selector: 'app-juego',
+    standalone: true, 
+    imports: [
+    CommonModule,
+    CartonComponent,
+    DirectivesModule,
+    CarruselCartonesComponent,
+    PublicityComponent,
+    RecordsComponent,
+    PipesModule
+],
     templateUrl: './juego.component.html',
-    styleUrls: ['./juego.component.css'],
-    standalone: false
+    styleUrls: ['./juego.component.css']
 })
 export class JuegoComponent implements OnInit {
+ raffleId: number = 0;
  fichas: Ficha[]=[];
  raffle!: Raffle;
  grupos: Group[]=[];
+ cartones: Card[]=[];
  fichaGroupName: string = '';
  forma: FormGroup;
  localId: string = '';
  userId: string= '';
- raffleId: any;
- cartones: any; 
  lastRecord: any;
  activeRaffles: any ;
  faUsersRectangle= faUsersRectangle;
@@ -36,19 +57,29 @@ export class JuegoComponent implements OnInit {
   constructor(private RaffleService: RaffleService,
               private AuthService: AuthService,
               private UserService: UserService,
-              // private GroupService: GroupService,
-              private fb : FormBuilder) { 
+              private fb : FormBuilder,
+               private Cartones:CartonesService,
+              private route: ActivatedRoute) { 
               this.forma = this.fb.group({
                   grupo: ['', [Validators.required]],
                  }  );
   }
  
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.raffleId = params['raffleId'];
+      console.log('ID del sorteo en componente juego:', this.raffleId);
+      });
     this.localId = this.AuthService.getLocalId();
     if (this.localId){
       this.getInfo();
      } 
-   }
+    console.log('raffleId', this.raffleId);
+    if (this.raffleId != 0){
+      this.getFichas();
+      this.getCardsAvailables();
+    }
+  }
 
   get grupoNoValido(){
     return this.forma.get('grupo')?.invalid && this.forma.get('grupo')?.touched;
@@ -91,6 +122,7 @@ export class JuegoComponent implements OnInit {
      const response = await this.RaffleService.getFichasAs(this.raffleId);
      this.fichas = response.Fichas;
      this.raffle = response.Raffle; 
+     console.log('fichas', this.fichas);
    }
 
    async getActiveRaffle(){
@@ -112,6 +144,15 @@ async getNextRecord(){
    this.lineWinner = resp.lineWinner;
    this.fullWinner = resp.fullWinner;
 }
+async getCardsAvailables(){
+    this.Cartones.getAvailableCards(String(this.raffleId))
+      .subscribe((resp: any) => {
+          this.cartones = resp.Card;
+        },
+        (error: any) => {
+          console.log(error);
+        });
+  }
 
   async  getNewRecord(){
     this.existe = -1;

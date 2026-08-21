@@ -2,6 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 
+declare function beforeEach(action: () => void | Promise<void>): void;
+declare function describe(description: string, spec: () => void): void;
+declare function it(description: string, spec: () => void): void;
+declare const expect: any;
+
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({

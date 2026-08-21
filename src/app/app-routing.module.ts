@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BuscarComponent } from './pages/buscar/buscar.component';
-import { CartonesComponent } from './pages/cartones/cartones.component';
+import { CartonComponent } from './components/carton/carton.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -9,11 +9,11 @@ import { JuegoComponent } from './pages/juego/juego.component';
 import { GroupsComponent } from './pages/groups/groups.component';
 import { RaffleComponent } from './pages/raffle/raffle.component';
 import { AccountComponent } from './pages/account/account.component';
-import { MovesComponent } from './pages/moves/moves.component';
+import { MovesComponent } from './trash/moves/moves.component';
 import { LoginComponent } from './pages/log-in/login.component';
 import { LogOutComponent } from './pages/log-out/log-out.component';
 import { SingUpComponent } from './pages/sing-up/sing-up.component';
-import { PoliticsComponent } from './pages/politics/politics.component';
+import { PoliticsComponent } from './components/politics/politics.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { ProfileComponent } from './pages/profile/profile.component';
@@ -21,16 +21,17 @@ import { AdminGuard } from './guards/admin.guard';
 import { MessageComponent } from './pages/message/message.component';
 import { EmailConfirmationComponent } from './pages/email-confirmation/email-confirmation.component';
 import { UsersComponent } from './pages/users/users.component';
+import { CartonesPosterGridComponent } from './components/cartones-poster-grid/cartones-poster-grid.component';
 
 const routes: Routes = [
   { 
     path: 'home',  component: HomeComponent, canActivate:[AuthGuard]
   },
   { 
-    path: 'cards',  component: CartonesComponent, canActivate: [AuthGuard]
+    path: 'cards',  component: CartonComponent, canActivate: [AuthGuard]
   },
   { 
-    path: 'my-cards',  component: CartonesComponent, canActivate: [AuthGuard]
+    path: 'my-cards',  component: CartonComponent, canActivate: [AuthGuard]
   },
   { 
     path: 'groups',  component: GroupsComponent, canActivate: [AuthGuard, AdminGuard]
@@ -74,6 +75,12 @@ const routes: Routes = [
     path: 'profile', component: ProfileComponent, canActivate:[AuthGuard]
   },
   { 
+    path: 'juego', component: JuegoComponent, canActivate:[AuthGuard]
+  },
+   { 
+    path: 'poster-grid', component: CartonesPosterGridComponent, canActivate:[AuthGuard]
+  },
+  { 
     path: 'message', component: MessageComponent, canActivate:[AuthGuard]
   },
   { 
@@ -85,6 +92,7 @@ const routes: Routes = [
   {
     path: '**',  redirectTo: 'home'
   },
+
   
 
 ];

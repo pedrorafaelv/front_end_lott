@@ -1,25 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, Validators, FormGroup } from "@angular/forms";
-import { switchMap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import {  FormBuilder, Validators, FormGroup, ReactiveFormsModule, FormControl } from "@angular/forms";
+// import { switchMap, catchError } from 'rxjs/operators';
+// import { of } from 'rxjs';
 import { ValidadoresService } from '../../services/validadores.service';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
-import { Permissions } from '../../interfaces/get-user-permissions-response';
+// import { Permissions } from '../../interfaces/get-user-permissions-response';
 import { GroupService } from '../../services/group.service';
 import { Group } from '../../interfaces/get-groups-response';
-
 import Swal from "sweetalert2";
+import { ComponentsModule } from '../../components/components.module';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-groups',
     templateUrl: './groups.component.html',
     styleUrls: ['./groups.component.css'],
-    standalone: false
+    standalone: true,
+    imports:[ ReactiveFormsModule, 
+            ComponentsModule,
+            CommonModule
+     ],
 })
 export class GroupsComponent implements OnInit {
-   groupData: Group;
+  groupData!: Group;
   loading = false;
   errorMessage = '';
   successMessage = '';
@@ -35,9 +40,9 @@ export class GroupsComponent implements OnInit {
     {id: "0", name: 'NO' },
     {id: "1", name: 'SI' }
   ];
-   public userId: string;
-   public localId: string;
-   public user:    string;
+   public userId!: string;
+   public localId!: string;
+   public user!:    string;
    public usuario: any;
 
   addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
@@ -177,7 +182,7 @@ guardar(){
       Swal.fire({
         allowOutsideClick: false,
         icon: 'success',
-        text: resp['message'],  
+        text: 'Grupo creado correctamente',  
       });
       this.forma.reset(); // Reset después del éxito
     },

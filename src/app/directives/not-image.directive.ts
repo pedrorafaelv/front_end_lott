@@ -1,17 +1,14 @@
 import { Directive, ElementRef, HostListener } from '@angular/core';
 
 @Directive({
-    selector: '[appNotImage]',
-    standalone: false
+  selector: '[appNotImage]',
+  standalone: true,
 })
 export class NotImageDirective {
+  constructor(private readonly elementImg: ElementRef<HTMLImageElement>) {}
 
-  constructor(private  elementImg: ElementRef) {}
   @HostListener('error')
-  onError():void{
-
+  onError(): void {
     this.elementImg.nativeElement.src = './assets/images/no-image.jpg';
-  
   }
-
 }

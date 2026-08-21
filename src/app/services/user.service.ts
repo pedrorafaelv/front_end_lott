@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { GetGroupsResponse } from '../interfaces/get-groups-response';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
@@ -11,8 +11,8 @@ import { environment } from 'src/environments/environment';
 export class UserService {
   private baseUrl= `${environment.apiUrl}user/`;
   userToken: any;
-  email: string;
-  localStorage: Storage;
+  email!: string;
+  localStorage!: Storage;
   constructor(private http: HttpClient) { }
 
   getByLocalId(localId: string ){
@@ -38,17 +38,17 @@ updateDataFirebase(localId: string, token: string, last_connection: string){
   return datos;
 }
 
-getUserLevel(userId){
+getUserLevel(userId: string){
   return this.http.get(
     `${ this.baseUrl }getUserLevel/${userId}`
   );
 }
-getUserRoles(userId){
+getUserRoles(userId: string){
   return this.http.get(
     `${ this.baseUrl }getUserRoles/${userId}`
   );
 }
-getUserPermissions(userId){
+getUserPermissions(userId: string){
   return this.http.get(
     `${ this.baseUrl }getUserPermissions/${userId}`
   );
@@ -63,7 +63,7 @@ getGroups(id: string): Observable<GetGroupsResponse>{
   return this.http.get<GetGroupsResponse>(`${this.baseUrl}getGrupos/${id}`);
 }
 
- singUpUser(email, name, pass, localid, token){
+ singUpUser(email: string, name: string, pass: string, localid: string, token: string){
   // console.log(`${this.baseUrl}newUser/${email}/${name}/${localid}/${token}`);
    return this.http.post<any>(`${this.baseUrl}newUser/${email}/${name}/${pass}/${localid}/${token}`, { title: 'User POST Request'});
  }
@@ -71,7 +71,7 @@ getGroups(id: string): Observable<GetGroupsResponse>{
  getUserEmailConfirm(correo: string){
   return this.http.get<GetGroupsResponse>(`${this.baseUrl}getUserEmailConfirm/${correo}`);
  }
-  getUsersList(user){
+  getUsersList(user: string){
     return this.http.get<any[]>(`${this.baseUrl}usersList/${user}`);
   }
 

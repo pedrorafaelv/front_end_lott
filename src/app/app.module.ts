@@ -3,15 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-// import { CartonComponent } from './trash/carton/carton.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SandboxComponent } from './sandbox/sandbox.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
-// import { CartonnComponent } from './pages/cartonn/cartonn.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentsModule } from './components/components.module';
-import { PagesModule } from './pages/pages.module';
+// import { PagesModule } from './pages/pages.module';
 import { NotImageDirective } from './directives/not-image.directive';
 import { UserPermissionsDirective } from './directives/user-permissions.directive';
 import { FooterComponent } from './components/footer/footer.component';
@@ -23,9 +20,6 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
         AppComponent,
         SandboxComponent,
         UserPermissionsDirective,
-        //NotImageDirective,
-        // CartonnComponent,
-        // CartonComponent,
     ],
     bootstrap: [AppComponent], 
     imports: [BrowserModule,
@@ -34,7 +28,6 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
         FontAwesomeModule,
         BrowserAnimationsModule,
         ComponentsModule,
-        PagesModule,
         FooterComponent,     
         SweetAlert2Module.forRoot()   
     ],

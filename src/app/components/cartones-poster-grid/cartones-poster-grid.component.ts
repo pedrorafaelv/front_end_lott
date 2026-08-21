@@ -1,17 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { RaffleService } from 'src/app/services/raffle.service';
-import { card } from '../../interfaces/card-response';
+import { RaffleService } from '../../services/raffle.service';
 import { FormGroup, FormBuilder,Validators } from '@angular/forms';
 import { GroupService } from '../../services/group.service';
 import { Group } from '../../interfaces/get-groups-response';
 import Swal from "sweetalert2";
-import { AuthService } from 'src/app/services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { UserService } from 'src/app/services/user.service';
-import { CartonesService } from 'src/app/services/cartones.service';
+import { UserService } from '../../services/user.service';
+import { CartonesService } from '../../services/cartones.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../interfaces/product';
-import { CarruselCartonesComponent } from '../carrusel-cartones/carrusel-cartones.component';
+import { Card } from '../../interfaces/get-cards-raffle-response';
+
 
 @Component({
     selector: 'app-cartones-poster-grid',
@@ -20,7 +20,8 @@ import { CarruselCartonesComponent } from '../carrusel-cartones/carrusel-cartone
     standalone: false
 })
 export class CartonesPosterGridComponent implements OnInit {
-@Input() cartones:card[]=[];
+
+@Input() cartones:Card[]=[];
 color: string = 'black';
 public grupos: Group[]= [];
 public profile: any[] = [];
@@ -140,8 +141,9 @@ async getCardsAvailables(){
 
 async getInfo(){
     const user =  await this.UserService.getUserByLocalId(this.localId);
-    console.log('user =', user);
-    this.UserId = user.user[0]['id'];
+    // console.log('user =', user);
+    // this.UserId = user.user[0]['id'];
+    this.UserId= 1;
     const group = await this.UserService.getGroupByUser(this.UserId);
     this.grupos = group.Group;
 }

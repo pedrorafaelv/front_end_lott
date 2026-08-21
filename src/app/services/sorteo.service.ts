@@ -4,7 +4,8 @@ import { Sorteo,Estadisticas  } from '../models/sorteo.model';
 import{Carton,Celda, Jugador} from '../models/carton.model';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
+    
 })
 export class SorteoService {
     private sorteosSubject = new BehaviorSubject<Sorteo[]>([]);

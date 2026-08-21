@@ -3,14 +3,15 @@ import { RaffleService } from '../../services/raffle.service';
 import { Raffle } from '../../interfaces/get-fichas-response';
 import { CommonModule } from '@angular/common';
 import { SorteoService } from '../../services/sorteo.service';
-import { Sorteo,Estadisticas } from 'src/app/models/sorteo.model';
+import { Sorteo, Estadisticas } from '../../models/sorteo.model';
 import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.css'],
-    standalone: false
+    standalone: true,
+    imports:[CommonModule ]
 })
 
 export class DashboardComponent implements OnInit {
@@ -79,7 +80,9 @@ sorteosEnVivo: Sorteo[] = [];
   jugarSorteo(id: number): void {
     // this.sorteoService.jugarSorteo(id);
     console.log(`Intentando jugar el sorteo con ID: ${id}`);
-    this.router.navigate(['/juego', id]);
+     this.router.navigate(['juego'], { 
+        queryParams: { raffleId: id }  
+    });
   }
 
   // Método para notificar un sorteo

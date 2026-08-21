@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { faCartArrowDown, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { map } from 'rxjs';
-import { Product } from 'src/app/interfaces/product';
-import { CartService } from 'src/app/services/cart.service';
+import { Product } from '../../interfaces/product';
+import { CartService } from '../../services/cart.service';
 
 @Component({
     selector: 'app-cart',
@@ -30,7 +30,7 @@ faMinus= faMinus;
        return product.reduce((prev,curr) => prev + curr.mount, 0);
       }))
       .subscribe(val =>{
-       this.total_mount = val * this.Cart[0].mount;
+      //  this.total_mount = val * this.Cart[0].mount;
        console.log(val);
      
       })

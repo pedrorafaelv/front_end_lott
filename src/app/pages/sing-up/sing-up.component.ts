@@ -1,20 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth.service';
-import { UserService } from 'src/app/services/user.service';
-import { ValidadoresService } from 'src/app/services/validadores.service';
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
+import { ValidadoresService } from '../../services/validadores.service';
 import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-sing-up',
     templateUrl: './sing-up.component.html',
     styleUrls: ['./sing-up.component.css'],
-    standalone: false
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule]
 })
 export class SingUpComponent implements OnInit {
 
-  forma: FormGroup;
+  forma!: FormGroup;
 
   constructor(private auth: AuthService, 
               private fb:FormBuilder,
@@ -107,9 +109,10 @@ export class SingUpComponent implements OnInit {
     text:'Espere por favor'
     });
      Swal.showLoading();
-  this.auth.nuevoUsuario(this.forma.get('correo').value, this.forma.get('pass1').value)
+  this.auth.nuevoUsuario(this.forma.get('correo')!.value, this.forma.get('pass1')!.value)
     .subscribe(resp =>{
-      this.user.singUpUser(resp['email'], this.forma.get('usuario').value, this.forma.get('pass1').value, resp['localId'], resp['idToken'])
+      const usuarioCreado = resp as { email: string; localId: string; idToken: string };
+      this.user.singUpUser(usuarioCreado.email, this.forma.get('usuario')!.value, this.forma.get('pass1')!.value, usuarioCreado.localId, usuarioCreado.idToken)
       .subscribe(resp=>{
         Swal.fire({
           icon: 'success',
