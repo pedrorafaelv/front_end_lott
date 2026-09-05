@@ -5,17 +5,24 @@ import { Carton } from '../../models/carton.model';
 import { CardResponse } from '../../interfaces/card-response';
 import { Observable, tap } from 'rxjs';
 import { CartonesService } from '../../services/cartones.service';
+import { Card } from '../../interfaces/get-cards-raffle-response';
+import { CartonComponent } from '../../components/carton/carton.component';
+import Swal from 'sweetalert2';
+import { RaffleService } from '../../services/raffle.service';
+
 @Component({
   selector: 'app-carrusel-cartones',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CartonComponent],
   templateUrl: './carrusel-cartones.component.html',
   styleUrls: ['./carrusel-cartones.component.css']
 })
 export class CarruselCartonesComponent implements OnInit, AfterViewInit {
-  @Input() cartones: Carton[] = [];
+  @Input() cartones: Card[] = [];
   @Input() seleccionados: number[] = [];
-  @Input() jugadorId: string = '';
+  @Input() JugadorId: string = '';
+  @Input() UserId: string = '';
+  @Input() raffleId: number = 0;
   @Output() seleccionar = new EventEmitter<number>();
 
   @ViewChild('track') track!: ElementRef;
@@ -26,13 +33,21 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
   baseUrl = '';
 
   constructor(
-    private cartonesService: CartonesService,
+    private CartonesService: CartonesService,
+    private RaffleService: RaffleService,
     http: HttpClient
   ) {
     this.http = http;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+     console.log('raffleId en carrusel-cartones.component =', this.raffleId);
+
+    if (this.raffleId != 0){
+      this.getCardsAvailables();
+      // console.log(this.getCardsAvailables());
+    }
+  }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -40,7 +55,9 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
     }, 0);
   }
 
-  get filteredCartones(): Carton[] {
+  
+
+  get filteredCartones(): Card[] {
     return this.cartones;
   }
 
@@ -53,11 +70,34 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
       })
     );
 }
+
+ seleccionarCarton(id: number): void {
+    Swal.fire({
+      icon: 'question',
+      title: 'Confirmar',
+      text: '¿Quiere agregar este cartón a su apuesta?',
+      showCancelButton: true,
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#176585'
+    }).then((result) => {
+      if (result.isConfirmed) {
+         try {
+          this.RaffleService.putCard(this.raffleId,id,this.UserId)
+           console.log('hacer la apuesta ');
+         } catch (error) {
+          console.log('no se puedo hacer la apuesta')
+         }
+        this.seleccionar.emit(id);
+      }
+    });
+  }
+
   isSelectedByMe(id: number): boolean {
     return this.seleccionados.includes(id);
   }
 
-  get getCartsOfRaffle(): Carton[] {
+  get getCartsOfRaffle(): Card[] {
     return this.cartones;
   }
 
@@ -86,9 +126,7 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
     return { text: 'Seleccionar', disabled: false, class: '' };
   }
 
-  seleccionarCarton(id: number): void {
-    this.seleccionar.emit(id);
-  }
+  
 
   prevSlide(): void {
     if (this.currentIndex > 0) {
@@ -111,5 +149,14 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
       const offset = this.currentIndex * cardWidth;
       this.track.nativeElement.style.transform = `translateX(-${offset}px)`;
     }
+  }
+   async getCardsAvailables(){
+    this.CartonesService.getAvailableCards(String(this.raffleId))
+      .subscribe((resp: any) => {
+          this.cartones = resp.Card;
+        },
+        (error: any) => {
+          console.log(error);
+        });
   }
 }

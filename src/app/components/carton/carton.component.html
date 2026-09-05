@@ -1,15 +1,16 @@
 <div class="carton-card">
-  <div class="carton-header">
-    <h3 class="carton-title">Cartón #{{carton.id}}</h3>
-    <div class="carton-tooltip" [title]="carton.name">H
-      <i class="fas fa-info-circle"></i>
-    </div>
-  </div>
+  <!-- <div class="carton-header"> -->
+    <!-- <h5 class="carton-title">Cartón {{carton.id}}</h5> -->
+    <!-- <div class="carton-tooltip" [title]="carton.name"> -->
+      <!-- <i class="fas fa-info-circle"></i> -->
+    <!-- </div> -->
+  <!-- </div> -->
   
   <div class="carton-grid">
     <!-- Columna 1 -->
     <div class="carton-cell">
       <div class="carton-item" [title]="carton.name">
+        <!-- <img [src]="carton.desc_pos01 | imagen:carton.desc_pos01" class="carton-image" appNotImage> -->
         <img [src]="carton.desc_pos01 | imagen:recordGroup" class="carton-image" appNotImage>
       </div>
     </div>
@@ -143,7 +144,7 @@
     </div>
   </div>
   
-  <div class="carton-footer">
+  <!-- <div class="carton-footer">
     <span class="carton-name">{{carton.name}}</span>
-  </div>
+  </div> -->
 </div>

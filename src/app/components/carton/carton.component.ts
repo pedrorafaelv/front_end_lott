@@ -17,10 +17,11 @@ import { Card } from '../../interfaces/get-cards-raffle-response';
 })
 export class CartonComponent implements OnInit {
     @Input() carton!: Card;
-    @Input() recordGroup: string = 'primer';
+    @Input() recordGroup: string = '@';
 
     constructor() { }
 
     ngOnInit(): void {
+        // console.log('carton = ', this.carton )
     }
 }

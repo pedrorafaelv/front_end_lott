@@ -4,14 +4,14 @@
   <button class="carousel-btn prev" (click)="prevSlide()">‹</button>
   <div class="carousel-container">
     <div class="carousel-track" #track>
-      @for (carton of filteredCartones; track carton.id) {
-        <div class="card"
-             [class.selected]="isSelectedByMe(carton.id)"
-             [class.disabled]="isTakenByOther(carton)"
-             (click)="!isTakenByOther(carton) && seleccionarCarton(carton.id)">
-          
-          <div class="card-title">{{ carton.nombre }}</div>
-           
+      <div *ngFor="let carton of cartones" class="carton-item">          
+        <div class="card">
+          <div class="card-title">Cartón{{ carton.id }}</div>
+          <button class="card-select-btn" (click)="seleccionarCarton(carton.id)"> comprar</button>
+          <app-carton [carton]="carton"></app-carton>
+        </div>
+      </div>
+      <!-- @for (carton of filteredCartones; track carton.id) {
           <div class="card-grid">
             @for (celda of carton.grid; track celda) {
               <div class="card-cell" [class.free]="celda.libre">
@@ -42,7 +42,7 @@
             }
           </div>
         </div>
-      }
+      } -->
     </div>
   </div>
   <button class="carousel-btn next" (click)="nextSlide()">›</button>

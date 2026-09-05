@@ -2,17 +2,14 @@
 <div class="juego-container">
   <!-- Encabezado estilo lotería -->
   <div class="loteria-header">
-    <!-- Publicidad en header -->
-    <div class="publicidad-header">
-      <div class="publicidad-content">
-        <div class="ad-flag"><i class="fas fa-flag"></i></div>
+    <!-- <div class="publicidad-content"> 
+        <div class="ad-flag"><i class="fas fa-flag"></i></div> -->
         <div class="ad-text">¡Sorteo especial este viernes! Premio mayor de $100,000</div>
-        <app-carrusel-cartones></app-carrusel-cartones>
-        <div class="ad-flag"><i class="fas fa-flag"></i></div>
+        <app-carrusel-cartones [raffleId]="raffleId"></app-carrusel-cartones>
+        <!-- <div class="ad-flag"><i class="fas fa-flag"></i></div>
         <div class="stats-container">
-        </div>
-      </div>
-    </div>
+       
+    </div> -->
   </div>
   <div class="main-content">
     <!-- Panel izquierdo -->
@@ -33,10 +30,12 @@
             <div class="stat-label">Cartones Jugados:
             {{cartones?.length || 0}}</div>
           </div>
-          <button type="button" (click)=getNewRecord() class="lotto-button primary">
+          <button type="button" (click)=getNewRecord() class="card-select-btn">
             <i class="fas fa-plus"></i> Nueva Ficha
           </button>
         </div>
+        
+
         <app-records [Fichas]="fichas" [Raffle]="raffle" [fichaGroup]="fichaGroupName"></app-records>
         <!-- <div class="fichas-container">
           <cdk-virtual-scroll-viewport class="viewport" itemSize="50" style="height: 400px; width: 100%;">
@@ -56,9 +55,19 @@
         </div>
         <div class="cartones-container">
             <!-- <cdk-virtual-scroll-viewport itemSize="70" class="viewport"> -->
-                <div *ngFor="let carton of cartones" class="carton-item">
-                  <app-carton [carton]="carton"></app-carton>
-                </div>
+              <!-- <app-carton-seleccionado [raffleId]="raffleId" [Cartones]=" cartones"></app-carton-seleccionado> -->
+               <!-- <div class="selected-card-item">  -->
+                 <!-- <div class="selected-card-mini">  -->
+          <div *ngFor="let carton of cartones" class="carton-item">
+              <div class="card">
+                <div class="card-title">Cartón{{ carton.id }}</div>
+                <app-carton [carton]="carton"></app-carton>
+                <button class="remove-card" (click)="eliminarCarton(carton.id)">(✕)</button> 
+                  <!-- <div class="carton-seleccionado" [attr.data-carton-id]="carton.id"></div> -->
+              </div>
+                   <!-- </div> -->
+          </div>
+
             <!-- </cdk-virtual-scroll-viewport> -->
         </div>
       </div>

@@ -72,7 +72,7 @@ public p: any[] = [];
         confirmButtonColor: '#176585',
         });
     }else{
-       console.log('card_id = ',card_id);      
+      //  console.log('card_id = ',card_id);      
       this.CartService.addNewProduct(this.UserId,this.RaffleId, card_id, 1);
        this.RaffleService.putCard(this.RaffleId, card_id, this.UserId)
        .subscribe((resp: any) => {

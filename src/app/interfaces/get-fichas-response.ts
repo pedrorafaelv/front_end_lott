@@ -29,6 +29,7 @@ export interface Raffle {
     description:             string;
     user_id:                 number;
     group_id:                number;
+    groupFicha_id:           number;
     total_amount:            null;
     card_amount:             null;
     minimun_play:            null;
@@ -55,3 +56,4 @@ export interface Raffle {
     created_at:              Date;
     updated_at:              Date;
 }
+

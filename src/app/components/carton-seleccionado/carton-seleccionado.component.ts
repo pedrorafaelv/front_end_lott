@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Carton } from '../../models/carton.model';
+import { card } from '../../interfaces/card-response';
 
 @Component({
   selector: 'app-carton-seleccionado',
@@ -11,6 +12,8 @@ import { Carton } from '../../models/carton.model';
 })
 export class CartonSeleccionadoComponent {
   @Input() carton!: Carton;
+  @Input() raffleId:number = 0;
+  @Input() Cartones:card[]= [];
   @Output() eliminar = new EventEmitter<number>();
 
   // Método auxiliar para evitar el error de some() en el template

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GetFichasResponse, Ficha } from '../interfaces/get-fichas-response';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { GetCardsRaffleResponse } from '../interfaces/get-cards-raffle-response';
 import { environment } from '../../environments/environment';
 @Injectable({
@@ -33,10 +33,17 @@ export class RaffleService {
   return this.http.get<GetFichasResponse>(`${ this.baseUrl }getFichas/${texto}`);
 }
 
- getNextFicha(raffle: number){
-  //  console.log('obteniendo una nueva ficha');
-   return this.http.get<any>(`${this.baseUrl}getNewRecord/${raffle}`)
- }
+ getNextFicha(raffle: number) {
+    return this.http.get<any>(`${this.baseUrl}getNewRecord/${raffle}`, {}).pipe(
+        tap(data => {
+            console.log('📦 Datos recibidos:', data);
+            console.log('🔍 JSON formateado:', JSON.stringify(data, null, 2));
+        }),
+        tap({
+            error: err => console.error('❌ Error recibido:', err)
+        })
+    );
+}
 
  getCardsRaffleByUser(raffleId: string, userId: string){
   return this.http.get<GetCardsRaffleResponse>(`${this.baseUrl}getCardsRaffleByUser/${raffleId}/${userId}`)
@@ -46,7 +53,7 @@ export class RaffleService {
   return this.http.get(`${this.baseUrl}autoRaffle/${texto}`)
  }
 
-  putCard(raffle: string, card_id : string, localId: string): any {
+  putCard(raffle: number, card_id : number, localId: string): any {
    // console.log('asignando un carton al usuario');
    return this.http.post(`${this.baseUrl}putCard/${raffle}/${card_id}/${localId}`, {title:'put card post service'})
   }
@@ -86,11 +93,24 @@ export class RaffleService {
    return  fichas; 
 
   }
-   async getNextRecord(raffle:number){
 
+   async getNextRecord(raffle:number){
     const resp =  await fetch(`${this.baseUrl}getNewRecord/${raffle}`)
     const ficha = resp.json();
+    console.log('obteniendo siguiente ficha para la rifa', raffle, 'ficha obtenida', ficha);
     return ficha;
 
    }
+
+    async deleteCard(raffle_id:number, user_id:string, card_id:number) {
+    const resp = await fetch(`${this.baseUrl}cancelBet/${raffle_id}/${user_id}/${card_id}`, 
+      { method: 'POST' });   
+      return resp.json();
+    }
+    
+     async getRaffleDetails(raffle_id: number){
+      const resp = await fetch(`${this.baseUrl}getRaffleDetails/${raffle_id}`);
+      // const groupName = await resp.json();
+      return resp.json();
+    }
 }

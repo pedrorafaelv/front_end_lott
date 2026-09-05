@@ -32,7 +32,7 @@ import { RaffleComponent } from './raffle/raffle.component';
 import { PoliticsComponent } from '../components/politics/politics.component';
 import { PublicityComponent } from '../components/publicity/publicity.component';
 import { CardRaffleComponent } from './card-raffle/card-raffle.component';
-import { PersonalDataComponent } from './personal-data/personal-data.component';
+import { PersonalDataComponent } from '../components/personal-data/personal-data.component';
 import { CallbackComponent } from './callback/callback.component';
 import { ProfileComponent } from './profile/profile.component';
 import { MessageComponent } from './message/message.component';
@@ -47,15 +47,12 @@ import { RecordsComponent } from '../components/records/records.component';
   declarations: [
     BuscarComponent,
     PeliculasComponent,
-    DashboardComponent,
     AccountComponent,
     LogOutComponent,
     PoliticsComponent,
     CardRaffleComponent,
-    PersonalDataComponent,
     CallbackComponent,
     MovesComponent,
-    EmailConfirmationComponent,
   ],
   imports: [
     CommonModule,
@@ -70,8 +67,10 @@ import { RecordsComponent } from '../components/records/records.component';
     MatFormFieldModule,
     MatNativeDateModule,
     MatInputModule,
+    DashboardComponent,
     GroupsComponent,
     UsersComponent,
+    EmailConfirmationComponent,
     JuegoComponent,
     SingUpComponent,
     ProfileComponent,

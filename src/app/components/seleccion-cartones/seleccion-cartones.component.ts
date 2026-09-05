@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoteriaService } from '../../services/loteria.service';
-import { Carton } from '../../models/carton.model';
 import { CarruselCartonesComponent } from '../carrusel-cartones/carrusel-cartones.component';
 import { CartonSeleccionadoComponent } from '../carton-seleccionado/carton-seleccionado.component';
+import { Card } from '../../interfaces/get-cards-raffle-response';
+import { Carton } from '../../models/carton.model';
+import { CardResponse } from '../../interfaces/card-response';
+import { RaffleService } from '../../services/raffle.service';
+import { CartonesService } from '../../services/cartones.service';
 
 @Component({
   selector: 'app-seleccion-cartones',
@@ -14,22 +18,35 @@ import { CartonSeleccionadoComponent } from '../carton-seleccionado/carton-selec
 })
 export class SeleccionCartonesComponent implements OnInit {
   cartones: Carton[] = [];
+  cards: Card[]=[];
   seleccionados: number[] = [];
-  jugadorId: string = '';
-
-  constructor(private loteriaService: LoteriaService) {}
-
+  @Input() jugadorId: string = '';
+  @Input() raffleId:string = "";
+  
+  constructor(private loteriaService: LoteriaService, 
+    private  RaffleService:RaffleService,
+    private Cartonesservice:CartonesService
+  ) {}
+  
   ngOnInit(): void {
-    this.loteriaService.cartones$.subscribe(cartones => {
-      this.cartones = cartones;
-    });
+    
+    this.Cartonesservice.getAvailableCards(String(this.raffleId)).subscribe(
+      (resp: CardResponse) => {
+        this.cards = resp.Card;
+      },
+      (error: any) => {
+        console.log(error);
+      }
+    );
 
-    this.loteriaService.seleccionados$.subscribe(seleccionados => {
-      this.seleccionados = seleccionados;
-    });
+    // this.loteriaService.seleccionados$.subscribe(seleccionados => {
+    //   this.seleccionados = seleccionados;
+    // });
 
-    this.jugadorId = this.loteriaService.getJugadorActual().id;
+    // this.jugadorId = this.loteriaService.getJugadorActual().id;
   }
+
+  
 
   onSeleccionarCarton(id: number): void {
     const exito = this.loteriaService.toggleCarton(id);
@@ -58,5 +75,14 @@ export class SeleccionCartonesComponent implements OnInit {
       const carton = disponibles[randomIndex];
       this.loteriaService.simularSeleccionOtroJugador(carton.id);
     }
+  }
+   async getCardsAvailables(){
+    this.Cartonesservice.getAvailableCards(String(this.raffleId))
+      .subscribe((resp: any) => {
+          this.cartones = resp.Card;
+        },
+        (error: any) => {
+          console.log(error);
+        });
   }
 }

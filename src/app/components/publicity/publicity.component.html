@@ -1,4 +1,64 @@
-<p>publicity works!</p>
-<div class="caja">
-    <img src="../assets/images/no-image.jpg" class="img-thumbnail" appNotImage/>
+<div class="publicity-container"
+     (mouseenter)="onMouseEnter()"
+     (mouseleave)="onMouseLeave()">
+    
+    <!-- Contenedor del carrusel -->
+    <div class="carousel-container">
+        <!-- Imágenes -->
+        <div class="carousel-track"
+             [style.transform]="'translateX(-' + (currentIndex * 100) + '%)'">
+            
+            <div *ngFor="let image of images; let i = index"
+                 class="carousel-slide"
+                 (click)="onImageClick(image)">
+                
+                <img [src]="image.imageUrl"
+                     [alt]="image.title"
+                     class="slide-image">
+                
+                <div class="slide-overlay">
+                    <div class="slide-content">
+                        <h2 class="slide-title">{{ image.title }}</h2>
+                        <p class="slide-description">{{ image.description }}</p>
+                        <button class="slide-cta" *ngIf="image.link">
+                            Ver más
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Badge de indicador de posición -->
+                <div class="slide-badge">
+                    {{ i + 1 }} / {{ images.length }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controles -->
+    <button *ngIf="showControls" 
+            class="carousel-btn prev-btn" 
+            (click)="prevSlide()">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    
+    <button *ngIf="showControls" 
+            class="carousel-btn next-btn" 
+            (click)="nextSlide()">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <!-- Indicadores -->
+    <div *ngIf="showIndicators" class="carousel-indicators">
+        <div *ngFor="let image of images; let i = index"
+             class="indicator"
+             [class.active]="i === currentIndex"
+             (click)="goToSlide(i)">
+        </div>
+    </div>
+
+    <!-- Temporizador visual -->
+    <div class="carousel-timer" *ngIf="autoPlay">
+        <div class="timer-bar" [style.animationDuration]="(intervalTime / 1000) + 's'">
+        </div>
+    </div>
 </div>
