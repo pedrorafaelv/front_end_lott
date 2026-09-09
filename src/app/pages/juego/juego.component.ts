@@ -20,6 +20,7 @@ import { RecordsComponent } from '../../components/records/records.component';
 // import { CdkVirtualScrollViewport } from "@angular/cdk/scrolling";
 import { PipesModule } from "../../pipes/pipes.module";
 import { CartonComponent } from '../../components/carton/carton.component';
+import { GetCardAvailableRaffleResponse } from '../../interfaces/get-card-available-raffle-response';
 
 @Component({
     selector: 'app-juego',
@@ -43,10 +44,11 @@ export class JuegoComponent implements OnInit {
  raffle!: Raffle;
  grupos: Group[]=[];
  cartones: Card[]=[];
+ MyCards: Card[]=[];
  fichaGroupName: string = '';
  forma: FormGroup;
  localId: string = '';
- userId: string= '';
+ userId: number= 0;
  lastRecord: any;
  activeRaffles: any ;
  faUsersRectangle= faUsersRectangle;
@@ -73,23 +75,33 @@ export class JuegoComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.raffleId = params['raffleId'];
-      console.log('ID del sorteo en componente juego:', this.raffleId);
+      // console.log('ID del sorteo en componente juego:', this.raffleId);
       });
     this.localId = this.AuthService.getLocalId();
     if (this.localId){
       this.getInfo();
      } 
-    console.log('raffleId', this.raffleId);
+    // console.log('raffleId', this.raffleId);
     if (this.raffleId != 0){
       this.getFichas();
-      this.getCardsAvailables();
-      this.getRaffleDetails(this.raffleId);
+      // this.getCardsRafflesByUser();
+      // this.getCardsAvailables();
+      this.getAvailableCardsByRaffle();
+      this.getRaffleDetails();
     }
   }
 
-  async getRaffleDetails(raffleId: number): Promise<RaffleDetails | undefined> {
+async getAvailableCardsByRaffle(): Promise<GetCardAvailableRaffleResponse> {
+    const data = await this.RaffleService.getAvailableCardsByRaffle(this.raffleId, this.userId);
+    console.log('📦 Datos desde el servicio: RaffleServices en juego.component', data.data.Card.data);
+    this.MyCards = data.data.Card.data;
+
+    // console.log('🔍 Data en JSON:', JSON.stringify(data, null, 2));
+    return data;
+  }
+  async getRaffleDetails(): Promise<RaffleDetails | undefined> {
     try {
-        const response = await this.RaffleService.getRaffleDetails(raffleId);
+        const response = await this.RaffleService.getRaffleDetails(this.raffleId);
         this.RaffleDetails = response;
         // console.log('✅ Detalles del sorteo:', this.RaffleDetails);
         // console.log('this.RaffleDetails?.data.groupficha.name:', this.RaffleDetails?.data.groupficha.name);
@@ -108,15 +120,20 @@ export class JuegoComponent implements OnInit {
   async getInfo(){
     const user =  await this.UserService.getUserByLocalId(this.localId);
     this.userId = user.user[0]['id'];
-    const group = await this.UserService.getGroupByUser(this.userId);
-    this.grupos = group.Group;
-    if (this.grupos.length > 0){
-      const actiRaffle = await this.getActiveRaffle();
-       setTimeout(async ()=>{
-         const fich = await this.getFichas();
-         const cartons= await this.getCardsRafflesByUser();
-       }, 500);
+    console.log('userId', this.userId);
+    if(this.userId){
+      const MyCards = await this.getAvailableCardsByRaffle();
+      console.log('MyCards', MyCards);
     }
+    // const group = await this.UserService.getGroupByUser(this.userId);
+    // this.grupos = group.Group;
+    // if (this.grupos.length > 0){
+    //   const actiRaffle = await this.getActiveRaffle();
+    //    setTimeout(async ()=>{
+    //      const fich = await this.getFichas();
+    //      const cartons= await this.getCardsRafflesByUser();
+    //    }, 500);
+    // }
   }
 
   // onChangeGrupo(){
@@ -164,6 +181,7 @@ async getNextRecord(){
    this.lineWinner = resp.lineWinner;
    this.fullWinner = resp.fullWinner;
 }
+
 async getCardsAvailables(){
     this.Cartones.getAvailableCards(String(this.raffleId))
       .subscribe((resp: any) => {

@@ -5,7 +5,7 @@
     <!-- <div class="publicidad-content"> 
         <div class="ad-flag"><i class="fas fa-flag"></i></div> -->
         <div class="ad-text">¡Sorteo especial este viernes! Premio mayor de $100,000</div>
-        <app-carrusel-cartones [raffleId]="raffleId"></app-carrusel-cartones>
+        <app-carrusel-cartones [raffleId]="raffleId" [UserId]="userId"></app-carrusel-cartones>
         <!-- <div class="ad-flag"><i class="fas fa-flag"></i></div>
         <div class="stats-container">
        
@@ -15,9 +15,9 @@
     <!-- Panel izquierdo -->
     <div class="left-panel">
       <!-- Publicidad en panel lateral -->
-      <div class="publicidad-side">
+      <!-- <div class="publicidad-side"> -->
         <app-publicity></app-publicity>
-      </div>
+      <!-- </div> -->
     </div>
     <!-- Panel central -->
     <div class="center-panel">
@@ -29,6 +29,10 @@
           <div class="stat">
             <div class="stat-label">Cartones Jugados:
             {{cartones?.length || 0}}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Sorteo ID: {{raffleId}}</div>
+            
           </div>
           <button type="button" (click)=getNewRecord() class="card-select-btn">
             <i class="fas fa-plus"></i> Nueva Ficha
@@ -58,7 +62,7 @@
               <!-- <app-carton-seleccionado [raffleId]="raffleId" [Cartones]=" cartones"></app-carton-seleccionado> -->
                <!-- <div class="selected-card-item">  -->
                  <!-- <div class="selected-card-mini">  -->
-          <div *ngFor="let carton of cartones" class="carton-item">
+          <div *ngFor="let carton of MyCards" class="carton-item">
               <div class="card">
                 <div class="card-title">Cartón{{ carton.id }}</div>
                 <app-carton [carton]="carton"></app-carton>
@@ -78,7 +82,6 @@
         <div class="publicidad-side">
         <app-publicity></app-publicity>
       </div>
-        <!-- <h3><i class="fas fa-info-circle"></i> Información del Sorteo</h3> -->
         <div class="sorteo-info">
           <div class="info-item">
             <span class="label">Premio:</span>

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { GetFichasResponse, Ficha } from '../interfaces/get-fichas-response';
 import { Observable, map, tap } from 'rxjs';
 import { GetCardsRaffleResponse } from '../interfaces/get-cards-raffle-response';
+import { GetCardAvailableRaffleResponse } from '../interfaces/get-card-available-raffle-response';
 import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ export class RaffleService {
     `${this.baseUrl}NewRaffle/${texto}`,  { title: 'Angular POST Request Example'}
   ).pipe(
     map( resp=>{
+      console.log('respuesta de putRaffle', resp);
       return resp;
     })
   );
@@ -45,22 +47,25 @@ export class RaffleService {
     );
 }
 
- getCardsRaffleByUser(raffleId: string, userId: string){
+ getCardsRaffleByUser(raffleId: string, userId: number){
   return this.http.get<GetCardsRaffleResponse>(`${this.baseUrl}getCardsRaffleByUser/${raffleId}/${userId}`)
  }
   
  getAutoRaffle(texto: string){
   return this.http.get(`${this.baseUrl}autoRaffle/${texto}`)
  }
+ 
 
-  putCard(raffle: number, card_id : number, localId: string): any {
-   // console.log('asignando un carton al usuario');
-   return this.http.post(`${this.baseUrl}putCard/${raffle}/${card_id}/${localId}`, {title:'put card post service'})
+ /**Asigna una carton al usario para el sorteo seleccionado  */
+ putCard(raffleId: number, cardId: number, userId: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/putCard/${raffleId}/${cardId}/${userId}`, {});
   }
 
+  /**Obtiene los sorteos activos por grupo  */
   getActiveRafflesByGroup(group_id: number){
     return this.http.get(`${this.baseUrl}getActiveRafflesByGroup/${group_id}`)
   }
+
 
   async getActiveRafflesByGroupAs(group_id:number){
     const respuesta = await fetch( (`${this.baseUrl}getActiveRafflesByGroup/${group_id}`))
@@ -68,13 +73,13 @@ export class RaffleService {
     return datos;
   }
   
-  async getCardsRaffleByUserAs(raffle_id: number, user_id: string){
+  async getCardsRaffleByUserAs(raffle_id: number, user_id: number){
    const resp = await fetch ((`${this.baseUrl}getCardsRaffleByUser/${raffle_id}/${user_id}`))
    const data = await resp.json();
    return data;
   }
 
-  async getActiveRafflesByUser(user_id: string ){
+  async getActiveRafflesByUser(user_id: number ){
     const resp =  await fetch((`${this.baseUrl}getActiveRafflesByUser/${user_id}`))
     const data= await resp.json();
     return data;
@@ -93,7 +98,7 @@ export class RaffleService {
    return  fichas; 
 
   }
-
+/** Obtiene una nueva ficha para el sorteo solo lo usa el administrador del sorteo */
    async getNextRecord(raffle:number){
     const resp =  await fetch(`${this.baseUrl}getNewRecord/${raffle}`)
     const ficha = resp.json();
@@ -102,15 +107,31 @@ export class RaffleService {
 
    }
 
-    async deleteCard(raffle_id:number, user_id:string, card_id:number) {
+   /**elimina una apuesta de un carton  */
+    async deleteCard(raffle_id:number, user_id:number, card_id:number) {
     const resp = await fetch(`${this.baseUrl}cancelBet/${raffle_id}/${user_id}/${card_id}`, 
       { method: 'POST' });   
       return resp.json();
     }
-    
+
+
+    /**obtiene los detalles del sorteo se usa para obtener el nombre del grupo de fichas  */
      async getRaffleDetails(raffle_id: number){
       const resp = await fetch(`${this.baseUrl}getRaffleDetails/${raffle_id}`);
       // const groupName = await resp.json();
       return resp.json();
     }
+
+    /*Obtiene los cartones disponibles para el sorteo seleccionado */
+    async getAvailableCardsByRaffle(raffle: number, user_id?: number): Promise<GetCardAvailableRaffleResponse> {
+      if (user_id) {
+        const resp = await fetch(`${this.baseUrl}getAvailableCardsByRaffle/${raffle}?user_id=${user_id}`);
+        const data = await resp.json();
+        return data;
+      }
+      const resp = await fetch(`${this.baseUrl}getAvailableCardsByRaffle/${raffle}`);
+      const data = await resp.json();
+      return data;
+    }
 }
+         

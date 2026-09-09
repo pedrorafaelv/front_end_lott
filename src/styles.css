@@ -11760,6 +11760,13 @@ fieldset:disabled .btn {
   padding: 10px 0;
 }
 
+.carrusel-wrapper h5 {
+  text-align: right;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: var(--color-light);
+}
+
 .carousel-container {
   overflow: hidden;
   border-radius: 28px;

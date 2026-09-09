@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs';
 
+interface AuthResponse {
+  idToken: string;
+  localId: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,49 +29,50 @@ export class AuthService {
 private url= 'https://identitytoolkit.googleapis.com/v1';
 private apiKey = 'AIzaSyAB-PXIBMGdxsnw1TqIfI9ON_9GZW2D-Co';
 userToken: any;
-localId: string;
-email: string;
-localStorage: Storage;
+localId!: string;
+email!: string;
+localStorage!: Storage;
   constructor(private http: HttpClient) { 
      this.leerToken();
   }
 
 
-   login(email, pass){
+   login(email:string, pass:string){
     const authData={
       email: email,
       password: pass,
       returnSecureToken: true,
     };
-    return this.http.post(
+    return this.http.post<AuthResponse>(
       `${this.url}/accounts:signInWithPassword?key=${this.apiKey}`,authData
     ).pipe(
       map( resp=>{
-        this.guardarToken(resp['idToken'] );
-        this.guardarProfile(resp['localId']);
+        this.guardarToken(resp.idToken);
+        this.guardarProfile(resp.localId);
+        console.log('respuesta de login', resp);
         return resp;
       })
     );
    }
 
-   nuevoUsuario(email, pass){
+   nuevoUsuario(email:string, pass:string){
     const authData ={
       email: email,
       password: pass,
       returnSecureToken: true
     };
-    return this.http.post(
+    return this.http.post<AuthResponse>(
       `${this.url}/accounts:signUp?key=${ this.apiKey}`,authData
     ).pipe(
       map( resp=>{
-        this.guardarToken(resp['idToken'] );
-        this.guardarProfile(resp['localId']);
+        this.guardarToken(resp.idToken);
+        this.guardarProfile(resp.localId);
         return resp;
       })
     );
    }
 
-   cambiarContrasena(idToken, newPass){
+   cambiarContrasena(idToken:string, newPass:string){
     const authData ={
       idtoken: idToken,
       newPass: newPass,
@@ -77,7 +83,7 @@ localStorage: Storage;
     );    
    }
 
-   passwordResetByemail(email){
+   passwordResetByemail(email:string){
     const authData={
       requestType: "PASSWORD_RESET",
       email: email
@@ -87,7 +93,7 @@ localStorage: Storage;
     );  
    }
 
-   confirmResetPassword(resetCod, newPass){
+   confirmResetPassword(resetCod:string, newPass:string){
     const authData={
       oobCode: resetCod,
       newPassword: newPass
@@ -139,16 +145,18 @@ localStorage: Storage;
       localStorage.removeItem('expira');
     // }
   }
-  getEmail(){
-    this.email =localStorage.getItem('email'); 
-     return this.email; 
+  getEmail(): string {
+    this.email = localStorage.getItem('email') ?? '';
+    return this.email;
   }
-  getLocalId(){
-    this.localId = localStorage.getItem('localId'); 
-    return this.localId; 
+
+  getLocalId(): string {
+    this.localId = localStorage.getItem('localId') ?? '';
+    return this.localId;
   }
+
   private guardarProfile(localId: string){
-    localStorage.setItem('localId',localId);
-   }
+    localStorage.setItem('localId', localId);
+  }
  
 }

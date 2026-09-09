@@ -5,7 +5,7 @@ export interface GetCardsRaffleResponse {
 
 export interface Card {
     id:             number;
-    name:           null;
+    name:           string| null;
     pos01:          number;
     pos02:          number;
     pos03:          number;
@@ -87,11 +87,13 @@ export interface Card {
     desc_comb14:    string;
     desc_combTotal: string;
     active:         string;
-    groupFicha_id?:  null;
+    groupFicha_id?:  number|null;
     start_date:     Date;
-    end_date:       null;
-    created_at:     Date;
-    updated_at:     Date;
+    end_date:       Date|null;
+    created_at:     Date|null;
+    updated_at:     Date|null;
+    card_raffle_id?: number|null;
+
 }
 
 export interface Ficha {

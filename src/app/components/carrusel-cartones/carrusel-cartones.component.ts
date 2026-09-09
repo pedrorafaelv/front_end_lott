@@ -2,13 +2,14 @@ import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, AfterVie
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Carton } from '../../models/carton.model';
-import { CardResponse } from '../../interfaces/card-response';
-import { Observable, tap } from 'rxjs';
+// import { CardResponse } from '../../interfaces/card-response';
+// import { Observable, tap } from 'rxjs';
 import { CartonesService } from '../../services/cartones.service';
 import { Card } from '../../interfaces/get-cards-raffle-response';
 import { CartonComponent } from '../../components/carton/carton.component';
 import Swal from 'sweetalert2';
 import { RaffleService } from '../../services/raffle.service';
+import { GetCardAvailableRaffleResponse } from '../../interfaces/get-card-available-raffle-response';
 
 @Component({
   selector: 'app-carrusel-cartones',
@@ -21,7 +22,7 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
   @Input() cartones: Card[] = [];
   @Input() seleccionados: number[] = [];
   @Input() JugadorId: string = '';
-  @Input() UserId: string = '';
+  @Input() UserId: number = 0;
   @Input() raffleId: number = 0;
   @Output() seleccionar = new EventEmitter<number>();
 
@@ -29,6 +30,8 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
 
   currentIndex = 0;
   cardsPerView = 4;
+  quantityAvailableCards: number = 0;  
+  paginationCards: Promise<GetCardAvailableRaffleResponse> | undefined;
   private readonly http: HttpClient;
   baseUrl = '';
 
@@ -42,9 +45,12 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
      console.log('raffleId en carrusel-cartones.component =', this.raffleId);
-
+    //  if (this.UserId==0){
+      console.log('UserId en carrusel-cartones.component =', this.UserId);
+    //  }
     if (this.raffleId != 0){
-      this.getCardsAvailables();
+      // this.getCardsAvailables();
+      this.paginationCards = this.getAvailableCardsByRaffle(this.raffleId);       
       // console.log(this.getCardsAvailables());
     }
   }
@@ -61,15 +67,26 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
     return this.cartones;
   }
 
-  getAvailableCards(raffle: string): Observable<CardResponse> {
-  return this.http.get<CardResponse>(`${this.baseUrl}/card/getAvailableCards/${raffle}`)
-    .pipe(
-      tap((data: CardResponse) => {
-        console.log('📦 Datos desde el servicio: getAvailableCards', data);
-        console.log('🔍 Data en JSON:', JSON.stringify(data, null, 2));
-      })
-    );
-}
+   async getCardsAvailables(){
+    this.CartonesService.getAvailableCards(String(this.raffleId))
+      .subscribe((resp: any) => {
+          this.cartones = resp.Card;
+        },
+        (error: any) => {
+          console.log(error);
+        });
+  }
+
+ /**Obtiene los cartones disponibles para el sorteo seleccionado  vienen de la tabla cardRaffle  con user_id == null*/
+  async getAvailableCardsByRaffle(raffle: number): Promise<GetCardAvailableRaffleResponse> {
+    const data = await this.RaffleService.getAvailableCardsByRaffle(this.raffleId);
+    // console.log('📦 Datos desde el servicio: RaffleServices en carrusel-cartones.component', data.data.Card.data);
+    this.cartones = data.data.Card.data;
+    this.quantityAvailableCards = this.cartones.length;
+
+    // console.log('🔍 Data en JSON:', JSON.stringify(data, null, 2));
+    return data;
+  }
 
  seleccionarCarton(id: number): void {
     Swal.fire({
@@ -97,9 +114,9 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
     return this.seleccionados.includes(id);
   }
 
-  get getCartsOfRaffle(): Card[] {
-    return this.cartones;
-  }
+  // get getCartsOfRaffle(): Card[] {
+  //   return this.cartones;
+  // }
 
 
   isTakenByOther(carton: Carton): boolean {
@@ -150,13 +167,6 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
       this.track.nativeElement.style.transform = `translateX(-${offset}px)`;
     }
   }
-   async getCardsAvailables(){
-    this.CartonesService.getAvailableCards(String(this.raffleId))
-      .subscribe((resp: any) => {
-          this.cartones = resp.Card;
-        },
-        (error: any) => {
-          console.log(error);
-        });
-  }
+  
+  
 }
