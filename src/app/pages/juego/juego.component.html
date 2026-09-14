@@ -1,15 +1,19 @@
 
 <div class="juego-container">
   <!-- Encabezado estilo lotería -->
-  <div class="loteria-header">
+  <div class="loteria-header" [hidden]="fichas.length > 2">
     <!-- <div class="publicidad-content"> 
         <div class="ad-flag"><i class="fas fa-flag"></i></div> -->
         <div class="ad-text">¡Sorteo especial este viernes! Premio mayor de $100,000</div>
-        <app-carrusel-cartones [raffleId]="raffleId" [UserId]="userId"></app-carrusel-cartones>
+              <app-carrusel-cartones
+                  
+                  [raffleId]="raffleId" [UserId]="userId"
+                  (actualizarSaldo)="onActualizarSaldo($any($event))"
+                  (actualizarMisCartones)="onActualizarMisCartones($any($event))">
+              </app-carrusel-cartones>
         <!-- <div class="ad-flag"><i class="fas fa-flag"></i></div>
-        <div class="stats-container">
-       
-    </div> -->
+        <div class="stats-container">-->
+    <!-- </div>  -->
   </div>
   <div class="main-content">
     <!-- Panel izquierdo -->

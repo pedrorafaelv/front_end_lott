@@ -418,3 +418,6 @@
     transform: translateY(0) scale(1);
   }
 }
+ [hidden] {
+    display: none !important;
+}

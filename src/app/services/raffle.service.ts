@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GetFichasResponse, Ficha } from '../interfaces/get-fichas-response';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, catchError, map, tap, throwError } from 'rxjs';
 import { GetCardsRaffleResponse } from '../interfaces/get-cards-raffle-response';
 import { GetCardAvailableRaffleResponse } from '../interfaces/get-card-available-raffle-response';
 import { environment } from '../../environments/environment';
+import { NewRecordResponse } from '../interfaces/get-new-record-response';
 @Injectable({
   providedIn: 'root'
 })
@@ -47,7 +48,7 @@ export class RaffleService {
     );
 }
 
- getCardsRaffleByUser(raffleId: string, userId: number){
+ getCardsRaffleByUser(raffleId: number, userId: number){
   return this.http.get<GetCardsRaffleResponse>(`${this.baseUrl}getCardsRaffleByUser/${raffleId}/${userId}`)
  }
   
@@ -58,7 +59,7 @@ export class RaffleService {
 
  /**Asigna una carton al usario para el sorteo seleccionado  */
  putCard(raffleId: number, cardId: number, userId: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/putCard/${raffleId}/${cardId}/${userId}`, {});
+    return this.http.post(`${this.baseUrl}putCard/${raffleId}/${cardId}/${userId}`, {});
   }
 
   /**Obtiene los sorteos activos por grupo  */
@@ -96,23 +97,74 @@ export class RaffleService {
    const resp = await fetch((`${this.baseUrl}getFichas/${raffle_id}`))
    const fichas = resp.json();
    return  fichas; 
-
   }
-/** Obtiene una nueva ficha para el sorteo solo lo usa el administrador del sorteo */
-   async getNextRecord(raffle:number){
-    const resp =  await fetch(`${this.baseUrl}getNewRecord/${raffle}`)
-    const ficha = resp.json();
-    console.log('obteniendo siguiente ficha para la rifa', raffle, 'ficha obtenida', ficha);
-    return ficha;
 
-   }
+/** Obtiene una nueva ficha para el sorteo solo lo usa el administrador del sorteo */
+  //  async getNextRecord(raffle:number){
+  //   const resp =  await fetch(`${this.baseUrl}getNewRecord/${raffle}`)
+  //   const ficha = resp.json();
+  //   console.log('obteniendo siguiente ficha para la rifa', raffle, 'ficha obtenida', ficha);
+  //   return ficha;
+
+  //  }
+
+getNextRecord(raffleId: number): Observable<NewRecordResponse> {
+    return this.http.get<NewRecordResponse>(`${this.baseUrl}getNewRecord/${raffleId}`)
+      .pipe(
+          catchError((error) => {
+              // El error HTTP viene con el body completo de la API
+              // Extraer el mensaje del backend
+              const errorMessage = error.error?.message || 'Error al obtener la ficha';
+              const errorCode = error.error?.code || 'ERR-UNKNOWN';
+              const errorData = error.error?.data || null;
+
+              // Crear un error enriquecido
+              const enrichedError = {
+                  status: error.status,
+                  message: errorMessage,
+                  code: errorCode,
+                  data: errorData
+              };
+
+              // console.error('❌ Error en getNextRecord:', enrichedError);
+              return throwError(() => enrichedError);
+          })
+      );
+    }
+
 
    /**elimina una apuesta de un carton  */
-    async deleteCard(raffle_id:number, user_id:number, card_id:number) {
-    const resp = await fetch(`${this.baseUrl}cancelBet/${raffle_id}/${user_id}/${card_id}`, 
-      { method: 'POST' });   
-      return resp.json();
+deleteCard(raffleId:number, user_id:number, card_id:number): Observable<NewRecordResponse> {
+    return this.http.post<NewRecordResponse>(`${this.baseUrl}cancelBet/${raffleId}/${card_id}/${user_id}`, {})
+      .pipe(
+          catchError((error) => {
+              // El error HTTP viene con el body completo de la API
+              // Extraer el mensaje del backend
+              const errorMessage = error.error?.message || 'Error alEliminar el Cartón';
+              const errorCode = error.error?.code || 'ERR-UNKNOWN';
+              const errorData = error.error?.data || null;
+
+              // Crear un error enriquecido
+              const enrichedError = {
+                  status: error.status,
+                  message: errorMessage,
+                  code: errorCode,
+                  data: errorData
+              };
+
+              // console.error('❌ Error en getNextRecord:', enrichedError);
+              return throwError(() => enrichedError);
+          })
+      );
     }
+
+
+
+    // async deleteCard(raffle_id:number, user_id:number, card_id:number) {
+    // const resp = await fetch(`${this.baseUrl}cancelBet/${raffle_id}/${user_id}/${card_id}`, 
+    //   { method: 'POST' });   
+    //   return resp.json();
+    // }
 
 
     /**obtiene los detalles del sorteo se usa para obtener el nombre del grupo de fichas  */
