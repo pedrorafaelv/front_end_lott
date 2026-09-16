@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { RaffleService } from '../../services/raffle.service';
 import { Ficha, Raffle } from '../../interfaces/get-fichas-response';
+import { NewFicha } from '../../interfaces/get-new-record-response';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Group } from '../../interfaces/get-groups-response';
 import { AuthService } from '../../services/auth.service';
@@ -21,6 +22,7 @@ import { CartonComponent } from '../../components/carton/carton.component';
 import { GetCardAvailableRaffleResponse } from '../../interfaces/get-card-available-raffle-response';
 import { NewRecordResponse } from '../../interfaces/get-new-record-response';
 import { CANCEL_BET_MESSAGES, CancelBetResponse, isCancelBetError, isCancelBetSuccess } from '../../interfaces/cancel-bet-response';
+import { BouncingBallComponent } from '../../components/bouncing-ball/bouncing-ball.component';
 
 @Component({
     selector: 'app-juego',
@@ -33,6 +35,7 @@ import { CANCEL_BET_MESSAGES, CancelBetResponse, isCancelBetError, isCancelBetSu
     PublicityComponent,
     RecordsComponent,
     PipesModule,
+    BouncingBallComponent
 ],
     templateUrl: './juego.component.html',
     styleUrls: ['./juego.component.css']
@@ -48,7 +51,6 @@ export class JuegoComponent implements OnInit {
  forma: FormGroup;
  localId: string = '';
  userId: number= 0;
- lastRecord: any;
  activeRaffles: any ;
  faUsersRectangle= faUsersRectangle;
  faPeopleGroup = faPeopleGroup;
@@ -56,11 +58,16 @@ export class JuegoComponent implements OnInit {
  lineWinner: any;
  fullWinner: any; 
  saldo: number = 0;
- countOfRecord: number=0;
+ recordGroup: string= 'primer'
  RaffleDetails: RaffleDetails | undefined;
  public color: string = 'black';
-     sorteoCerrado: boolean = false;
-
+ sorteoCerrado: boolean = false;
+ imagenUrl:string="";
+ lastRecord: NewFicha | undefined;
+ nombreFichaActual:string ="";
+ imagenFichaActual:string ="";
+ baseUrlImage:string = './assets/images/full_circle_cari_ia/';
+  
 @ViewChild('scroll') scroll!: ElementRef;
 @Output() eliminar = new EventEmitter<number>();
 
@@ -133,23 +140,15 @@ async getAvailableCardsByRaffle(): Promise<GetCardAvailableRaffleResponse> {
       return undefined;
     }
 }
-async getInfo(){
+
+  async getInfo(){
     const user =  await this.UserService.getUserByLocalId(this.localId);
     this.userId = user.user[0]['id'];
-    console.log('userId', this.userId);
+    // console.log('userId', this.userId);
     if(this.userId){
       const MyCards = await this.getAvailableCardsByRaffle();
-      console.log('MyCards', MyCards);
+      // console.log('MyCards', MyCards);
     }
-    // const group = await this.UserService.getGroupByUser(this.userId);
-    // this.grupos = group.Group;
-    // if (this.grupos.length > 0){
-    //   const actiRaffle = await this.getActiveRaffle();
-    //    setTimeout(async ()=>{
-    //      const fich = await this.getFichas();
-    //      const cartons= await this.getCardsRafflesByUser();
-    //    }, 500);
-    // }
   }
 
     async getCardsRafflesByUser(){
@@ -161,8 +160,7 @@ async getInfo(){
      const response = await this.RaffleService.getFichasAs(this.raffleId);
      this.fichas = response.Fichas;
      this.raffle = response.Raffle; 
-     this.countOfRecord =this.fichas.length;
-     console.log('fichas', this.fichas, 'cantidad de fichas=' ,this.countOfRecord);
+     
    }
 
    async getActiveRaffle(){
@@ -172,28 +170,7 @@ async getInfo(){
      this.fichaGroupName= resp['raffles'][0]['groupfichas']; 
    }
     
- async getNextRecord(){
-   const resp = this.RaffleService.getNextRecord(this.raffleId).subscribe({
-     next: (resp: NewRecordResponse) => {
-       ;
-       console.log('resp en getnetxRecord', resp);
-     },
-     error: (error: any) => {
-
-       console.error('Error al obtener la siguiente ficha:', error);
-      Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: error.message,            
-          confirmButtonText: 'Aceptar',
-          confirmButtonColor: '#176585'
-       });
-     }
-     //  this.lastRecord = resp.ficha; 
-     //  this.lineWinner = resp.lineWinner;
-     //  this.fullWinner = resp.fullWinner;
-   })
-}
+  
 
 async getCardsAvailables(){
     this.Cartones.getAvailableCards(String(this.raffleId))
@@ -203,9 +180,9 @@ async getCardsAvailables(){
         (error: any) => {
           console.log(error);
         });
-  }
+}
 
- eliminarCarton(id:number): void {
+eliminarCarton(id:number): void {
     Swal.fire({
           icon: 'question',
           title: 'Confirmar',
@@ -218,8 +195,7 @@ async getCardsAvailables(){
           if (result.isConfirmed) {
             this.RaffleService.deleteCard(this.raffleId, this.userId, id).subscribe(
               (resp: any) => {
-                console.log('resp en deleteCard', resp);
-
+                // console.log('resp en deleteCard', resp);
                 const cancelBetResponse = resp as CancelBetResponse;
                 if (isCancelBetSuccess(cancelBetResponse)) {
                   Swal.fire({
@@ -299,21 +275,50 @@ async getCardsAvailables(){
         });
 
   }
-   async  getNewRecord(){
+  
+  async getNextRecord(){
+    const resp = this.RaffleService.getNextRecord(this.raffleId).subscribe({
+      next: (resp: NewRecordResponse) => { 
+        this.lastRecord= resp.data?.ficha;
+        this.lineWinner = resp.data?.winners.line;
+        this.fullWinner = resp.data?.winners.full;
+        this.imagenFichaActual= this.baseUrlImage +(resp.data?.ficha?.image ?? "");
+        // this.imagenFichaActual= this.baseUrlImage + "376_p.png";
+        this.nombreFichaActual =  resp.data?.ficha?.name ?? "";
+        console.log('resp en getnetxRecord', resp);
+
+     },
+     error: (error: any) => {
+      console.error('Error al obtener la siguiente ficha:', error);
+      Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.message,            
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#176585'
+       }); 
+     }
+     //  this.lastRecord = resp.ficha; 
+   })
+}
+
+  async  getNewRecord(){
     // console.log('getNewRecord');
     this.existe = -1;
     const nf= await this.getNextRecord();
     const fs= await this.getFichas();
-     console.log('fichas en getnewrecord', this.fichas);
+    // console.log('fichas en getnewrecord', this.fichas);
+    const currentRecordImage = this.lastRecord?.image ?? '';
+
     this.cartones.forEach(async (carton: any)=>{
-           this.existe = carton.desc_combTotal.indexOf(this.lastRecord.image);
+           this.existe = carton?.desc_combTotal?.indexOf(currentRecordImage) ?? -1;
           //  this.scroll.nativeElement.scrollTop= this.scroll.nativeElement.scrollHeight;
            if (this.existe != -1){
               console.log('existe', this.existe);
               Swal.fire({
                 position: 'top-end',
                 text: 'la ficha está en el(los) cartones:'+carton.id,
-                imageUrl: './assets/capicon/black/'+this.lastRecord.image,
+                imageUrl: './assets/capicon/black/'+currentRecordImage,
                 imageWidth: 30,
                 imageHeight: 30,
                 imageAlt: 'Custom image',

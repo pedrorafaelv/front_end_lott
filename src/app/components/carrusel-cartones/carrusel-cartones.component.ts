@@ -18,12 +18,15 @@ import { GetCardAvailableRaffleResponse } from '../../interfaces/get-card-availa
   templateUrl: './carrusel-cartones.component.html',
   styleUrls: ['./carrusel-cartones.component.css']
 })
+
 export class CarruselCartonesComponent implements OnInit, AfterViewInit {
   @Input() cartones: Card[] = [];
   @Input() seleccionados: number[] = [];
   @Input() JugadorId: string = '';
   @Input() UserId: number = 0;
   @Input() raffleId: number = 0;
+  @Input() recordGroup: string = 'primer';
+
   @Output() seleccionar = new EventEmitter<number>();
   @Output() actualizarSaldo = new EventEmitter<number>();
   @Output() actualizarMisCartones = new EventEmitter<any[]>();
@@ -32,14 +35,13 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
 
   currentIndex = 0;
   cardsPerView = 4;
-  quantityAvailableCards: number = 0;  
+  quantityAvailableCards: number = 0;
   paginationCards: Promise<GetCardAvailableRaffleResponse> | undefined;
   private readonly http: HttpClient;
   baseUrl = '';
   isLoading: boolean = false;
-
   myCards: any[] = [];
-
+  slideWidth = 190; // ← Ancho del slide (180px) + gap (10px)
 
   constructor(
     private CartonesService: CartonesService,
@@ -51,6 +53,8 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.cargarDatosiniciales();
+    
+
   }
   
   ngAfterViewInit(): void {
@@ -58,9 +62,6 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
       this.updateCarouselPosition();
     }, 0);
   }
-  
-  
-  
   
     cargarDatosiniciales() {
       //  console.log('raffleId en carrusel-cartones.component =', this.raffleId);
@@ -97,6 +98,7 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
 
 
 seleccionarCarton(id: number): void {
+  console.log('id_carton', id);
   Swal.fire({
     icon: 'question',
     title: 'Confirmar',
@@ -247,6 +249,18 @@ cargarMisCartones(): void {
     });
   }
 
+  //  nextSlide(): void {
+  //       const maxIndex = Math.max(0, this.cartones.length - this.cardsPerView);
+  //       if (this.currentIndex < maxIndex) {
+  //           this.currentIndex++;
+  //       }
+  //   }
+
+  //   prevSlide(): void {
+  //       if (this.currentIndex > 0) {
+  //           this.currentIndex--;
+  //       }
+  //   }
 
 
 

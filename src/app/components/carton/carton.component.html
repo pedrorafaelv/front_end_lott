@@ -1,10 +1,12 @@
-<div class="carton-card">
-  <!-- <div class="carton-header"> -->
-    <!-- <h5 class="carton-title">Cartón {{carton.id}}</h5> -->
+<div class="carton-card" 
+     [class.clickable]="clickable"
+     (click)="onCartonClick()">
+  <div class="carton-header">
+    <h5 class="carton-title">Cartón {{carton.id}}</h5>
     <!-- <div class="carton-tooltip" [title]="carton.name"> -->
       <!-- <i class="fas fa-info-circle"></i> -->
     <!-- </div> -->
-  <!-- </div> -->
+  </div>
   
   <div class="carton-grid">
     <!-- Columna 1 -->

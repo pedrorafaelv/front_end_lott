@@ -4764,7 +4764,7 @@ fieldset:disabled .btn {
 .card-body {
     flex: 1 1 auto;
     padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
-    background: var(--especiales-primary);
+    /* background: var(--especiales-primary); */
     color: var(--especiales-white);
 }
 
@@ -12011,4 +12011,572 @@ fieldset:disabled .btn {
   .card-cell {
     font-size: 0.9rem;
   }
+}
+ /* ============================================
+   VARIABLES Y RESET
+   ============================================ */
+:root {
+    --header-height: 30vh;
+    --central-height: 12vh;
+    --bottom-height: 50vh;
+    
+    --bg-dark: #0d0d1a;
+    --bg-card: #1a1a2e;
+    --bg-card-hover: #252540;
+    --bg-panel: #16213e;
+    
+    --primary: #ff4757;
+    --primary-dark: #c62828;
+    --accent: #ffd700;
+    --accent-light: #ffe44d;
+    --success: #00e676;
+    
+    --text-white: #ffffff;
+    --text-light: #e8e8e8;
+    --text-medium: #c0c0c0;
+    --text-muted: #909090;
+    
+    --border-color: rgba(255, 255, 255, 0.15);
+    --border-accent: rgba(255, 215, 0, 0.4);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+.juego-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg-dark);
+    color: var(--text-white);
+    padding: 8px;
+    gap: 8px;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ============================================
+   HEADER - 30% de altura
+   ============================================ */
+.loteria-header {
+    flex: 0 0 auto;
+    height: calc(30vh - 8px);
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    /* background: linear-gradient(135deg, #0d1445 0%, #1a237e 100%); */
+    border-radius: 12px;
+    padding: 10px;
+    /* border: 1px solid var(--border-accent); */
+    overflow: hidden;
+}
+
+.ad-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 20px;
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ad-banner i {
+    font-size: 0.9rem;
+    color: var(--accent);
+}
+
+.ad-text {
+    color: var(--accent-light);
+    font-weight: 600;
+}
+
+.header-carrusel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hidden-visual {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ============================================
+   SECCIÓN CENTRAL - 12% de altura
+   ============================================ */
+.central-section {
+    flex: 0 0 auto;
+    height: calc(12vh - 8px);
+    min-height: 100px;
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.central-left,
+.central-center,
+.central-right {
+    overflow: hidden;
+    min-width: 0;
+}
+
+/* ============================================
+   SECCIÓN INFERIOR - 50% de altura
+   Layout: Mis Cartones (70%) + Publicidad (30%)
+   ============================================ */
+.bottom-section {
+    flex: 1 1 auto;
+    height: calc(50vh - 8px);
+    min-height: 280px;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.bottom-cartones {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.bottom-cartones .game-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.bottom-cartones .card-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.bottom-publicidad {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.bottom-publicidad .panel-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ============================================
+   COMPONENTES COMUNES
+   ============================================ */
+.game-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+    transition: border-color 0.3s ease;
+}
+
+.game-card:hover {
+    border-color: var(--border-accent);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.card-header h2 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.card-header h2 i {
+    color: var(--accent);
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    font-size: 0.75rem;
+    color: var(--text-white);
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.stat i {
+    color: var(--accent);
+    font-size: 0.8rem;
+}
+
+.panel-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.75rem;
+    color: var(--text-white);
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.panel-header i {
+    color: var(--accent);
+}
+
+.panel-body {
+    flex: 1;
+    padding: 8px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ad-panel {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.ad-body {
+    padding: 4px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.ad-body app-publicity {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.card-body {
+    flex: 1;
+    padding: 8px;
+    overflow: hidden;
+}
+
+/* ============================================
+   BOTONES
+   ============================================ */
+.btn-nueva-ficha {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.btn-nueva-ficha:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+}
+
+.btn-gane {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    background: linear-gradient(135deg, var(--success), #00a843);
+    color: #0a0a0a;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-gane:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 230, 118, 0.5);
+}
+
+/* ============================================
+   CARTONES
+   ============================================ */
+.cartones-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px;
+}
+
+.cartones-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    width: 100%;
+}
+
+.carton-item {
+    width: 100%;
+    min-width: 0;
+}
+
+.card-carton {
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card-carton:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card-carton-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.carton-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.remove-card {
+    background: rgba(255, 71, 87, 0.3);
+    border: 1px solid rgba(255, 71, 87, 0.5);
+    color: #ff6b6b;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.remove-card:hover {
+    background: rgba(255, 71, 87, 0.6);
+    color: white;
+    transform: scale(1.1);
+}
+
+.card-carton-body {
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    color: var(--text-muted);
+    gap: 10px;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.4;
+}
+
+.empty-state p {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-medium);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+.cartones-scroll::-webkit-scrollbar,
+.panel-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cartones-scroll::-webkit-scrollbar-track,
+.panel-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 3px;
+}
+
+.cartones-scroll::-webkit-scrollbar-thumb,
+.panel-body::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+.cartones-scroll::-webkit-scrollbar-thumb:hover,
+.panel-body::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+    .juego-container {
+        padding: 6px;
+        gap: 6px;
+    }
+    
+    .cartones-container {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .juego-container {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+    
+    .loteria-header {
+        height: auto;
+        min-height: 180px;
+        max-height: none;
+    }
+    
+    .central-section {
+        height: auto;
+        min-height: 200px;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+    }
+    
+    .central-left,
+    .central-right {
+        display: none;
+    }
+    
+    .central-center {
+        grid-column: 1 / -1;
+        min-height: 120px;
+    }
+    
+    .bottom-section {
+        height: auto;
+        min-height: 300px;
+        grid-template-columns: 1fr;  /* ← Una sola columna en móvil */
+        grid-template-rows: auto auto;
+    }
+    
+    .bottom-cartones {
+        min-height: 250px;
+    }
+    
+    .bottom-publicidad {
+        min-height: 150px;
+    }
+    
+    .cartones-container {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 8px;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+    
+    .card-header .stat {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-nueva-ficha,
+    .btn-gane {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .cartones-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
 }

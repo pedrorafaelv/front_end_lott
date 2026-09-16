@@ -8,7 +8,7 @@ export interface NewRecordResponse {
 
 export interface NewRecordData {
     raffle: RaffleInfo;
-    ficha: Ficha;
+    ficha: NewFicha;
     winners: Winners;
 }
 
@@ -24,11 +24,17 @@ export interface RaffleInfo {
     is_closed: boolean;
 }
 
-export interface Ficha {
+export interface NewFicha {
     id: number;
     image: string;
     name?: string;
-    // ... otras propiedades
+    active:string;
+    created_at:Date; 
+    description:string; 
+    end_date?:Date; 
+    sound?: string;
+    start_date:Date;
+    updated_at:Date;
 }
 
 export interface Winners {

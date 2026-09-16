@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import { RaffleService } from '../../services/raffle.service';
 import { GetFichasResponse, Ficha, Raffle } from '../../interfaces/get-fichas-response';
 import { PipesModule } from "../../pipes/pipes.module";
@@ -17,6 +17,7 @@ export class RecordsComponent implements OnInit {
  @Input() Raffle!: Raffle;
  @Input() fichaGroup: string= "";
  @ViewChild('track') track!: ElementRef;
+
 
   public color: string = 'black';
   currentIndex = 0;

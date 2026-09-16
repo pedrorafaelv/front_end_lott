@@ -16,9 +16,9 @@ import { CartComponent } from './cart/cart.component';
 import { TotalComponent } from './total/total.component';
 import { SeleccionCartonesComponent } from './seleccion-cartones/seleccion-cartones.component';
 import { CarruselCartonesComponent } from "./carrusel-cartones/carrusel-cartones.component";
-
 // SOLO UN CartonComponent - El que está en pages/carton
 import { CartonComponent } from './carton/carton.component';
+import { BouncingBallComponent } from './bouncing-ball/bouncing-ball.component';
 
 @NgModule({
   declarations: [
@@ -39,9 +39,10 @@ import { CartonComponent } from './carton/carton.component';
     FooterComponent,
     SeleccionCartonesComponent,
     CarruselCartonesComponent,
-    CartonComponent,  // <-- Exportar para usar en otros módulos
+    CartonComponent,
   ],
   imports: [
+    BouncingBallComponent,  // <-- Exportar para usar en otros módulos
     CommonModule,
     RouterModule,
     FontAwesomeModule,

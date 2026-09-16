@@ -38,7 +38,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { MessageComponent } from './message/message.component';
 import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
 import { UsersComponent } from './users/users.component';
-
+import { BouncingBallComponent } from '../components/bouncing-ball/bouncing-ball.component';
 // IMPORTAR ComponentsModule para usar sus componentes
 import { ComponentsModule } from '../components/components.module';
 import { RecordsComponent } from '../components/records/records.component';
@@ -80,6 +80,7 @@ import { RecordsComponent } from '../components/records/records.component';
     RaffleComponent,
     RecordsComponent,
     MessageComponent, 
+    BouncingBallComponent,
     NotImageDirective,
     AuthModule.forRoot({
       domain: 'dev-hrhrdf6p.us.auth0.com',

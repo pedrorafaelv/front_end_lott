@@ -2,16 +2,21 @@
 <div class="carousel-wrapper">
   <div>
     <!-- <a>carrusel cartones</a> -->
-    <h5>Cartones disponibles: {{ quantityAvailableCards }}</h5>        
+    <!-- <h5>Cartones disponibles: {{ quantityAvailableCards }}</h5>         -->
   </div>
-  <button class="carousel-btn prev" (click)="prevSlide()">‹</button>
   <div class="carousel-container">
+    <button class="carousel-btn prev" (click)="prevSlide()">‹</button>
     <div class="carousel-track" #track>
       <div *ngFor="let carton of cartones" class="carton-item">  
         <div class="card">
-          <div class="card-title">Cartón{{ carton.id }}</div>
+          <!-- <div class="card-title">Cartón{{ carton.id }}</div> -->
           <button class="card-select-btn" (click)="seleccionarCarton(carton.id)"> comprar</button>
-          <app-carton [carton]="carton"></app-carton>
+          <app-carton 
+              [carton]="carton" 
+              [recordGroup]="recordGroup"
+              [clickable]="true"
+              (cartonClick)="seleccionarCarton($event.id)">
+          </app-carton>
         </div>
       </div>
       <!-- @for (carton of filteredCartones; track carton.id) {
@@ -47,6 +52,6 @@
         </div>
       } -->
     </div>
+    <button class="carousel-btn next" (click)="nextSlide()">›</button>
   </div>
-  <button class="carousel-btn next" (click)="nextSlide()">›</button>
 </div>

@@ -1,423 +1,580 @@
+/* ============================================
+   VARIABLES Y RESET
+   ============================================ */
+:root {
+    --header-height: 32vh;
+    --main-height: 68vh;
+    
+    --bg-dark: #0d0d1a;
+    --bg-card: #1a1a2e;
+    --bg-card-hover: #252540;
+    --bg-panel: #16213e;
+    
+    --primary: #ff4757;
+    --primary-dark: #c62828;
+    --accent: #ffd700;
+    --accent-light: #ffe44d;
+    --success: #00e676;
+    
+    --text-white: #ffffff;
+    --text-light: #e8e8e8;
+    --text-medium: #c0c0c0;
+    --text-muted: #909090;
+    
+    --border-color: rgba(255, 255, 255, 0.15);
+    --border-accent: rgba(255, 215, 0, 0.4);
+}
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
 .juego-container {
-  
-  /* background: linear-gradient(to bottom, #18106f, #6fb6f5); */
-  background: var(--color-dark);
-  min-height: 100vh;
-  background-color: #10103a;
-  /* background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" stroke="%23d9c9a6" stroke-width="1" x="0" y="0" width="100" height="100"/></svg>'); */
-  padding: 20px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg-dark);
+    color: var(--text-white);
+    padding: 8px;
+    gap: 8px;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ============================================
+   HEADER - 32% de altura (con carrusel)
+   ============================================ */
 .loteria-header {
-  text-align: center;
-  margin-bottom: 10px;
+    flex: 0 0 auto;
+    height: calc(32vh - 8px);
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    /* background: linear-gradient(135deg, #0d1445 0%, #1a237e 100%); */
+    border-radius: 12px;
+    padding: 10px;
+    /* border: 1px solid var(--border-accent); */
+    overflow: hidden;
 }
 
-.loteria-title {
-  /* background: linear-gradient(135deg, var(--color-primary) 0%, #6B0000 100%); */
-  color: white;
-  padding: 5px;
-  border-radius: 5px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  position: relative;
-  overflow: hidden;
-  border: 2px dashed var(--color-accent);
+.ad-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 5px 14px;
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 20px;
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.loteria-title h1 {
-  font-size: 2rem;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+.ad-banner i {
+    font-size: 0.85rem;
+    color: var(--accent);
 }
-
-.loteria-text {
-  font-size: 2rem;
-  font-weight: bold;
-  color: var(--color-accent);
-}
-
-.decorative-border {
-  height: 4px;
-  /* background: linear-gradient(90deg, transparent, var(--color-accent), transparent); */
-  margin: 10px auto;
-  width: 80%;
-}
-
 
 .ad-text {
-  font-style: italic;
-  color: #555;
+    color: var(--accent-light);
+    font-weight: 600;
 }
 
-.ad-flag {
-  color: var(--color-primary);
-  font-size: 1.5rem;
+/* Carrusel de cartones disponibles */
+.header-carrusel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+    transition: opacity 0.3s ease;
+    padding: 5px 0;
 }
 
+/* Ocultar visualmente pero mantener espacio */
+.hidden-visual {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Estilos específicos para el carrusel dentro del header */
+.header-carrusel app-carrusel-cartones {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================================
+   CONTENIDO PRINCIPAL - 68% de altura
+   Grid: 20% - 60% - 20%
+   ============================================ */
 .main-content {
-  display: grid;
-  grid-template-columns: 250px 1fr 250px;
-  gap: 20px;
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    gap: 8px;
+    overflow: hidden;
+    min-height: 0;
 }
 
-.panel-card {
-  background:var(--color-secondary);
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--color-border);
-  border-color: white;
-  color:whitesmoke;
+.left-column,
+.center-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+    gap: 8px;
 }
 
-.panel-card h3 {
-  color: whitesmoke;
-  margin-top: 0;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* ============================================
+   FICHAS - 30% de la columna central
+   ============================================ */
+.fichas-card {
+    flex: 0 0 30%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 100px;
 }
 
-/* Left Panel Styles */
-.lotto-select {
-  background: #2d2b55;
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid whitesmoke;
-  margin-bottom: 10px;
-  font-size: 0.9rem;
-  color: blue;
+.fichas-card .card-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.error-text {
-  color: #d9534f;
-  font-size: 0.8rem;
+/* ============================================
+   MIS CARTONES - 70% de la columna central
+   ============================================ */
+.cartones-card {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
 }
 
-.user-links {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 15px;
+.cartones-card .card-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.lotto-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background-color: var(--color-secondary);
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: all 0.3s;
-}
-
-.lotto-link:hover {
-  background-color: var(--color-primary);
-  transform: translateY(-2px);
-}
-
-
-
-/* Center Panel Styles */
+/* ============================================
+   COMPONENTES COMUNES
+   ============================================ */
 .game-card {
-  /* background: linear-gradient(135deg, #110157 0%, #5d4fc5 100%); */
-  /* background: white; */
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border: 2px solid var(--color-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+}
+
+.game-card:hover {
+    border-color: var(--border-accent);
 }
 
 .card-header {
-    /* background: linear-gradient(135deg, #2d2b55 0%, #1a8968 100%); */
-  color: whitesmoke;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px dashed var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+    flex-wrap: wrap;
 }
 
 .card-header h2 {
-  color: var(--color-primary);
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.lotto-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.lotto-button.primary {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.lotto-button.success {
-  background-color: var(--color-success);
-  color: white;
-}
-
-.lotto-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.fichas-container {
-  margin-top: 15px;
-}
-
-.viewport {
-  height: 250px;
-  width: 100%;
-}
-
-.ficha-item {
-  display: inline-block;
-  margin: 5px;
-}
-
-.ficha-img {
-  width: 60px;
-  height: 60px;
-  border: 2px solid var(--color-primary);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s;
-  object-fit: cover;
-}
-
-.ficha-img:hover {
-  transform: scale(1.1);
-  border-color: var(--color-accent);
-  box-shadow: 0 0 10px var(--color-accent);
-}
-
-/* Publicidad entre secciones */
-.middle-publicidad {
-  background: white;
-  border-radius: 8px;
-  padding: 15px;
-  margin: 20px 0;
-  border: 1px solid var(--color-border);
-}
-
-.cartones-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
-  margin-top: 15px;
-}
-
-.carton-item {
-  transition: transform 0.3s;
-}
-
-.carton-item:hover {
-  transform: translateY(-5px);
-}
-
-/* Right Panel Styles */
-.sorteo-info {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.info-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px dotted #eee;
-}
-
-.info-item:last-child {
-  border-bottom: none;
-}
-
-.label {
-  font-weight: bold;
-  color: whitesmoke !important;
-}
-
-.value {
-  color: #FFD700;
-  font-weight: 500;
-}
-
-.stats-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+.card-header h2 i {
+    color: var(--accent);
 }
 
 .stat {
-  text-align: center;
-  padding: 10px;
-  color: whitesmoke;
-  background-color: var(--color-light);
-  border-radius: 5px;
-  border-color: whitesmoke;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    font-size: 0.75rem;
+    color: var(--text-white);
+    white-space: nowrap;
+    font-weight: 600;
 }
 
-.stat-value {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--color-primary);
+.stat i {
+    color: var(--accent);
+    font-size: 0.8rem;
 }
 
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--color-dark);
-}
-
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .main-content {
-    grid-template-columns: 1fr;
-  }
-  
-  .left-panel, .right-panel {
-    border: 5px solid var(--color-border);
-    /* border-color: whitesmoke; */
-    order: 2;
-  }
-  
-  .center-panel {
-    order: 1;
-  }
-}
-
-@media (max-width: 768px) {
-  .loteria-title h1 {
-    font-size: 2rem;
-  }
-  
-  .loteria-text {
-    font-size: 2.2rem;
-  }
-  
-  .card-header {
+.panel-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    height: 100%;
+    display: flex;
     flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
-  }
+    overflow: hidden;
 }
 
-.selected-card-item {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(4px);
-  border-radius: 16px;
-  padding: 10px 14px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: 0.3s;
-  animation: fadeSlide 0.3s ease;
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.75rem;
+    color: var(--text-white);
+    font-weight: 600;
+    flex-shrink: 0;
 }
 
-.selected-card-item:hover {
-  background: rgba(255, 255, 255, 0.14);
+.panel-header i {
+    color: var(--accent);
 }
 
-.selected-card-mini {
-  display: grid;
-  grid-template-columns: repeat(4, 22px);
-  gap: 2px;
+.panel-body {
+    flex: 1;
+    padding: 8px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.mini-cell {
-  aspect-ratio: 1;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.5rem;
+.ad-panel {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 }
 
-.mini-cell.free {
-  background: rgba(255, 215, 0, 0.2);
+.ad-body {
+    padding: 4px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-.selected-card-info {
-  color: white;
-  font-size: 0.75rem;
+.ad-body app-publicity {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
-.selected-card-info strong {
-  display: block;
-  font-size: 0.85rem;
+.card-body {
+    flex: 1;
+    padding: 8px;
+    overflow: hidden;
 }
 
-.comodin-info {
-  opacity: 0.5;
-  font-size: 0.65rem;
+/* ============================================
+   BOTONES
+   ============================================ */
+.btn-nueva-ficha {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.player-badge {
-  display: inline-block;
-  background: rgba(255, 215, 0, 0.2);
-  color: #ffd700;
-  padding: 2px 10px;
-  border-radius: 12px;
-  font-size: 0.6rem;
-  font-weight: 600;
-  margin-top: 4px;
+.btn-nueva-ficha:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+}
+
+.btn-gane {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    background: linear-gradient(135deg, var(--success), #00a843);
+    color: #0a0a0a;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-gane:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 230, 118, 0.5);
+}
+
+/* ============================================
+   CARTONES
+   ============================================ */
+.cartones-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px;
+}
+
+.cartones-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+    width: 100%;
+}
+
+.carton-item {
+    width: 100%;
+    min-width: 0;
+}
+
+.card-carton {
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card-carton:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card-carton-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.carton-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .remove-card {
-  background: rgba(255, 70, 70, 0.2);
-  border: none;
-  color: #ff6b6b;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background: rgba(255, 71, 87, 0.3);
+    border: 1px solid rgba(255, 71, 87, 0.5);
+    color: #ff6b6b;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
 .remove-card:hover {
-  background: rgba(255, 70, 70, 0.4);
-  transform: scale(1.1);
+    background: rgba(255, 71, 87, 0.6);
+    color: white;
+    transform: scale(1.1);
 }
 
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.card-carton-body {
+    padding: 8px;
+    display: flex;
+    justify-content: center;
 }
- [hidden] {
-    display: none !important;
+
+.empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    color: var(--text-muted);
+    gap: 10px;
+}
+
+.empty-state i {
+    font-size: 2.5rem;
+    opacity: 0.4;
+}
+
+.empty-state p {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-medium);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+.cartones-scroll::-webkit-scrollbar,
+.panel-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cartones-scroll::-webkit-scrollbar-track,
+.panel-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 3px;
+}
+
+.cartones-scroll::-webkit-scrollbar-thumb,
+.panel-body::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+.cartones-scroll::-webkit-scrollbar-thumb:hover,
+.panel-body::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1200px) {
+    .main-content {
+        grid-template-columns: 18% 64% 18%;
+    }
+    
+    .cartones-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}
+
+@media (max-width: 1024px) {
+    .juego-container {
+        padding: 6px;
+        gap: 6px;
+    }
+    
+    .loteria-header {
+        height: calc(32vh - 6px);
+        min-height: 220px;
+    }
+    
+    .main-content {
+        grid-template-columns: 15% 70% 15%;
+    }
+    
+    .cartones-container {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .juego-container {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+    
+    .loteria-header {
+        height: auto;
+        min-height: 200px;
+    }
+    
+    .main-content {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        height: auto;
+    }
+    
+    .left-column,
+    .right-column {
+        min-height: 150px;
+        max-height: 200px;
+    }
+    
+    .center-column {
+        min-height: 400px;
+    }
+    
+    .fichas-card {
+        flex: 0 0 auto;
+        min-height: 200px;
+    }
+    
+    .cartones-card {
+        min-height: 300px;
+    }
+    
+    .cartones-container {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 8px;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+    
+    .card-header .stat {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-nueva-ficha,
+    .btn-gane {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .cartones-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
 }
