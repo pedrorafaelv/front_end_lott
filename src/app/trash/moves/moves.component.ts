@@ -16,9 +16,9 @@ export class MovesComponent implements OnInit {
 
 
   public balance: any;
-  public localId: string;
-  public userId: string;
-  public usuario;
+  public localId: string= "";
+  public userId: string = "";
+  public usuario:string  = "";
   public currency ='1';
   constructor(private auth: AuthService,
               private router: Router,
@@ -35,15 +35,15 @@ export class MovesComponent implements OnInit {
       }
   }
 
-  async getInfo(Id){
+  async getInfo(Id:string){
    
-        this.accountService.getBalance(this.userId, this.currency)
-          .then((data)=>{
-            console.log('balance', data);
-        this.balance= data['balance']})
-        .catch((datos)=>{
-          console.error("Error al obtener el saldo", datos);
-        })
+        // this.accountService.getBalance(this.userId, this.currency)
+        //   .then((data)=>{
+        //     console.log('balance', data);
+        // this.balance= data['balance']})
+        // .catch((datos)=>{
+        //   console.error("Error al obtener el saldo", datos);
+        // })
   
   }
    

@@ -4,29 +4,33 @@
          HEADER - 28% de altura
          Banner + Carrusel de cartones disponibles
          ============================================ -->
-    <header class="loteria-header">
+   <header class="loteria-header">
+    
+    <!-- <div class="ad-banner">
+        <i class="fas fa-bullhorn"></i>
+        <span class="ad-text">¡Sorteo especial este viernes! Premio mayor de $100,000</span>
+    </div> -->
+    
+    <div class="header-content">
         
-        <!-- Banner publicitario compacto y centrado -->
-        <div class="ad-banner">
-            <i class="fas fa-bullhorn"></i>
-            <span class="ad-text">¡Sorteo especial este viernes! Premio mayor de $100,000</span>
-        </div>
+        <!-- Mostrar BouncingBall si hay MÁS de 2 fichas -->
+        <app-bouncing-ball 
+            *ngIf="fichas.length > 2"
+            [imagenActual]="imagenFichaActual"
+            [nombreFicha]="nombreFichaActual">
+        </app-bouncing-ball>
         
-        <!-- Carrusel de cartones disponibles -->
-        <div class="header-carrusel" [class.hidden-visual]="fichas.length > 2">
-            <app-carrusel-cartones 
-                [raffleId]="raffleId" 
-                [UserId]="userId"
-                (actualizarSaldo)="onActualizarSaldo($any($event))"
-                (actualizarMisCartones)="onActualizarMisCartones($any($event))">
-            </app-carrusel-cartones>
-        </div>
-        <div class="header-carrusel" [class.hidden-visual]="fichas.length < 2">
-            
-            <app-bouncing-ball [imagenActual]="imagenFichaActual"
-                        [nombreFicha]="nombreFichaActual">></app-bouncing-ball>
-        </div>
-    </header>
+        <!-- Mostrar Carrusel si hay 2 o MENOS fichas -->
+        <app-carrusel-cartones 
+            *ngIf="fichas.length <= 2"
+            [raffleId]="raffleId" 
+            [UserId]="userId"
+            (actualizarSaldo)="onActualizarSaldo($any($event))"
+            (actualizarMisCartones)="onActualizarMisCartones($any($event))">
+        </app-carrusel-cartones>
+        
+    </div>
+</header>
 
     <!-- ============================================
          CONTENIDO PRINCIPAL - 72% de altura
@@ -79,9 +83,14 @@
             <div class="game-card cartones-card">
                 <div class="card-header">
                     <h5>
-                        <!-- <i class="fas fa-th-large"></i>  -->
                         Mis Cartones ({{ MyCards?.length || 0 }})
                     </h5>
+                    
+                    <!--  Botón para actualizar marcas -->
+                    <button class="btn-actualizar-marcas" (click)="actualizarMarcasCartones()">
+                        <i class="fas fa-sync-alt"></i> Actualizar Marcas
+                    </button>
+                    
                     <button class="btn-gane">
                         <i class="fas fa-trophy"></i> ¡Gané!
                     </button>
@@ -92,13 +101,18 @@
                         <div *ngFor="let carton of MyCards" class="carton-item">
                             <div class="card-carton">
                                 <div class="card-carton-header">
-                                    <!-- <span class="carton-title">Cartón #{{ carton.id }}</span> -->
                                     <button class="remove-card" (click)="eliminarCarton(carton.id)" title="Eliminar cartón">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                                 <div class="card-carton-body">
-                                    <app-carton [carton]="carton"></app-carton>
+                                    <!-- ⭐ Pasamos las fichas reveladas y el trigger -->
+                                    <app-carton 
+                                        [carton]="carton"
+                                        [fichasReveladas]="fichasReveladasArray"
+                                        [triggerActualizarMarcas]="triggerActualizarMarcas"
+                                        [clickable]="false">
+                                    </app-carton>
                                 </div>
                             </div>
                         </div>

@@ -1,57 +1,20 @@
-
 <div class="carousel-wrapper">
-  <div>
-    <!-- <a>carrusel cartones</a> -->
-    <!-- <h5>Cartones disponibles: {{ quantityAvailableCards }}</h5>         -->
-  </div>
+  
   <div class="carousel-container">
     <button class="carousel-btn prev" (click)="prevSlide()">‹</button>
+    
     <div class="carousel-track" #track>
-      <div *ngFor="let carton of cartones" class="carton-item">  
-        <div class="card">
-          <!-- <div class="card-title">Cartón{{ carton.id }}</div> -->
-          <button class="card-select-btn" (click)="seleccionarCarton(carton.id)"> comprar</button>
-          <app-carton 
-              [carton]="carton" 
-              [recordGroup]="recordGroup"
-              [clickable]="true"
-              (cartonClick)="seleccionarCarton($event.id)">
-          </app-carton>
-        </div>
+      <div *ngFor="let carton of cartones" class="carousel-slide">   <!-- ⭐ Cambiar de 'carton-item' a 'carousel-slide' -->
+        <app-carton 
+          [carton]="carton" 
+          [recordGroup]="recordGroup"
+          [clickable]="true"
+          (cartonClick)="seleccionarCarton($event.id)">
+        </app-carton>
       </div>
-      <!-- @for (carton of filteredCartones; track carton.id) {
-          <div class="card-grid">
-            @for (celda of carton.grid; track celda) {
-              <div class="card-cell" [class.free]="celda.libre">
-                {{ celda.figura }}
-              </div>
-            }
-          </div>
-          
-          <div class="card-badge">
-            <span class="card-id">ID: {{ carton.id }}</span>
-            <span class="card-status" [class]="getStatusInfo(carton).class">
-              {{ getStatusInfo(carton).text }}
-            </span>
-          </div>
-          
-          <div class="card-actions">
-            <button class="card-select-btn" 
-                    [class]="getButtonInfo(carton).class"
-                    [disabled]="getButtonInfo(carton).disabled"
-                    (click)="$event.stopPropagation(); seleccionarCarton(carton.id)">
-              {{ getButtonInfo(carton).text }}
-            </button>
-            @if (isSelectedByMe(carton.id)) {
-              <div class="player-badge">👤 Tú</div>
-            }
-            @if (isTakenByOther(carton)) {
-              <div class="player-badge other">👤 Otro</div>
-            }
-          </div>
-        </div>
-      } -->
     </div>
+    
     <button class="carousel-btn next" (click)="nextSlide()">›</button>
   </div>
+  
 </div>

@@ -67,6 +67,9 @@ export class JuegoComponent implements OnInit {
  nombreFichaActual:string ="";
  imagenFichaActual:string ="";
  baseUrlImage:string = './assets/images/full_circle_cari_ia/';
+    // ⭐ Trigger para actualizar marcas (cambia cada vez que se presiona el botón)
+  triggerActualizarMarcas: number = 0;
+
   
 @ViewChild('scroll') scroll!: ElementRef;
 @Output() eliminar = new EventEmitter<number>();
@@ -100,6 +103,12 @@ export class JuegoComponent implements OnInit {
     }
   }
 
+ /**
+     * Array de nombres de fichas reveladas (se usa en el cartón)
+     */
+    get fichasReveladasArray(): string[] {
+        return this.fichas?.map(f => f.image) ?? [];
+    }
 
   // Escuchar eventos del hijo
   onDatosActualizados(event: any): void {
@@ -127,6 +136,15 @@ async getAvailableCardsByRaffle(): Promise<GetCardAvailableRaffleResponse> {
     // console.log('🔍 Data en JSON:', JSON.stringify(data, null, 2));
     return data;
   }
+
+  // get fichasReveladasArray(): string[] {
+  //     // Opción 1: Si 'fichas' contiene las fichas que ya salieron
+  //     return this.fichas.map(f => f.image);
+      
+  //     // Opción 2: Si tienes un array separado de fichas reveladas
+  //     // return this.fichasReveladas.map(f => f.image);
+  // } 
+
   async getRaffleDetails(): Promise<RaffleDetails | undefined> {
     try {
         const response = await this.RaffleService.getRaffleDetails(this.raffleId);
@@ -485,7 +503,14 @@ eliminarCarton(id:number): void {
         });
     }
 
-
+   /**
+     *  Se ejecuta al presionar el botón de "Actualizar Marcas"
+     */
+    actualizarMarcasCartones(): void {
+        this.triggerActualizarMarcas++;
+        console.log('🎯 Actualizando marcas. Trigger:', this.triggerActualizarMarcas);
+        console.log('📋 Fichas reveladas:', this.fichasReveladasArray);
+    }
   // get grupoNoValido(){
   //   return this.forma.get('grupo')?.invalid && this.forma.get('grupo')?.touched;
   // }

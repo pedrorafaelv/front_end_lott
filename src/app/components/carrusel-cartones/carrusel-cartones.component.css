@@ -76,7 +76,7 @@
 }
 
 /* ============================================
-   TRACK - AQUÍ ESTÁ LA CLAVE
+   TRACK
    ============================================ */
 .carousel-track {
     display: flex;
@@ -84,51 +84,73 @@
     transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     height: 100%;
     will-change: transform;
-    /* NO usar flex: 1 aquí */
+    align-items: center;         /* ⭐ Centrar verticalmente */
 }
 
 /* ============================================
-   SLIDE - ANCHO FIJO Y CLARO
+   SLIDE - CONTENEDOR DE CADA CARTÓN
    ============================================ */
 .carousel-slide {
-    /* 🔑 CLAVE: Ancho fijo con flex-shrink: 0 */
-    flex: 0 0 180px;       /* ← No crecer, no reducir, ancho fijo de 180px */
+    /* 🔑 Ancho FIJO y no crece ni se encoge */
+    flex: 0 0 180px;
     width: 180px;
     height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: center;         /* ⭐ Centrar verticalmente */
+    justify-content: center;     /* ⭐ Centrar horizontalmente */
     box-sizing: border-box;
-    padding: 2px;
-    /* Evita que el contenido se salga */
+    padding: 4px;                /* ⭐ Espacio para que respire */
     overflow: hidden;
 }
 
-/* El cartón ocupa el 100% de su slide */
+/* El cartón ocupa el 100% del slide */
 .carousel-slide app-carton {
     width: 100%;
     height: 100%;
-    display: block;
+    display: flex;               /* ⭐ Flex para centrar */
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
 }
 
 /* ============================================
-   FORZAR AL CARTÓN A RESPETAR EL ANCHO
+   FORZAR AL CARTÓN A RESPETAR EL ESPACIO
    ============================================ */
 .carousel-slide app-carton ::ng-deep .carton-card {
     width: 100% !important;
     max-width: 100% !important;
+    max-height: 100% !important;
+    height: auto !important;      /* ⭐ Altura automática según aspect ratio */
     box-sizing: border-box !important;
     margin: 0 !important;
+    aspect-ratio: 1 / 1;          /* ⭐ Mantener cuadrado */
 }
 
 .carousel-slide app-carton ::ng-deep .carton-grid {
     width: 100% !important;
+    height: 100% !important;
     box-sizing: border-box !important;
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;   /* ⭐ 5 columnas */
+    grid-template-rows: repeat(5, 1fr) !important;      /* ⭐ 5 filas */
+    gap: 1px !important;
+}
+
+.carousel-slide app-carton ::ng-deep .carton-cell {
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+}
+
+.carousel-slide app-carton ::ng-deep .carton-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;   /* ⭐ contain para ver toda la figura */
+    display: block !important;
 }
 
 /* ============================================
-   RESPONSIVE - Ajustar ancho del slide
+   RESPONSIVE
    ============================================ */
 @media (max-width: 1200px) {
     .carousel-slide {

@@ -1,1 +1,427 @@
-<p>account works!</p>
+<div class="account-container">
+
+    <!-- ============================================
+         HEADER
+         ============================================ -->
+    <header class="account-header">
+        <div class="header-left">
+            <h1>
+                <i class="fas fa-wallet"></i>
+                Mi Cuenta
+            </h1>
+            <p class="header-subtitle">Gestiona tu saldo y transacciones</p>
+        </div>
+
+        <div class="header-right">
+            <!-- Selector de moneda -->
+            <div class="currency-selector" *ngIf="balances.length > 1">
+                <button
+                    *ngFor="let balance of balances"
+                    class="currency-btn"
+                    [class.active]="balance.currency_code === selectedCurrency"
+                    (click)="changeCurrency(balance.currency_code)">
+                    <i class="fas fa-coins"></i>
+                    {{ balance.currency_code }}
+                </button>
+            </div>
+
+            <button
+                class="btn-withdrawal"
+                (click)="openWithdrawalModal()"
+                [disabled]="!currentBalance || currentBalance.amount <= 0">
+                <i class="fas fa-arrow-up"></i>
+                Solicitar Retiro
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================
+         TARJETAS DE BALANCE
+         ============================================ -->
+    <section class="balance-section" *ngIf="!loading">
+        <div class="balance-card balance-main">
+            <div class="card-icon">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="card-content">
+                <span class="card-label">Saldo disponible</span>
+                <span class="card-value">
+                    {{ formatCurrency(currentBalance?.amount || 0) }}
+                </span>
+                <span class="card-currency">{{ selectedCurrency }}</span>
+            </div>
+        </div>
+
+        <div class="balance-card balance-promo">
+            <div class="card-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <div class="card-content">
+                <span class="card-label">Crédito promocional</span>
+                <span class="card-value">
+                    {{ formatCurrency(currentBalance?.credit_promotion || 0) }}
+                </span>
+                <span class="card-hint">No retirable</span>
+            </div>
+        </div>
+
+        <div class="balance-card balance-total">
+            <div class="card-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="card-content">
+                <span class="card-label">Total apostable</span>
+                <span class="card-value">
+                    {{ formatCurrency(currentBalance?.total || 0) }}
+                </span>
+                <span class="card-hint">Real + Promocional</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Cargando tu cuenta...</p>
+    </div>
+
+    <!-- ============================================
+         CONTENIDO PRINCIPAL
+         ============================================ -->
+    <div class="account-content" *ngIf="!loading">
+
+        <!-- ============================================
+             SOLICITUDES DE RETIRO PENDIENTES
+             ============================================ -->
+        <section class="withdrawal-section" *ngIf="withdrawalRequests.length > 0">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-clock"></i>
+                    Solicitudes de retiro activas
+                </h2>
+            </div>
+            <div class="withdrawal-list">
+                <div class="withdrawal-item"
+                     *ngFor="let wr of withdrawalRequests"
+                     [class.status-pending]="wr.status === 'pending'"
+                     [class.status-approved]="wr.status === 'approved'">
+                    <div class="wr-left">
+                        <div class="wr-status" [class]="getStatusClass(wr.status)">
+                            {{ getStatusLabel(wr.status) }}
+                        </div>
+                        <div class="wr-details">
+                            <span class="wr-amount">{{ formatCurrency(wr.amount, wr.currency_code) }}</span>
+                            <span class="wr-net">
+                                Recibirás: {{ formatCurrency(wr.net_amount, wr.currency_code) }}
+                                (comisión: {{ formatCurrency(wr.commission, wr.currency_code) }})
+                            </span>
+                            <span class="wr-date">{{ formatDate(wr.created_at) }}</span>
+                        </div>
+                    </div>
+                    <button
+                        class="btn-cancel-wr"
+                        *ngIf="wr.status === 'pending'"
+                        (click)="cancelWithdrawal(wr)">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             FILTROS
+             ============================================ -->
+        <section class="filters-section">
+            <div class="filters-header">
+                <h2>
+                    <i class="fas fa-filter"></i>
+                    Filtros
+                </h2>
+                <button class="btn-toggle-filters" (click)="toggleFilters()">
+                    <i class="fas" [class.fa-chevron-down]="!showFilters" [class.fa-chevron-up]="showFilters"></i>
+                </button>
+            </div>
+
+            <div class="filters-body" *ngIf="showFilters">
+                <div class="filter-row">
+                    <!-- Tipo -->
+                    <div class="filter-group">
+                        <label>Tipo</label>
+                        <select [(ngModel)]="filters.type" (change)="applyFilters()">
+                            <option [ngValue]="null">Todos</option>
+                            <option value="credit">Ingresos</option>
+                            <option value="debit">Egresos</option>
+                        </select>
+                    </div>
+
+                    <!-- Vía -->
+                    <div class="filter-group">
+                        <label>Método</label>
+                        <select [(ngModel)]="filters.via_id" (change)="applyFilters()">
+                            <option [ngValue]="null">Todos</option>
+                            <option *ngFor="let via of vias" [ngValue]="via.id">
+                                {{ via.label }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Fecha desde -->
+                    <div class="filter-group">
+                        <label>Desde</label>
+                        <input type="date" [(ngModel)]="filters.date_from" (change)="applyFilters()">
+                    </div>
+
+                    <!-- Fecha hasta -->
+                    <div class="filter-group">
+                        <label>Hasta</label>
+                        <input type="date" [(ngModel)]="filters.date_to" (change)="applyFilters()">
+                    </div>
+
+                    <!-- Monto mínimo -->
+                    <div class="filter-group">
+                        <label>Monto mín.</label>
+                        <input type="number" [(ngModel)]="filters.amount_min" (change)="applyFilters()" placeholder="0">
+                    </div>
+
+                    <!-- Monto máximo -->
+                    <div class="filter-group">
+                        <label>Monto máx.</label>
+                        <input type="number" [(ngModel)]="filters.amount_max" (change)="applyFilters()" placeholder="9999">
+                    </div>
+
+                    <!-- Botón limpiar -->
+                    <div class="filter-group filter-actions">
+                        <button class="btn-clear-filters" (click)="clearFilters()">
+                            <i class="fas fa-eraser"></i>
+                            Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================
+             TABLA DE TRANSACCIONES
+             ============================================ -->
+        <section class="transactions-section">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-history"></i>
+                    Historial de transacciones
+                </h2>
+                <span class="transactions-count">
+                    {{ pagination.total }} movimientos
+                </span>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading-transactions" *ngIf="loadingTransactions">
+                <div class="spinner-small"></div>
+                <span>Cargando...</span>
+            </div>
+
+            <!-- Tabla -->
+            <div class="table-container" *ngIf="!loadingTransactions">
+                <table class="transactions-table" *ngIf="transactions.length > 0; else noTransactions">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th class="text-right">Monto</th>
+                            <th class="text-right">Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let t of transactions; trackBy: trackByTransactionId"
+                            [class.tx-credit]="t.via_type === 'credit'"
+                            [class.tx-debit]="t.via_type === 'debit'">
+
+                            <td class="tx-date">
+                                {{ formatDate(t.created_at) }}
+                            </td>
+
+                            <td class="tx-type">
+                                <span class="tx-badge" [style.background]="t.via_color">
+                                    <i [class]="t.via_icon"></i>
+                                    {{ t.via_label || 'Otro' }}
+                                </span>
+                            </td>
+
+                            <td class="tx-description">
+                                <span class="tx-desc">{{ t.description || '-' }}</span>
+                                <span class="tx-raffle" *ngIf="t.raffle_name">
+                                    <i class="fas fa-ticket-alt"></i>
+                                    {{ t.raffle_name }}
+                                </span>
+                            </td>
+
+                            <td class="tx-amount text-right" [class]="getTransactionClass(t)">
+                                <span class="sign">{{ getTransactionSign(t) }}</span>
+                                {{ formatCurrency(Math.abs(t.amount)) }}
+                            </td>
+
+                            <td class="tx-balance text-right">
+                                {{ formatCurrency(t.balance_after || 0) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Sin transacciones -->
+                <ng-template #noTransactions>
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No hay transacciones para mostrar</p>
+                        <small>Los movimientos aparecerán aquí cuando realices alguna operación</small>
+                    </div>
+                </ng-template>
+            </div>
+
+            <!-- Paginación -->
+            <div class="pagination-container" *ngIf="!loadingTransactions && pagination.last_page > 1">
+                <button class="page-btn"
+                        [disabled]="pagination.current_page === 1"
+                        (click)="goToPage(pagination.current_page - 1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+
+                <button *ngFor="let page of pages"
+                        class="page-btn"
+                        [class.active]="page === pagination.current_page"
+                        (click)="goToPage(page)">
+                    {{ page }}
+                </button>
+
+                <button class="page-btn"
+                        [disabled]="pagination.current_page === pagination.last_page"
+                        (click)="goToPage(pagination.current_page + 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- ============================================
+     MODAL DE RETIRO
+     ============================================ -->
+<div class="modal-overlay" *ngIf="showWithdrawalModal" (click)="closeWithdrawalModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-arrow-up"></i>
+                Solicitar Retiro
+            </h2>
+            <button class="modal-close" (click)="closeWithdrawalModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form [formGroup]="withdrawalForm" (ngSubmit)="submitWithdrawal()" class="modal-body">
+
+            <!-- Info de saldo -->
+            <div class="modal-info">
+                <span class="info-label">Saldo disponible:</span>
+                <span class="info-value">{{ formatCurrency(currentBalance?.amount || 0) }}</span>
+            </div>
+
+            <!-- Monto -->
+            <div class="form-group">
+                <label for="amount">
+                    <i class="fas fa-dollar-sign"></i>
+                    Monto a retirar
+                </label>
+                <input
+                    type="number"
+                    id="amount"
+                    formControlName="amount"
+                    class="form-control"
+                    [class.is-invalid]="amountInvalid"
+                    placeholder="0.00"
+                    min="1"
+                    step="0.01">
+                <small class="form-hint" *ngIf="!amountInvalid">
+                    Monto mínimo: {{ formatCurrency(1) }}
+                </small>
+                <small class="form-error" *ngIf="amountInvalid">
+                    Ingresa un monto válido
+                </small>
+            </div>
+
+            <!-- Vía de retiro -->
+            <div class="form-group">
+                <label for="via_id">
+                    <i class="fas fa-exchange-alt"></i>
+                    Método de retiro
+                </label>
+                <select
+                    id="via_id"
+                    formControlName="via_id"
+                    class="form-control"
+                    [class.is-invalid]="viaInvalid">
+                    <option value="">Selecciona un método</option>
+                    <option *ngFor="let via of vias" [value]="via.id">
+                        {{ via.label }}
+                    </option>
+                </select>
+                <small class="form-error" *ngIf="viaInvalid">
+                    Selecciona un método
+                </small>
+            </div>
+
+            <!-- Datos de pago -->
+            <div class="form-group">
+                <label for="payment_data">
+                    <i class="fas fa-info-circle"></i>
+                    Datos de pago
+                </label>
+                <textarea
+                    id="payment_data"
+                    formControlName="payment_data"
+                    class="form-control"
+                    [class.is-invalid]="paymentDataInvalid"
+                    rows="3"
+                    placeholder="Ej: Número de cuenta, banco, titular, etc.">
+                </textarea>
+                <small class="form-error" *ngIf="paymentDataInvalid">
+                    Ingresa los datos de pago
+                </small>
+            </div>
+
+            <!-- Notas -->
+            <div class="form-group">
+                <label for="user_notes">
+                    <i class="fas fa-comment"></i>
+                    Notas (opcional)
+                </label>
+                <textarea
+                    id="user_notes"
+                    formControlName="user_notes"
+                    class="form-control"
+                    rows="2"
+                    placeholder="Alguna nota adicional...">
+                </textarea>
+            </div>
+
+            <!-- Advertencia -->
+            <div class="modal-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Las solicitudes de retiro requieren aprobación de un administrador.</span>
+            </div>
+
+            <!-- Botones -->
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="closeWithdrawalModal()">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-submit" [disabled]="withdrawalForm.invalid">
+                    <i class="fas fa-paper-plane"></i>
+                    Solicitar retiro
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,1101 @@
+/* ============================================
+   VARIABLES (compartidas con juego.component)
+   ============================================ */
+:root {
+    --bg-dark: #0d0d1a;
+    --bg-card: #1a1a2e;
+    --bg-card-hover: #252540;
+    --bg-panel: #16213e;
+
+    --primary: #ff4757;
+    --primary-dark: #c62828;
+    --accent: #ffd700;
+    --accent-light: #ffe44d;
+    --success: #00e676;
+    --warning: #f39c12;
+    --info: #3a7ebf;
+
+    --text-white: #ffffff;
+    --text-light: #e8e8e8;
+    --text-medium: #c0c0c0;
+    --text-muted: #909090;
+
+    --border-color: rgba(255, 255, 255, 0.15);
+    --border-accent: rgba(255, 215, 0, 0.4);
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+.account-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bg-dark);
+    color: var(--text-white);
+    padding: 20px;
+    gap: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid var(--border-accent);
+    border-radius: 16px;
+    flex-wrap: wrap;
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-left h1 i {
+    color: var(--accent);
+}
+
+.header-subtitle {
+    margin: 4px 0 0 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Selector de moneda */
+.currency-selector {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 30px;
+}
+
+.currency-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 30px;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.currency-btn:hover {
+    color: var(--text-white);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.currency-btn.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    color: #1a2a3a;
+    box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+}
+
+/* Botón de retiro */
+.btn-withdrawal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+}
+
+.btn-withdrawal:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
+}
+
+.btn-withdrawal:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   TARJETAS DE BALANCE
+   ============================================ */
+.balance-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.balance-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.balance-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent);
+}
+
+.balance-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-accent);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.balance-main::before {
+    background: linear-gradient(180deg, var(--accent), var(--accent-light));
+}
+
+.balance-promo::before {
+    background: linear-gradient(180deg, var(--success), #00a843);
+}
+
+.balance-total::before {
+    background: linear-gradient(180deg, var(--info), #2966a5);
+}
+
+.card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.balance-promo .card-icon {
+    background: rgba(0, 230, 118, 0.1);
+    color: var(--success);
+}
+
+.balance-total .card-icon {
+    background: rgba(58, 126, 191, 0.1);
+    color: var(--info);
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.card-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.card-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-white);
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+.card-currency {
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.card-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ============================================
+   LOADING
+   ============================================ */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 20px;
+    color: var(--text-muted);
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 215, 0, 0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.spinner-small {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 215, 0, 0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   CONTENIDO PRINCIPAL
+   ============================================ */
+.account-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ============================================
+   SOLICITUDES DE RETIRO
+   ============================================ */
+.withdrawal-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.withdrawal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.withdrawal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    border-left: 4px solid var(--warning);
+}
+
+.withdrawal-item.status-approved {
+    border-left-color: var(--info);
+}
+
+.wr-left {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.wr-status {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: fit-content;
+}
+
+.status-pending {
+    background: rgba(243, 156, 18, 0.2);
+    color: var(--warning);
+    border: 1px solid var(--warning);
+}
+
+.status-approved {
+    background: rgba(58, 126, 191, 0.2);
+    color: var(--info);
+    border: 1px solid var(--info);
+}
+
+.status-rejected {
+    background: rgba(255, 71, 87, 0.2);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.status-completed {
+    background: rgba(0, 230, 118, 0.2);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.status-cancelled {
+    background: rgba(144, 144, 144, 0.2);
+    color: var(--text-muted);
+    border: 1px solid var(--text-muted);
+}
+
+.wr-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wr-amount {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-white);
+}
+
+.wr-net {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.wr-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.btn-cancel-wr {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(255, 71, 87, 0.2);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel-wr:hover {
+    background: rgba(255, 71, 87, 0.4);
+    color: white;
+}
+
+/* ============================================
+   FILTROS
+   ============================================ */
+.filters-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    cursor: pointer;
+}
+
+.filters-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filters-header h2 i {
+    color: var(--accent);
+}
+
+.btn-toggle-filters {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 8px;
+    transition: transform 0.3s ease;
+}
+
+.filters-body {
+    padding: 0 20px 20px 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    padding-top: 15px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-white);
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+.filter-actions {
+    justify-content: flex-end;
+}
+
+.btn-clear-filters {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(255, 71, 87, 0.2);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: fit-content;
+    align-self: flex-end;
+}
+
+.btn-clear-filters:hover {
+    background: rgba(255, 71, 87, 0.4);
+    color: white;
+}
+
+/* ============================================
+   TABLA DE TRANSACCIONES
+   ============================================ */
+.transactions-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    min-height: 300px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header h2 i {
+    color: var(--accent);
+}
+
+.transactions-count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.loading-transactions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 40px;
+    color: var(--text-muted);
+}
+
+/* Tabla */
+.table-container {
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.transactions-table thead th {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.transactions-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+}
+
+.transactions-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.transactions-table td {
+    padding: 15px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.tx-date {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.tx-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-transform: capitalize;
+}
+
+.tx-description {
+    max-width: 300px;
+}
+
+.tx-desc {
+    display: block;
+    color: var(--text-light);
+}
+
+.tx-raffle {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.tx-raffle i {
+    color: var(--accent);
+    margin-right: 4px;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.tx-amount {
+    font-weight: 700;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+.tx-amount.credit {
+    color: var(--success);
+}
+
+.tx-amount.debit {
+    color: var(--primary);
+}
+
+.tx-amount.neutral {
+    color: var(--text-white);
+}
+
+.tx-balance {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* Empty state */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    gap: 10px;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    opacity: 0.3;
+}
+
+.empty-state p {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.empty-state small {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* ============================================
+   PAGINACIÓN
+   ============================================ */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.page-btn {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: rgba(255, 215, 0, 0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.page-btn.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    border-color: var(--accent);
+    color: #1a2a3a;
+    box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+}
+
+.page-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   MODAL
+   ============================================ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header h2 i {
+    color: var(--accent);
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    color: var(--primary);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(0, 230, 118, 0.1);
+    border-left: 4px solid var(--success);
+    border-radius: 8px;
+}
+
+.info-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.info-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--success);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-group label i {
+    color: var(--accent);
+    font-size: 0.8rem;
+}
+
+.form-control {
+    padding: 12px 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-white);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+}
+
+.form-control.is-invalid {
+    border-color: var(--primary);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.form-error {
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.modal-warning {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background: rgba(243, 156, 18, 0.1);
+    border-left: 4px solid var(--warning);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: var(--warning);
+}
+
+.modal-warning i {
+    font-size: 1rem;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-cancel {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-muted);
+}
+
+.btn-submit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    border: none;
+    border-radius: 8px;
+    color: #1a2a3a;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .account-container {
+        padding: 12px;
+        gap: 15px;
+    }
+
+    .account-header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px;
+    }
+
+    .header-right {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .currency-selector {
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+
+    .btn-withdrawal {
+        justify-content: center;
+    }
+
+    .balance-section {
+        grid-template-columns: 1fr;
+    }
+
+    .card-value {
+        font-size: 1.5rem;
+    }
+
+    .filter-row {
+        grid-template-columns: 1fr;
+    }
+
+    .transactions-table td,
+    .transactions-table th {
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+
+    .tx-badge {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
+
+    .modal-content {
+        margin: 10px;
+    }
+
+    .withdrawal-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-cancel-wr {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-left h1 {
+        font-size: 1.4rem;
+    }
+
+    .card-value {
+        font-size: 1.3rem;
+    }
+
+    .card-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .pagination-container {
+        flex-wrap: wrap;
+    }
+
+    .page-btn {
+        min-width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+    }
+}
