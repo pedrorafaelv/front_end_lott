@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { GetGroupsResponse } from '../interfaces/get-groups-response';
 import { environment } from '../../environments/environment';
+import { Usuario, GetUsersListResponse } from "../models/user.model";
 
 
 @Injectable({
@@ -54,13 +55,17 @@ getUserPermissions(userId: string){
   );
 }
 async getPermissionsByUser(userId: string){
+
   const respuesta =  await fetch(`${ this.baseUrl }getUserPermissions/${userId}`);
   const datos =  await respuesta.json();
   return datos;
+
 }
 
 getGroups(id: string): Observable<GetGroupsResponse>{
+
   return this.http.get<GetGroupsResponse>(`${this.baseUrl}getGrupos/${id}`);
+
 }
 
  singUpUser(email: string, name: string, pass: string, localid: string, token: string){
@@ -69,10 +74,33 @@ getGroups(id: string): Observable<GetGroupsResponse>{
  }
 
  getUserEmailConfirm(correo: string){
-  return this.http.get<GetGroupsResponse>(`${this.baseUrl}getUserEmailConfirm/${correo}`);
- }
-  getUsersList(user: string){
-    return this.http.get<any[]>(`${this.baseUrl}usersList/${user}`);
-  }
 
+  return this.http.get<GetGroupsResponse>(`${this.baseUrl}getUserEmailConfirm/${correo}`);
+
+ }
+
+//  getUsersList(user: string): Observable<GetUsersListResponse> {
+//     return this.http.get<GetUsersListResponse>(`${this.baseUrl}usersList/${user}`);
+//   }
+
+  getUsersList(
+    user: string,
+    page: number = 1,
+    perPage: number = 10,
+    search: string = ''
+  ): Observable<GetUsersListResponse> {
+
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+
+    if (search.trim()) {
+      params = params.set('search', search.trim());
+    }
+
+    return this.http.get<GetUsersListResponse>(
+      `${this.baseUrl}usersList/${user}`,
+      { params }
+    );
+  }
 }

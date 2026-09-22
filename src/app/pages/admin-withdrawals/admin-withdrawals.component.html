@@ -1,0 +1,433 @@
+<div class="admin-container">
+
+    <!-- ============================================
+         HEADER
+         ============================================ -->
+    <header class="admin-header">
+        <div class="header-left">
+            <h1>
+                <i class="fas fa-user-shield"></i>
+                Panel de Administración
+            </h1>
+            <p class="header-subtitle">Gestión de solicitudes de retiro</p>
+        </div>
+
+        <div class="header-right">
+            <button class="btn-secondary" (click)="showStatsPanel = !showStatsPanel">
+                <i class="fas fa-chart-bar"></i>
+                Estadísticas
+            </button>
+            <button class="btn-secondary" (click)="exportData()">
+                <i class="fas fa-download"></i>
+                Exportar
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================
+         DASHBOARD STATS
+         ============================================ -->
+    <section class="stats-grid" *ngIf="dashboardStats">
+        <div class="stat-card stat-pending">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-content">
+                <span class="stat-value">{{ dashboardStats.pending_count }}</span>
+                <span class="stat-label">Pendientes</span>
+                <span class="stat-amount">{{ formatCurrency(dashboardStats.pending_amount) }}</span>
+            </div>
+        </div>
+
+        <div class="stat-card stat-approved">
+            <div class="stat-icon"><i class="fas fa-check"></i></div>
+            <div class="stat-content">
+                <span class="stat-value">{{ dashboardStats.approved_today }}</span>
+                <span class="stat-label">Aprobadas hoy</span>
+            </div>
+        </div>
+
+        <div class="stat-card stat-completed">
+            <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+            <div class="stat-content">
+                <span class="stat-value">{{ dashboardStats.completed_today }}</span>
+                <span class="stat-label">Completadas hoy</span>
+            </div>
+        </div>
+
+        <div class="stat-card stat-rejected">
+            <div class="stat-icon"><i class="fas fa-times"></i></div>
+            <div class="stat-content">
+                <span class="stat-value">{{ dashboardStats.rejected_today }}</span>
+                <span class="stat-label">Rechazadas hoy</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         ESTADÍSTICAS DETALLADAS (Panel desplegable)
+         ============================================ -->
+    <section class="stats-panel" *ngIf="showStatsPanel && stats">
+        <div class="panel-header">
+            <h2><i class="fas fa-chart-line"></i> Estadísticas del período</h2>
+            <button class="btn-close-panel" (click)="showStatsPanel = false">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="stats-detailed">
+            <div class="stat-block">
+                <span class="block-label">Total solicitudes</span>
+                <span class="block-value">{{ stats.total_requests }}</span>
+            </div>
+            <div class="stat-block">
+                <span class="block-label">Monto total</span>
+                <span class="block-value">{{ formatCurrency(stats.total_amount) }}</span>
+            </div>
+            <div class="stat-block">
+                <span class="block-label">Comisiones</span>
+                <span class="block-value">{{ formatCurrency(stats.total_commission) }}</span>
+            </div>
+            <div class="stat-block">
+                <span class="block-label">Neto pagado</span>
+                <span class="block-value">{{ formatCurrency(stats.total_net) }}</span>
+            </div>
+        </div>
+
+        <!-- Por moneda -->
+        <div class="stats-by-currency" *ngIf="stats.by_currency?.length > 0">
+            <h3>Por moneda</h3>
+            <div class="currency-list">
+                <div class="currency-item" *ngFor="let c of stats.by_currency">
+                    <span class="currency-code">{{ c.currency_code }}</span>
+                    <span class="currency-count">{{ c.count }} solicitudes</span>
+                    <span class="currency-total">{{ formatCurrency(c.total, c.currency_code) }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         TABS DE ESTADO
+         ============================================ -->
+    <section class="status-tabs">
+        <button
+            *ngFor="let tab of statusTabs"
+            class="status-tab"
+            [class.active]="selectedStatusTab === tab.key"
+            [style.--tab-color]="tab.color"
+            (click)="changeStatusTab(tab.key)">
+            <i [class]="tab.icon"></i>
+            {{ tab.label }}
+            <span class="tab-count">{{ getStatusCount(tab.key) }}</span>
+        </button>
+    </section>
+
+    <!-- ============================================
+         BARRA DE BÚSQUEDA Y FILTROS
+         ============================================ -->
+    <section class="search-bar">
+        <div class="search-input-wrapper">
+            <i class="fas fa-search"></i>
+            <input
+                type="text"
+                placeholder="Buscar por usuario o email..."
+                (input)="onSearch($event)">
+        </div>
+        <button class="btn-filters" (click)="toggleFilters()">
+            <i class="fas fa-filter"></i>
+            Filtros
+        </button>
+    </section>
+
+    <!-- Filtros avanzados -->
+    <section class="filters-panel" *ngIf="showFilters">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label>Moneda</label>
+                <select [(ngModel)]="filters.currency_code" (change)="applyFilters()">
+                    <option [ngValue]="null">Todas</option>
+                    <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Desde</label>
+                <input type="date" [(ngModel)]="filters.date_from" (change)="applyFilters()">
+            </div>
+
+            <div class="filter-group">
+                <label>Hasta</label>
+                <input type="date" [(ngModel)]="filters.date_to" (change)="applyFilters()">
+            </div>
+
+            <div class="filter-group filter-actions">
+                <button class="btn-clear" (click)="clearFilters()">
+                    <i class="fas fa-eraser"></i>
+                    Limpiar
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         TABLA DE SOLICITUDES
+         ============================================ -->
+    <section class="withdrawals-section">
+        <!-- Loading -->
+        <div class="loading-state" *ngIf="loading">
+            <div class="spinner"></div>
+            <p>Cargando solicitudes...</p>
+        </div>
+
+        <!-- Tabla -->
+        <div class="table-container" *ngIf="!loading">
+            <table class="withdrawals-table" *ngIf="withdrawals.length > 0; else emptyState">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th class="text-right">Monto</th>
+                        <th class="text-right">Neto</th>
+                        <th>Moneda</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let w of withdrawals; trackBy: trackByWithdrawalId"
+                        [class.row-pending]="w.status === 'pending'"
+                        [class.row-approved]="w.status === 'approved'">
+
+                        <td class="cell-id">#{{ w.id }}</td>
+
+                        <td class="cell-user">
+                            <div class="user-info">
+                                <span class="user-name">{{ w.user?.name || 'Usuario #' + w.user_id }}</span>
+                                <span class="user-email">{{ w.user?.email || '-' }}</span>
+                            </div>
+                        </td>
+
+                        <td class="cell-amount text-right">
+                            {{ formatCurrency(w.amount, w.currency_code) }}
+                        </td>
+
+                        <td class="cell-net text-right">
+                            {{ formatCurrency(w.net_amount, w.currency_code) }}
+                        </td>
+
+                        <td class="cell-currency">{{ w.currency_code }}</td>
+
+                        <td class="cell-status">
+                            <span class="status-badge" [class]="getStatusClass(w.status)">
+                                <i [class]="getStatusIcon(w.status)"></i>
+                                {{ getStatusLabel(w.status) }}
+                            </span>
+                        </td>
+
+                        <td class="cell-date">{{ formatDate(w.created_at) }}</td>
+
+                        <td class="cell-actions text-center">
+                            <button class="btn-action" (click)="openDetail(w)" title="Ver detalle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <ng-template #emptyState>
+                <div class="empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <p>No hay solicitudes para mostrar</p>
+                </div>
+            </ng-template>
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination" *ngIf="!loading && pagination.last_page > 1">
+            <button class="page-btn" [disabled]="pagination.current_page === 1" (click)="goToPage(pagination.current_page - 1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <button *ngFor="let page of pages"
+                    class="page-btn"
+                    [class.active]="page === pagination.current_page"
+                    (click)="goToPage(page)">
+                {{ page }}
+            </button>
+
+            <button class="page-btn" [disabled]="pagination.current_page === pagination.last_page" (click)="goToPage(pagination.current_page + 1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </section>
+</div>
+
+<!-- ============================================
+     MODAL DE DETALLE
+     ============================================ -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetail()">
+    <div class="modal-content modal-lg" (click)="$event.stopPropagation()" *ngIf="selectedWithdrawal">
+
+        <!-- Header -->
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-file-invoice-dollar"></i>
+                Retiro #{{ selectedWithdrawal.id }}
+            </h2>
+            <button class="modal-close" (click)="closeDetail()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+
+            <!-- Info principal -->
+            <div class="detail-section">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Usuario</span>
+                        <span class="detail-value">{{ selectedWithdrawal.user?.name || 'N/A' }}</span>
+                        <span class="detail-sub">{{ selectedWithdrawal.user?.email || '-' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Estado</span>
+                        <span class="status-badge" [class]="getStatusClass(selectedWithdrawal.status)">
+                            <i [class]="getStatusIcon(selectedWithdrawal.status)"></i>
+                            {{ getStatusLabel(selectedWithdrawal.status) }}
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Monto solicitado</span>
+                        <span class="detail-value big">{{ formatCurrency(selectedWithdrawal.amount, selectedWithdrawal.currency_code) }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Comisión</span>
+                        <span class="detail-value">{{ formatCurrency(selectedWithdrawal.commission, selectedWithdrawal.currency_code) }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Neto a pagar</span>
+                        <span class="detail-value success">{{ formatCurrency(selectedWithdrawal.net_amount, selectedWithdrawal.currency_code) }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Método</span>
+                        <span class="detail-value">{{ selectedWithdrawal.via?.label || '-' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Fecha de solicitud</span>
+                        <span class="detail-value">{{ formatDate(selectedWithdrawal.created_at) }}</span>
+                    </div>
+                    <div class="detail-item" *ngIf="selectedWithdrawal.approved_at">
+                        <span class="detail-label">Fecha de aprobación</span>
+                        <span class="detail-value">{{ formatDate(selectedWithdrawal.approved_at) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datos de pago -->
+            <div class="detail-section">
+                <h3><i class="fas fa-credit-card"></i> Datos de pago</h3>
+                <div class="payment-data">
+                    <pre>{{ selectedWithdrawal.payment_data?.details || 'Sin datos' }}</pre>
+                </div>
+                <div class="payment-data" *ngIf="selectedWithdrawal.payment_data?.transaction_reference">
+                    <p><strong>Referencia:</strong> {{ selectedWithdrawal.payment_data?.transaction_reference }}</p>
+                </div>
+            </div>
+
+            <!-- Notas -->
+            <div class="detail-section" *ngIf="selectedWithdrawal.user_notes || selectedWithdrawal.admin_notes">
+                <h3><i class="fas fa-comments"></i> Notas</h3>
+                <div class="notes-box" *ngIf="selectedWithdrawal.user_notes">
+                    <span class="notes-label">Usuario:</span>
+                    <p>{{ selectedWithdrawal.user_notes }}</p>
+                </div>
+                <div class="notes-box admin" *ngIf="selectedWithdrawal.admin_notes">
+                    <span class="notes-label">Admin:</span>
+                    <p>{{ selectedWithdrawal.admin_notes }}</p>
+                </div>
+            </div>
+
+            <!-- ACCIONES DISPONIBLES -->
+            <div class="detail-section actions-section">
+
+                <!-- Aprobar (si está pendiente) -->
+                <div class="action-box approve-box" *ngIf="canApprove">
+                    <h3><i class="fas fa-check-circle"></i> Aprobar solicitud</h3>
+                    <textarea
+                        class="form-control"
+                        placeholder="Notas (opcional)"
+                        formControlName="admin_notes"
+                        [formGroup]="approveForm"
+                        rows="2"></textarea>
+                    <button class="btn-approve" (click)="approve()">
+                        <i class="fas fa-check"></i>
+                        Aprobar retiro
+                    </button>
+                </div>
+
+                <!-- Rechazar (si está pendiente) -->
+                <div class="action-box reject-box" *ngIf="canReject">
+                    <h3><i class="fas fa-times-circle"></i> Rechazar solicitud</h3>
+                    <textarea
+                        class="form-control"
+                        [class.is-invalid]="rejectNotesInvalid"
+                        placeholder="Motivo del rechazo (requerido)"
+                        formControlName="admin_notes"
+                        [formGroup]="rejectForm"
+                        rows="2"></textarea>
+                    <small class="error-text" *ngIf="rejectNotesInvalid">
+                        Ingresa un motivo (mín. 5 caracteres)
+                    </small>
+                    <button class="btn-reject" (click)="reject()" [disabled]="rejectForm.invalid">
+                        <i class="fas fa-times"></i>
+                        Rechazar retiro
+                    </button>
+                </div>
+
+                <!-- Completar (si está aprobada) -->
+                <div class="action-box complete-box" *ngIf="canComplete">
+                    <h3><i class="fas fa-check-double"></i> Marcar como completado</h3>
+                    <p class="help-text">Confirma que realizaste la transferencia</p>
+                    <input
+                        type="text"
+                        class="form-control"
+                        [class.is-invalid]="referenceInvalid"
+                        placeholder="Referencia de la transferencia"
+                        formControlName="transaction_reference"
+                        [formGroup]="completeForm">
+                    <small class="error-text" *ngIf="referenceInvalid">
+                        Ingresa la referencia (mín. 3 caracteres)
+                    </small>
+                    <textarea
+                        class="form-control"
+                        placeholder="Notas (opcional)"
+                        formControlName="admin_notes"
+                        [formGroup]="completeForm"
+                        rows="2"></textarea>
+                    <button class="btn-complete" (click)="complete()" [disabled]="completeForm.invalid">
+                        <i class="fas fa-check-double"></i>
+                        Marcar como completado
+                    </button>
+                </div>
+            </div>
+
+            <!-- LOGS -->
+            <div class="detail-section" *ngIf="withdrawalLogs.length > 0">
+                <h3><i class="fas fa-history"></i> Historial de cambios</h3>
+                <div class="logs-timeline">
+                    <div class="log-item" *ngFor="let log of withdrawalLogs">
+                        <div class="log-dot" [class]="'log-' + log.action"></div>
+                        <div class="log-content">
+                            <span class="log-action">{{ log.action }}</span>
+                            <span class="log-admin" *ngIf="log.admin">por {{ log.admin.name }}</span>
+                            <span class="log-date">{{ formatDate(log.created_at) }}</span>
+                            <p class="log-notes" *ngIf="log.notes">{{ log.notes }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

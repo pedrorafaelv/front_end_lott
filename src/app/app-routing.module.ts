@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BuscarComponent } from './pages/buscar/buscar.component';
+import { BuscarComponent } from './components/buscar/buscar.component';
 import { CartonComponent } from './components/carton/carton.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,6 @@ import { JuegoComponent } from './pages/juego/juego.component';
 import { GroupsComponent } from './pages/groups/groups.component';
 import { RaffleComponent } from './pages/raffle/raffle.component';
 import { AccountComponent } from './pages/account/account.component';
-import { MovesComponent } from './trash/moves/moves.component';
 import { LoginComponent } from './pages/log-in/login.component';
 import { LogOutComponent } from './pages/log-out/log-out.component';
 import { SingUpComponent } from './pages/sing-up/sing-up.component';
@@ -19,9 +18,11 @@ import { CallbackComponent } from './pages/callback/callback.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { AdminGuard } from './guards/admin.guard';
 import { MessageComponent } from './pages/message/message.component';
-import { EmailConfirmationComponent } from './pages/email-confirmation/email-confirmation.component';
+import { EmailConfirmationComponent } from './components/email-confirmation/email-confirmation.component';
 import { UsersComponent } from './pages/users/users.component';
 import { CartonesPosterGridComponent } from './components/cartones-poster-grid/cartones-poster-grid.component';
+import { AdminWithdrawalsComponent } from './pages/admin-withdrawals/admin-withdrawals.component';
+
 
 const routes: Routes = [
   { 
@@ -52,9 +53,11 @@ const routes: Routes = [
   { 
     path: 'account', component: AccountComponent, canActivate: [AuthGuard]
   },
+
   { 
-    path: 'moves', component: MovesComponent, canActivate: [AuthGuard]
+    path: 'admin/withdrawals',  component: AdminWithdrawalsComponent, canActivate: [AuthGuard, AdminGuard]
   },
+ 
   { 
     path: 'log-in', component: LoginComponent
   },
@@ -84,7 +87,7 @@ const routes: Routes = [
     path: 'message', component: MessageComponent, canActivate:[AuthGuard]
   },
   { 
-    path: 'users', component: UsersComponent, canActivate:[AuthGuard]
+    path: 'users', component: UsersComponent, canActivate:[AuthGuard, AdminGuard]
   },
   { 
     path:'callback', component: CallbackComponent 

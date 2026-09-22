@@ -18,7 +18,7 @@ import { NotImageDirective } from '../directives/not-image.directive';
 
 // Componentes de páginas
 import { HomeComponent } from './home/home.component';
-import { BuscarComponent } from './buscar/buscar.component';
+import { BuscarComponent } from '../components/buscar/buscar.component';
 import { PeliculasComponent } from '../trash/peliculas/peliculas.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { JuegoComponent } from './juego/juego.component';
@@ -36,7 +36,7 @@ import { PersonalDataComponent } from '../components/personal-data/personal-data
 import { CallbackComponent } from './callback/callback.component';
 import { ProfileComponent } from './profile/profile.component';
 import { MessageComponent } from './message/message.component';
-import { EmailConfirmationComponent } from './email-confirmation/email-confirmation.component';
+import { EmailConfirmationComponent } from '../components/email-confirmation/email-confirmation.component';
 import { UsersComponent } from './users/users.component';
 import { BouncingBallComponent } from '../components/bouncing-ball/bouncing-ball.component';
 // IMPORTAR ComponentsModule para usar sus componentes

@@ -92,20 +92,38 @@
     <div class="admin-main">
       <!-- Tabla de usuarios -->
       <div class="users-table-container">
-        <div class="table-header">
-          <h3>Lista de Usuarios Registrados</h3>
-          <div class="table-actions">
-            <div class="search-box">
-              <i class="fas fa-search"></i>
-              <!-- <input type="text" placeholder="Buscar usuario..." (input)="onSearch($event)"> -->
-            </div>
-            <!-- <button class="btn-refresh" (click)="refreshData()"> -->
-              <i class="fas fa-sync-alt"></i> Actualizar
-            <!-- </button> -->
-          </div>
-        </div>
 
-        <div class="table-responsive">
+  <!-- Header de la tabla -->
+  <div class="table-header">
+    <h3>Lista de Usuarios Registrados</h3>
+    <div class="table-actions">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          formControlName="grupoficha"
+          placeholder="Buscar por nombre o email...">
+      </div>
+      <button class="btn-refresh"
+              (click)="refreshData()"
+              [disabled]="loading">
+        <i class="fas fa-sync-alt" [class.spinning]="loading"></i> Actualizar
+      </button>
+    </div>
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="loading" class="loading-state">
+    <i class="fas fa-spinner fa-spin"></i> Cargando usuarios...
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMessage && !loading" class="error-state">
+    <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+  </div>
+
+        <!-- Tabla -->
+        <div class="table-responsive" *ngIf="!loading && !errorMessage">
           <div class="table">
             <div class="table-row header">
               <div class="table-cell">ID</div>
@@ -116,22 +134,35 @@
               <div class="table-cell">Acciones</div>
             </div>
 
-            <div class="table-row" *ngFor="let item of usersData">
-              <div class="table-cell">{{item.id}}</div>
-              <div class="table-cell">{{item.name}}</div>
-              <div class="table-cell">{{item.email}}</div>
+            <!-- Sin resultados -->
+            <div class="table-row empty" *ngIf="usersData.length === 0">
+              <div class="table-cell">No se encontraron usuarios.</div>
+            </div>
+
+            <!-- Filas -->
+            <div class="table-row" *ngFor="let item of usersData; trackBy: trackById">
+              <div class="table-cell">{{ item.id }}</div>
               <div class="table-cell">
-                <span class="status-badge" [class.active]="item.active">
-                  {{item.active ? 'Activo' : 'Inactivo'}}
+                {{ item.name }} {{ item.last_name || '' }}
+                <span class="admin-badge" *ngIf="item.is_admin">Admin</span>
+              </div>
+              <div class="table-cell">{{ item.email }}</div>
+              <div class="table-cell">
+                <span class="status-badge" [class.active]="item.email_verified_at">
+                  {{ item.email_verified_at ? 'Verificado' : 'Pendiente' }}
                 </span>
               </div>
               <div class="table-cell">
-                <!-- {{item.lastLogin | date:'short' || 'Nunca'}} -->
+                {{ item.firebase_last_connection
+                    ? (item.firebase_last_connection | date:'short')
+                    : 'Nunca' }}
               </div>
-              <div class="table-cell">
-                <!-- <button (click)="addGroup(item)" class="btn-action groups" title="Gestionar grupos"> -->
-                  <i class="fas fa-layer-group"></i> Grupos
-                <!-- </button> -->
+              <div class="table-cell actions">
+                <button class="btn-action groups"
+                        title="Gestionar grupos"
+                        (click)="addGroup()">
+                  <i class="fas fa-layer-group"></i>
+                </button>
                 <button class="btn-action edit" title="Editar usuario">
                   <i class="fas fa-edit"></i>
                 </button>
@@ -143,18 +174,66 @@
           </div>
         </div>
 
-        <div class="table-footer">
+        <!-- Footer con paginación -->
+        <div class="table-footer" *ngIf="!loading && totalUsers > 0">
+
           <div class="pagination-info">
-            <!-- Mostrando {{usersData.length}} de {{totalUsers}} usuarios -->
+            Mostrando <strong>{{ from }}</strong> – <strong>{{ to }}</strong>
+            de <strong>{{ totalUsers }}</strong> usuarios
           </div>
+
           <div class="pagination-controls">
-            <!-- <button class="btn-pagination" [disabled]="currentPage === 1"> -->
+
+            <!-- Selector per_page -->
+            <select class="per-page-select"
+                    [value]="perPage"
+                    (change)="changePerPage($any($event.target).value)">
+              <option [value]="5">5 / pág.</option>
+              <option [value]="10">10 / pág.</option>
+              <option [value]="25">25 / pág.</option>
+              <option [value]="50">50 / pág.</option>
+            </select>
+
+            <!-- Primera -->
+            <button class="btn-pagination"
+                    [disabled]="currentPage === 1 || loading"
+                    (click)="firstPage()">
+              <i class="fas fa-angles-left"></i>
+            </button>
+
+            <!-- Anterior -->
+            <button class="btn-pagination"
+                    [disabled]="currentPage === 1 || loading"
+                    (click)="prevPage()">
               <i class="fas fa-chevron-left"></i>
-            <!-- </button> -->
-            <!-- <span>Página {{currentPage}} de {{totalPages}}</span> -->
-            <!-- <button class="btn-pagination" [disabled]="currentPage === totalPages"> -->
+            </button>
+
+            <!-- Números -->
+            <ng-container *ngFor="let p of pages; let i = index">
+              <button *ngIf="isNumber(p)"
+                      class="btn-pagination"
+                      [class.active]="p === currentPage"
+                      [disabled]="loading"
+                      (click)="goToPage(p)">
+                {{ p }}
+              </button>
+              <span *ngIf="!isNumber(p)" class="pagination-ellipsis">{{ p }}</span>
+            </ng-container>
+
+            <!-- Siguiente -->
+            <button class="btn-pagination"
+                    [disabled]="currentPage === lastPage || loading"
+                    (click)="nextPage()">
               <i class="fas fa-chevron-right"></i>
-            <!-- </button> -->
+            </button>
+
+            <!-- Última -->
+            <button class="btn-pagination"
+                    [disabled]="currentPage === lastPage || loading"
+                    (click)="goToLastPage()">
+              <i class="fas fa-angles-right"></i>
+            </button>
+
           </div>
         </div>
       </div>
