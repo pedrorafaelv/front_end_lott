@@ -1,200 +1,276 @@
-import { Component, OnInit } from '@angular/core';
-import {  FormBuilder, Validators, FormGroup, ReactiveFormsModule, FormControl } from "@angular/forms";
-// import { switchMap, catchError } from 'rxjs/operators';
-// import { of } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  Validators,
+  FormGroup,
+  ReactiveFormsModule,
+  FormControl,
+  AbstractControl,
+  ValidationErrors
+} from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
+import Swal from 'sweetalert2';
+
 import { ValidadoresService } from '../../services/validadores.service';
-import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
-// import { Permissions } from '../../interfaces/get-user-permissions-response';
 import { GroupService } from '../../services/group.service';
 import { Group } from '../../interfaces/get-groups-response';
-import Swal from "sweetalert2";
 import { ComponentsModule } from '../../components/components.module';
-import { CommonModule } from '@angular/common';
+import { PublicityComponent } from '../../components/publicity/publicity.component';
 
 @Component({
-    selector: 'app-groups',
-    templateUrl: './groups.component.html',
-    styleUrls: ['./groups.component.css'],
-    standalone: true,
-    imports:[ ReactiveFormsModule, 
-            ComponentsModule,
-            CommonModule
-     ],
+  selector: 'app-groups',
+  templateUrl: './groups.component.html',
+  styleUrls: ['./groups.component.css'],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    ComponentsModule,
+    CommonModule,
+    PublicityComponent
+  ],
 })
-export class GroupsComponent implements OnInit {
-  groupData!: Group;
-  loading = false;
-  errorMessage = '';
-  successMessage = '';
+export class GroupsComponent implements OnInit, OnDestroy {
 
+  /* ============================================
+     ESTADO
+     ============================================ */
   forma!: FormGroup;
+  loading = false;
+  guardando = false;
+  showDebugInfo = false;
+
   date = new Date();
   events: string[] = [];
+
+  public userId!: string;
+  public localId!: string;
+  public user!: string;
+  public usuario: any;
+
+  private destroy$ = new Subject<void>();
+
+  /* ============================================
+     LISTAS
+     ============================================ */
+  ListaYesNo = [
+    { id: '0', name: 'NO' },
+    { id: '1', name: 'SI' }
+  ];
+
   listaPublicPrivate = [
-    {id: "0", name: 'Publico' },
-    {id: "1", name: 'Privado' }
+    { id: '0', name: 'Público', icon: 'fa-globe' },
+    { id: '1', name: 'Privado', icon: 'fa-lock' }
   ];
-  ListaYesNo= [
-    {id: "0", name: 'NO' },
-    {id: "1", name: 'SI' }
-  ];
-   public userId!: string;
-   public localId!: string;
-   public user!:    string;
-   public usuario: any;
 
-  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
-    this.events.push(`${type}: ${event.value}`);
-  }
-  constructor(private fb:FormBuilder,
-            private validadores : ValidadoresService,
-            private AuthService: AuthService,
-            private UserService: UserService,
-            private GroupService: GroupService ) {
+  /* ============================================
+     CONSTRUCTOR
+     ============================================ */
+  constructor(
+    private fb: FormBuilder,
+    private validadores: ValidadoresService,
+    private authService: AuthService,
+    private userService: UserService,
+    private groupService: GroupService
+  ) {
     this.crearFormulario();
-    this.cargarDataFormulario();
     this.crearListeners();
+  }
 
-   }
-
-   crearFormulario(){
-   this.forma=this.fb.group({
-     name     : ['', [Validators.required] ],
-     description: ['', ,  this.validadores.existeUsuario],
-     active     : ['1', [Validators.required] ],
-     privacy    : ['1', [Validators.required] ],
-     start_date : [],
-     end_date   : [],
-     created_at : [this.date],
-     updated_at : [],
-     });
-   }
-
-   crearListeners(){
-    this.forma.valueChanges.subscribe((valor: any) => {
-      console.log(valor);
-    })
-   }
-
-   cargarDataFormulario(){
-    this.forma.reset({
-        name: "",
-        description: "",
-        active:'1',
-        privacy: '1',
-        start_date: this.date,
-        end_date: this.date,
-        created_at: this.date,
-        updated_at: this.date,
-    });
-    
-   }
-
+  /* ============================================
+     LIFECYCLE
+     ============================================ */
   ngOnInit(): void {
-    //  console.log('Permissions en pagina de creacion de grupos =', this.localId);
-
-    this.localId = this.AuthService.getLocalId();
-    if (this.localId){
-    this.getInfo();
-
-    } 
-  }
-  async getInfo(){
-          //  console.log('ngOniInit?groups ', this.localId);
-
-  const user = await this.UserService.getByLocalId(this.localId);
-  user.subscribe(
-    resp => {
-      this.usuario = resp;
-      this.userId = this.usuario.user[0]['id'];
-      // console.log('Usuario ID:', this.userId);
-      
-      // Actualiza los campos del formulario con el user_id
-      this.forma.patchValue({
-        user_id: this.userId,
-        user_admin: this.userId
-      });
-    },
-    error => {
-      console.log(error);
+    this.localId = this.authService.getLocalId();
+    if (this.localId) {
+      this.getInfo();
     }
-  );
-}
-  get nameNoValido(){
-    return this.forma.get('name')!.invalid && this.forma.get('name')!.touched
   }
 
-  get adminNoValido(){
-    return this.forma.get('user_admin')!.invalid && this.forma.get('user_admin')!.touched
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  get descriptionNoValido(){
-    return this.forma.get('description')!.invalid && this.forma.get('description')!.touched
-  }
- 
-  get activeNoValido(){
-    return this.forma.get('active')!.invalid && this.forma.get('active')!.touched
+  /* ============================================
+     FORMULARIO
+     ============================================ */
+  private crearFormulario(): void {
+    this.forma = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(5)]],
+      description: ['', [Validators.required, Validators.minLength(10)]],
+      active: ['1', [Validators.required]],
+      privacy: ['1', [Validators.required]],
+      start_date: [this.formatDateForInput(this.date)],
+      end_date: [this.formatDateForInput(this.date)],
+      created_at: [this.date],
+      updated_at: [this.date]
+    }, {
+      validators: this.validarFechas.bind(this)
+    });
+
+    this.cargarDataFormulario();
   }
 
-  get privacyNoValido(){
-    return this.forma.get('privacy')!.invalid && this.forma.get('privacy')!.touched
-  }
-  
-  get startDateNoValido(){
-    return this.forma.get('start_date')!.invalid && this.forma.get('start_date')!.touched
-  }
-
-  get endDateNoValido(){
-    return this.forma.get('end_date')!.invalid && this.forma.get('end_date')!.touched
+  private validarFechas(group: AbstractControl): ValidationErrors | null {
+    const start = group.get('start_date')?.value;
+    const end = group.get('end_date')?.value;
+    if (start && end && new Date(start) > new Date(end)) {
+      return { fechasInvalidas: true };
+    }
+    return null;
   }
 
-  
-guardar(){
-  if (this.forma.invalid){
-    this.getInfo();
-    Object.values(this.forma.controls).forEach(control => {
-      if (control instanceof FormGroup){
-        Object.values(control.controls).forEach(ctrl => ctrl.markAsTouched());
-      } else {
-        control.markAsTouched();
+  private crearListeners(): void {
+    this.forma.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((valor) => {
+        // console.log('Form value:', valor);
+      });
+  }
+
+  private cargarDataFormulario(): void {
+    this.forma.reset({
+      name: '',
+      description: '',
+      active: '1',
+      privacy: '1',
+      start_date: this.formatDateForInput(this.date),
+      end_date: this.formatDateForInput(this.date),
+      created_at: this.date,
+      updated_at: this.date
+    });
+  }
+
+  private formatDateForInput(d: Date): string {
+    const dia = String(d.getDate()).padStart(2, '0');
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const anio = d.getFullYear();
+    return `${anio}-${mes}-${dia}`;
+  }
+
+  /* ============================================
+     CARGA DE USUARIO
+     ============================================ */
+  async getInfo(): Promise<void> {
+    try {
+      const user$ = await this.userService.getByLocalId(this.localId);
+      user$.pipe(takeUntil(this.destroy$)).subscribe({
+        next: (resp: any) => {
+          this.usuario = resp;
+          this.userId = resp?.user?.[0]?.id;
+        },
+        error: (err) => {
+          console.error('Error al obtener usuario:', err);
+        }
+      });
+    } catch (err) {
+      console.error('Error en getInfo:', err);
+    }
+  }
+
+  /* ============================================
+     GETTERS DE VALIDACIÓN
+     ============================================ */
+  private esInvalido(campo: string): boolean {
+    const c = this.forma.get(campo);
+    return !!(c?.invalid && c?.touched);
+  }
+
+  get nameNoValido() { return this.esInvalido('name'); }
+  get descriptionNoValido() { return this.esInvalido('description'); }
+  get activeNoValido() { return this.esInvalido('active'); }
+  get privacyNoValido() { return this.esInvalido('privacy'); }
+  get startDateNoValido() { return this.esInvalido('start_date'); }
+  get endDateNoValido() { return this.esInvalido('end_date'); }
+
+  get fechasInvalidas(): boolean {
+    return !!(this.forma.errors?.['fechasInvalidas'] && this.forma.touched);
+  }
+
+  get puedeGuardar(): boolean {
+    return this.forma.valid && !this.guardando;
+  }
+
+  /* ============================================
+     ACCIONES
+     ============================================ */
+  toggleDebugInfo(): void {
+    this.showDebugInfo = !this.showDebugInfo;
+  }
+
+  limpiarFormulario(): void {
+    Swal.fire({
+      title: '¿Limpiar formulario?',
+      text: 'Se perderán todos los datos ingresados',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, limpiar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ff4757',
+      background: '#1a1a2e',
+      color: '#e8e8e8'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.cargarDataFormulario();
+        this.forma.markAsUntouched();
       }
     });
-    return; // Importante: salir si el formulario es inválido
   }
 
-  // Prepara los datos con TODOS los campos requeridos
-  const groupData = {
-    ...this.forma.value,
-    user_id: this.userId, // Asegúrate de que esto tenga valor
-    user_admin: this.userId, // Normalmente el admin es el mismo user_id
-    name: this.forma.get('name')?.value, // Usa 'name' no 'nombre'
-    active: this.forma.get('active')?.value === '1', // Convertir a boolean si es necesario
-    privacy: this.forma.get('privacy')?.value
-  };
-
-  // console.log('Datos que se enviarán:', groupData); // Verifica en consola
-
-  this.GroupService.newGroup(groupData).subscribe(
-    resp => {
-      Swal.close();
-      Swal.fire({
-        allowOutsideClick: false,
-        icon: 'success',
-        text: 'Grupo creado correctamente',  
+  guardar(): void {
+    if (this.forma.invalid) {
+      Object.values(this.forma.controls).forEach(control => {
+        if (control instanceof FormGroup) {
+          Object.values(control.controls).forEach(ctrl => ctrl.markAsTouched());
+        } else {
+          control.markAsTouched();
+        }
       });
-      this.forma.reset(); // Reset después del éxito
-    },
-    (err) => {            
-      Swal.fire({
-        allowOutsideClick: false,
-        icon: 'error',
-        text: err.error.message,
-      });
+      return;
     }
-  );
-}
 
- 
+    this.guardando = true;
+
+    const groupData = {
+      ...this.forma.value,
+      user_id: this.userId,
+      user_admin: this.userId,
+      active: this.forma.get('active')?.value === '1',
+      privacy: this.forma.get('privacy')?.value
+    };
+
+    this.groupService.newGroup(groupData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (resp) => {
+          this.guardando = false;
+          Swal.fire({
+            allowOutsideClick: false,
+            icon: 'success',
+            title: '¡Grupo creado!',
+            text: 'El grupo se creó correctamente',
+            background: '#1a1a2e',
+            color: '#e8e8e8',
+            confirmButtonColor: '#ffd700'
+          });
+          this.cargarDataFormulario();
+          this.forma.markAsUntouched();
+        },
+        error: (err) => {
+          this.guardando = false;
+          Swal.fire({
+            allowOutsideClick: false,
+            icon: 'error',
+            title: 'Error',
+            text: err?.error?.message || 'No se pudo crear el grupo',
+            background: '#1a1a2e',
+            color: '#e8e8e8',
+            confirmButtonColor: '#ff4757'
+          });
+        }
+      });
+  }
 }

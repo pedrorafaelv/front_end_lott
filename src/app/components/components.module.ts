@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { BrowserModule } from "@angular/platform-browser";
 import { PipesModule } from '../pipes/pipes.module';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
@@ -46,7 +45,6 @@ import { BouncingBallComponent } from './bouncing-ball/bouncing-ball.component';
     CommonModule,
     RouterModule,
     FontAwesomeModule,
-    BrowserModule,
     PipesModule,
     FormsModule,
     ReactiveFormsModule,

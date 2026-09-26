@@ -19,11 +19,9 @@ import { NotImageDirective } from '../directives/not-image.directive';
 // Componentes de páginas
 import { HomeComponent } from './home/home.component';
 import { BuscarComponent } from '../components/buscar/buscar.component';
-import { PeliculasComponent } from '../trash/peliculas/peliculas.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { JuegoComponent } from './juego/juego.component';
 import { GroupsComponent } from './groups/groups.component';
-import { MovesComponent } from '../trash/moves/moves.component';
 import { AccountComponent } from './account/account.component';
 import { LogOutComponent } from './log-out/log-out.component';
 import { LoginComponent } from './log-in/login.component';
@@ -46,13 +44,10 @@ import { RecordsComponent } from '../components/records/records.component';
 @NgModule({
   declarations: [
     BuscarComponent,
-    PeliculasComponent,
-    AccountComponent,
     LogOutComponent,
     PoliticsComponent,
     CardRaffleComponent,
     CallbackComponent,
-    MovesComponent,
   ],
   imports: [
     CommonModule,
@@ -68,6 +63,7 @@ import { RecordsComponent } from '../components/records/records.component';
     MatNativeDateModule,
     MatInputModule,
     DashboardComponent,
+    AccountComponent,
     GroupsComponent,
     UsersComponent,
     EmailConfirmationComponent,

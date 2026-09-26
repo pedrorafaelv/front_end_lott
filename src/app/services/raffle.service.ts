@@ -185,5 +185,8 @@ deleteCard(raffleId:number, user_id:number, card_id:number): Observable<NewRecor
       const data = await resp.json();
       return data;
     }
+     getUserLevel(): Observable<any> {
+  return this.http.get<any>(`${this.baseUrl}/user/level`);
+}
 }
          

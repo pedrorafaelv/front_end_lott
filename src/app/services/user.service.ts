@@ -29,6 +29,8 @@ updateDataFirebase(localId: string, token: string, last_connection: string){
  async getUserByLocalId(localId: string){
    const respuesta =  await fetch(`${ this.baseUrl }getUserByFirebase/${localId}`);
    const datos =  await respuesta.json();
+   console.log((`${ this.baseUrl }getUserByFirebase/${localId}`));
+   console.log('getUserByLocalId', datos);
    return datos;
  }
 
@@ -39,7 +41,7 @@ updateDataFirebase(localId: string, token: string, last_connection: string){
   return datos;
 }
 
-getUserLevel(userId: string){
+getUserLevel(userId: number){
   return this.http.get(
     `${ this.baseUrl }getUserLevel/${userId}`
   );
@@ -74,14 +76,11 @@ getGroups(id: string): Observable<GetGroupsResponse>{
  }
 
  getUserEmailConfirm(correo: string){
-
+    
   return this.http.get<GetGroupsResponse>(`${this.baseUrl}getUserEmailConfirm/${correo}`);
 
  }
 
-//  getUsersList(user: string): Observable<GetUsersListResponse> {
-//     return this.http.get<GetUsersListResponse>(`${this.baseUrl}usersList/${user}`);
-//   }
 
   getUsersList(
     user: string,

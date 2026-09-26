@@ -23,7 +23,7 @@ export class GroupService {
   constructor(private http: HttpClient) {}
 
   newGroup(datos: Group): Observable<Group> {
-    const url = `${this.baseUrl}NewGroup/`;
+    const url = `${this.baseUrl}newGroup/`;
     const headers = new HttpHeaders({ 
       'Content-Type': 'application/json',
       'Accept': 'application/json'

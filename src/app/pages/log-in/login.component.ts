@@ -97,46 +97,59 @@ export class LoginComponent implements OnInit {
     this.forma.reset();
   }
 
-  login(form: FormGroup){
-     if(form.invalid){return true;}
+ login(form: FormGroup) {
+  if (form.invalid) return true;
 
-     Swal.fire({
-      allowOutsideClick: false,
-      icon: 'info',
-      text:'Espere por favor'
+  Swal.fire({
+    allowOutsideClick: false,
+    icon: 'info',
+    text: 'Espere por favor'
+  });
+  Swal.showLoading();
+
+  const email = this.forma.get('correo')!.value;
+  const password = this.forma.get('pass1')!.value;
+
+  this.auth.login(email, password).subscribe({
+    next: (resp) => {
+      console.log('✅ Login Firebase OK', resp);
+
+      // 1. Guardar email si "recordarme"
+      if (this.recordarme) {
+        localStorage.setItem('email', email);
+      }
+
+      // 2. Hacer el exchange con el backend (idToken → sanctum_token)
+      this.auth.exchangeFirebaseToken().subscribe({
+        next: (exchangeResp) => {
+          console.log('✅ Exchange OK', exchangeResp);
+          Swal.close();
+
+          // 3. AHORA sí, navegar al dashboard
+          this.router.navigateByUrl('/dashboard');
+        },
+        error: (err) => {
+          console.error('❌ Exchange error', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo completar la autenticación',
+          });
+        }
       });
-       Swal.showLoading();
-
-    this.auth.login(this.forma.get('correo')!.value, this.forma.get('pass1')!.value)
-    .subscribe(resp =>{
+    },
+    error: (err) => {
+      console.error('❌ Login Firebase error', err);
       Swal.close();
-      console.log('se debe  validar  la confirmación del email  = '+ resp);
-      this.UserService.getUserEmailConfirm(this.forma.get('correo')!.value)
-      .subscribe(resp=>{
-        console.log("esta es la respuesta de la confirmacion "+ resp);
-      },
-       (err)=>{
-        console.log('no esta confirmado el email');
-       }
-      )
-     if (this.recordarme){
-      localStorage.setItem('email', this.forma.get('correo')!.value);
-     }
-
-      this.router.navigateByUrl('/dashboard');
-      console.log(resp);
-    }, (err)=>{
-       console.log(err.error.error.message);
-       Swal.fire({
+      Swal.fire({
         icon: 'error',
-        title:'Error al autenticar',
-        text: err.error.error.message,
-        });
-    });
-  return true;
-   }
-    loginUser(){
-       this.UserService.getByLocalId('1');
+        title: 'Error al autenticar',
+        text: err.error?.error?.message || 'Credenciales inválidas',
+      });
     }
+  });
+
+  return true;
+}
   
 }

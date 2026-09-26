@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs';
+import { map, Observable, tap, switchMap } from 'rxjs';
+import { environment, firebaseUrl } from '../../environments/environment';
 
 interface AuthResponse {
   idToken: string;
@@ -11,23 +12,15 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-// crear nuevo usuario 
-//  https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
 
-// login
-// https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=[API_KEY]
+  private apiUrl = environment.apiUrl;
+  private fbLoginUrl= firebaseUrl.login;
+  private fbNewUserUrl=firebaseUrl.newUser;
+  private fbChangePasswdUrl=firebaseUrl.changePasswd;
+  private fbemailConfirmPasswUrl=firebaseUrl.emailConfirmPassw;
+  private fbconfirmRestorePasswdUrl = firebaseUrl.confirmRestorePasswd;
+  private apiKey =environment.Firebase_apiKey;
 
-//cambiar contraseña
-//https://identitytoolkit.googleapis.com/v1/accounts:update?key=[API_KEY]
-
-//enviar correo de restablecimiento de contraseña
-//https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=[API_KEY]
-
-// confirmar restablecimiento de contraseña
-// https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key=[API_KEY]
-
-private url= 'https://identitytoolkit.googleapis.com/v1';
-private apiKey = 'AIzaSyAB-PXIBMGdxsnw1TqIfI9ON_9GZW2D-Co';
 userToken: any;
 localId!: string;
 email!: string;
@@ -37,24 +30,44 @@ localStorage!: Storage;
   }
 
 
-   login(email:string, pass:string){
-    const authData={
-      email: email,
-      password: pass,
-      returnSecureToken: true,
-    };
-    return this.http.post<AuthResponse>(
-      `${this.url}/accounts:signInWithPassword?key=${this.apiKey}`,authData
-    ).pipe(
-      map( resp=>{
-        this.guardarToken(resp.idToken);
-        this.guardarProfile(resp.localId);
-        console.log('respuesta de login', resp);
-        return resp;
-      })
-    );
-   }
+  //  login(email:string, pass:string){
+  //   const authData={
+  //     email: email,
+  //     password: pass,
+  //     returnSecureToken: true,
+  //   };
+  //   return this.http.post<AuthResponse>(
+  //     `${this.url}/accounts:signInWithPassword?key=${this.apiKey}`,authData
+  //   ).pipe(
+  //     map( resp=>{
+  //       this.guardarToken(resp.idToken);
+  //       this.guardarProfile(resp.localId);
+  //       console.log('respuesta de login', resp);
+  //       return resp;
+  //     })
+  //   );
+  //  }
 
+
+  login(email: string, pass: string): Observable<any> {
+  const authData = {
+    email,
+    password: pass,
+    returnSecureToken: true,
+  };
+
+  return this.http.post<AuthResponse>(
+    `${this.fbLoginUrl}${this.apiKey}`,
+    authData
+  ).pipe(
+    tap((resp) => {
+      this.guardarToken(resp.idToken);
+      this.guardarProfile(resp.localId);
+    }),
+    // 👇 Encadenar el exchange para obtener el token de Sanctum
+    switchMap(() => this.exchangeFirebaseToken())
+  );
+}
    nuevoUsuario(email:string, pass:string){
     const authData ={
       email: email,
@@ -62,7 +75,7 @@ localStorage!: Storage;
       returnSecureToken: true
     };
     return this.http.post<AuthResponse>(
-      `${this.url}/accounts:signUp?key=${ this.apiKey}`,authData
+      `${this.fbNewUserUrl}${ this.apiKey}`,authData
     ).pipe(
       map( resp=>{
         this.guardarToken(resp.idToken);
@@ -79,7 +92,7 @@ localStorage!: Storage;
       returnSecureToken: true
     };
     return this.http.post(
-      `${this.url}/accounts:update?key=${ this.apiKey}`,authData
+      `${this.fbChangePasswdUrl}${ this.apiKey}`,authData
     );    
    }
 
@@ -89,7 +102,7 @@ localStorage!: Storage;
       email: email
     };
     return this.http.post(
-      `${this.url}/accounts:sendOobCode?key=${ this.apiKey}`,authData
+      `${this.fbemailConfirmPasswUrl}${ this.apiKey}`,authData
     );  
    }
 
@@ -100,7 +113,7 @@ localStorage!: Storage;
     };
     console.log('confirmar restablecimiento constrasena',authData);
     return this.http.post(
-      `${this.url}/accounts:resetPassword?key=${ this.apiKey}`,authData
+      `${this.fbconfirmRestorePasswdUrl}${ this.apiKey}`,authData
     );
    } 
 
@@ -159,4 +172,41 @@ localStorage!: Storage;
     localStorage.setItem('localId', localId);
   }
  
+  /**
+ * Intercambia el idToken de Firebase por un token de Sanctum.
+ * Devuelve un Observable con la respuesta.
+ */
+exchangeFirebaseToken(): Observable<any> {
+  const idToken = localStorage.getItem('token');   // el de Firebase
+
+  return this.http.post<any>(`${this.apiUrl}auth/exchange`, {
+    id_token: idToken
+  }).pipe(
+    tap((resp: any) => {
+      if (resp.success && resp.token) {
+        localStorage.setItem('sanctum_token', resp.token);
+        console.log('✅ Token de Sanctum guardado');
+      }
+    })
+  );
+}
+
+/**
+ * Obtiene el token de Sanctum para las peticiones API.
+ */
+getSanctumToken(): string {
+  return localStorage.getItem('sanctum_token') ?? '';
+}
+
+/**
+ * Limpia los tokens al hacer logout.
+ */
+logoutAll(): void {
+  localStorage.removeItem('token');
+  localStorage.removeItem('expira');
+  localStorage.removeItem('localId');
+  localStorage.removeItem('sanctum_token');
+}
+
+
 }

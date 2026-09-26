@@ -1,103 +1,239 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
-      <div class="admin-header">
-        <i class="bi bi-people-fill"></i>
-        <h2>Gestión de Grupo</h2>
-        <p class="text-muted">Crear o editar información del grupo</p>
-      </div>
+<div class="admin-container">
 
-      <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()" class="needs-validation" novalidate>
-        <div class="form-group row">
-          <label class="col-3 col-form-label">Nombre</label>
-          <div class="col-9">
-            <input class="form-control" type="text" placeholder="Nombre del grupo" formControlName="name" [class.is-invalid]="nameNoValido">
-            <small *ngIf="nameNoValido" class="text-danger">El nombre debe tener al menos 5 caracteres</small>
-          </div>
+  <!-- ============================================
+       HEADER
+       ============================================ -->
+  <header class="admin-header">
+    <div class="header-left">
+      <h1>
+        <i class="fas fa-people-group"></i>
+        Gestión de Grupo
+      </h1>
+      <p class="header-subtitle">Crear o editar información del grupo</p>
+    </div>
+
+    <div class="header-right">
+      <button class="btn-secondary" type="button" (click)="limpiarFormulario()">
+        <i class="fas fa-eraser"></i> Limpiar
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================
+       LAYOUT CON PUBLICIDAD LATERAL
+       ============================================ -->
+  <div class="groups-layout">
+
+    <!-- ---------- AD IZQUIERDA ---------- -->
+    <aside class="groups-sidebar left">
+      <div class="ad-sticky">
+        <div class="ad-wrapper">
+          <span class="ad-label">Publicidad</span>
+          <app-publicity></app-publicity>
         </div>
-        
-        <div class="form-group row">
-          <label class="col-3 col-form-label">Descripción</label>
-          <div class="col-9">
-            <textarea class="form-control" placeholder="Descripción del grupo" formControlName="description" rows="3" [class.is-invalid]="descriptionNoValido"></textarea>
-            <small *ngIf="descriptionNoValido" class="text-danger">Por favor ingrese una descripción válida</small>
-          </div>
+        <div class="ad-wrapper">
+          <span class="ad-label">Patrocinado</span>
+          <app-publicity></app-publicity>
         </div>
-        
-        <div class="form-group row">
-          <label class="col-3 col-form-label">Activo</label>
-          <div class="col-9">
-            <div class="radio-group">
-              <div class="radio-option" *ngFor="let option of ListaYesNo">
-                <input type="radio" class="form-check-input" formControlName="active" [value]="option.id" [id]="'active'+option.id">
-                <label class="form-check-label" [for]="'active'+option.id">
-                  {{ option.name }}
-                </label>
+      </div>
+    </aside>
+
+    <!-- ---------- CONTENIDO PRINCIPAL ---------- -->
+    <main class="groups-main">
+
+      <!-- ============================================
+           FORMULARIO
+           ============================================ -->
+      <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()" class="group-form">
+
+        <!-- ============ SECCIÓN 1: INFO BÁSICA ============ -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-number">1</div>
+            <div>
+              <h3><i class="fas fa-info-circle"></i> Información Básica</h3>
+              <p>Datos principales del grupo</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="name" class="form-label">
+                Nombre del Grupo <span class="required">*</span>
+              </label>
+              <div class="input-with-icon">
+                <i class="fas fa-tag"></i>
+                <input type="text" id="name" class="form-control"
+                       placeholder="Ingrese un nombre para el grupo"
+                       formControlName="name"
+                       [class.is-invalid]="nameNoValido">
+              </div>
+              <div class="form-hint">Mínimo 5 caracteres</div>
+              <div *ngIf="nameNoValido" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> El nombre debe tener al menos 5 caracteres
               </div>
             </div>
-            <small *ngIf="activeNoValido" class="text-danger">Seleccione una opción</small>
-          </div>
-        <!-- </div>
-        
-        <div class="form-group row"> -->
-          <label class="col-3 col-form-label">Privacidad</label>
-          <div class="col-9">
-            <div class="radio-group">
-              <div class="radio-option" *ngFor="let option of listaPublicPrivate">
-                <input type="radio" class="form-check-input" formControlName="privacy" [value]="option.id" [id]="'privacy'+option.id">
-                <label class="form-check-label" [for]="'privacy'+option.id">
-                  {{ option.name }}
-                </label>
+
+            <div class="form-group full-width">
+              <label for="description" class="form-label">
+                Descripción <span class="required">*</span>
+              </label>
+              <textarea id="description" class="form-control" rows="3"
+                        placeholder="Describa el propósito del grupo"
+                        formControlName="description"
+                        [class.is-invalid]="descriptionNoValido"></textarea>
+              <div class="form-hint">Mínimo 10 caracteres</div>
+              <div *ngIf="descriptionNoValido" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> Por favor ingrese una descripción válida
               </div>
             </div>
-            <small *ngIf="privacyNoValido" class="text-danger">Seleccione una opción</small>
           </div>
         </div>
-        
-        <div class="form-group row">
-          <label class="col-3 col-form-label">Fecha Inicio</label>
-          <div class="col-9">
-            <input class="form-control" type="date" formControlName="start_date" [class.is-invalid]="startDateNoValido">
-            <small *ngIf="startDateNoValido" class="text-danger">Fecha de inicio no válida</small>
+
+        <!-- ============ SECCIÓN 2: CONFIGURACIÓN ============ -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-number">2</div>
+            <div>
+              <h3><i class="fas fa-sliders"></i> Configuración</h3>
+              <p>Estado y privacidad del grupo</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Estado del Grupo</label>
+              <div class="toggle-group">
+                <label *ngFor="let option of ListaYesNo" class="toggle-option">
+                  <input type="radio" [value]="option.id" formControlName="active">
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-text">{{ option.name }}</span>
+                </label>
+              </div>
+              <div class="form-hint">¿El grupo estará activo?</div>
+              <div *ngIf="activeNoValido" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> Seleccione una opción
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Privacidad</label>
+              <div class="card-options">
+                <label *ngFor="let option of listaPublicPrivate" class="card-option">
+                  <input type="radio" [value]="option.id" formControlName="privacy">
+                  <div class="card-option-content">
+                    <i class="fas" [class]="option.icon"></i>
+                    <span>{{ option.name }}</span>
+                  </div>
+                </label>
+              </div>
+              <div *ngIf="privacyNoValido" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> Seleccione una opción
+              </div>
+            </div>
           </div>
         </div>
-        
-        <div class="form-group row">
-          <label class="col-3 col-form-label">Fecha Fin</label>
-          <div class="col-9">
-            <input class="form-control" type="date" formControlName="end_date" [class.is-invalid]="endDateNoValido">
-            <small *ngIf="endDateNoValido" class="text-danger">Fecha de fin no válida</small>
+
+        <!-- ============ AD INLINE (solo móvil) ============ -->
+        <div class="ad-inline-mobile">
+          <span class="ad-label">Publicidad</span>
+          <app-publicity></app-publicity>
+        </div>
+
+        <!-- ============ SECCIÓN 3: FECHAS ============ -->
+        <div class="form-section">
+          <div class="section-header">
+            <div class="section-number">3</div>
+            <div>
+              <h3><i class="fas fa-calendar-alt"></i> Vigencia</h3>
+              <p>Período de actividad del grupo</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="start_date" class="form-label">Fecha de Inicio</label>
+              <div class="input-with-icon">
+                <i class="fas fa-calendar-plus"></i>
+                <input type="date" id="start_date" class="form-control"
+                       formControlName="start_date"
+                       [class.is-invalid]="startDateNoValido">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="end_date" class="form-label">Fecha de Fin</label>
+              <div class="input-with-icon">
+                <i class="fas fa-calendar-minus"></i>
+                <input type="date" id="end_date" class="form-control"
+                       formControlName="end_date"
+                       [class.is-invalid]="endDateNoValido">
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="fechasInvalidas" class="error-message" style="margin-top: 12px;">
+            <i class="fas fa-exclamation-circle"></i>
+            La fecha de inicio no puede ser posterior a la fecha de fin
           </div>
         </div>
-        
-        <div class="form-group row">
-          <div class="col-3"></div>
-          <div class="col-9">
-            <button type="submit" class="btn btn-primary" [disabled]="!forma.valid">
-              <i class="bi bi-check-circle"></i> Guardar
-            </button>
-          </div>
+
+        <!-- ============ BOTONES DE ACCIÓN ============ -->
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="toggleDebugInfo()">
+            <i class="fas fa-code"></i> Info Debug
+          </button>
+          <button type="submit" class="btn-primary"
+                  [disabled]="!puedeGuardar">
+            <i class="fas" [class.fa-save]="!guardando" [class.fa-spinner]="guardando"
+               [class.fa-spin]="guardando"></i>
+            {{ guardando ? 'Guardando...' : 'Guardar Grupo' }}
+          </button>
         </div>
       </form>
 
-      <div class="debug-info">
-        <h5>Estado del formulario</h5>
-        <div class="row">
-          <div class="col-md-6">
-            <p><strong>Válido:</strong> <span [class.text-success]="forma.valid" [class.text-danger]="!forma.valid">{{ forma.valid ? 'Sí' : 'No' }}</span></p>
-            <p><strong>Estado:</strong> {{ forma.status }}</p>
-          </div>
-          <div class="col-md-6">
-            <p><strong>Enviado:</strong> No</p>
-            <p><strong>Modificado:</strong> No</p>
-          </div>
+      <!-- ============================================
+           DEBUG
+           ============================================ -->
+      <div class="debug-info" *ngIf="showDebugInfo">
+        <div class="debug-header" (click)="showDebugInfo = !showDebugInfo">
+          <span><i class="fas fa-bug"></i> Información de Depuración</span>
+          <i class="fas" [class.fa-chevron-up]="showDebugInfo" [class.fa-chevron-down]="!showDebugInfo"></i>
         </div>
-        
-        <h5>Valores del Formulario</h5>
-        <pre>{{ forma.value | json }}</pre>
+        <div class="debug-content">
+          <div class="debug-status">
+            <span class="status-label">Formulario:</span>
+            <span class="status-value" [class.valid]="forma.valid" [class.invalid]="!forma.valid">
+              {{ forma.valid ? 'Válido' : 'Inválido' }}
+            </span>
+          </div>
+          <div class="debug-status">
+            <span class="status-label">Estado:</span>
+            <span class="status-value">{{ forma.status }}</span>
+          </div>
+          <div class="debug-status">
+            <span class="status-label">User ID:</span>
+            <span class="status-value">{{ userId || 'No cargado' }}</span>
+          </div>
+          <pre>{{ forma.value | json }}</pre>
+        </div>
       </div>
-    </div>
-    <div class="col-md-3"></div>
+
+    </main>
+
+    <!-- ---------- AD DERECHA ---------- -->
+    <aside class="groups-sidebar right">
+      <div class="ad-sticky">
+        <div class="ad-wrapper">
+          <span class="ad-label">Publicidad</span>
+          <app-publicity></app-publicity>
+        </div>
+        <div class="ad-wrapper">
+          <span class="ad-label">Patrocinado</span>
+          <app-publicity></app-publicity>
+        </div>
+      </div>
+    </aside>
+
   </div>
 </div>
