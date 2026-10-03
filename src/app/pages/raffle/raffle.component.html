@@ -11,6 +11,20 @@
       </h1>
       <p class="header-subtitle">Complete todos los campos para configurar su sorteo</p>
     </div>
+    <div class="header-center">
+      <button class="btn-secondary" (click)="duplicarUltimo()" type="button">
+            <!-- <i class="fa-solid fa-clone"></i>  -->
+            Duplicar último
+      </button>
+      <div class="input-with-button">
+        <input type="input" id="buscar" class="form-control" 
+          formControlName="buscar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        <button class="btn-secondary" (click)="duplicarUltimo()" type="button">
+              <i class="fa-solid fa-magnifying-glass"></i> 
+        </button>
+      </div>
+    </div>
 
     <div class="header-right">
       <!-- Card de nivel -->
@@ -27,10 +41,6 @@
           </span>
         </div>
       </div>
-
-      <button class="btn-secondary" (click)="limpiarFormulario()" type="button">
-        <i class="fas fa-eraser"></i> Limpiar
-      </button>
     </div>
   </header>
 
@@ -98,15 +108,21 @@
           <div class="form-grid">
             <div class="form-group">
               <label for="nombre" class="form-label">Nombre del Sorteo <span class="required">*</span></label>
-              <input type="text" id="nombre" class="form-control"
-                     placeholder="Ingrese un nombre atractivo"
-                     formControlName="nombre" [class.is-invalid]="nombreNoValido">
-              <div class="form-hint">Ej: Gran Sorteo Navideño 2026</div>
-              <div *ngIf="nombreNoValido" class="error-message">
-                <i class="fas fa-exclamation-circle"></i> Mínimo 5 caracteres
-              </div>
-            </div>
+              <div class="input-with-button">
 
+                <input type="text" id="nombre" class="form-control"
+                       placeholder="Ingrese un nombre atractivo"
+                       formControlName="nombre" [class.is-invalid]="nombreNoValido">
+                <button type="button" class="btn" (click)="regenerarNombre()" title="Generar otro nombre">
+                  🎲  <i class="fa-solid fa-clone"></i>  </button>
+                <div class="form-hint">Ej: Gran Sorteo Navideño 2026</div>
+                <div *ngIf="nombreNoValido" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> Mínimo 5 caracteres
+                </div>
+              </div>
+              
+            </div>
+            
             <div class="form-group">
               <label for="description" class="form-label">Descripción <span class="required">*</span></label>
               <textarea id="description" class="form-control" rows="3"
@@ -128,6 +144,23 @@
               </div>
               <div *ngIf="grupoNoValido" class="error-message">
                 <i class="fas fa-exclamation-circle"></i> Seleccione un grupo válido
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="tema" class="form-label">Tema <span class="required">*</span></label>
+              <div class="select-wrapper">
+                <select id="grupoficha" class="form-select" formControlName="grupoficha">
+                  <option value="" disabled>Selecciona un tema</option>
+                  <option *ngFor="let item of grupofichas; trackBy: trackByFicha"
+                          [ngValue]="item.id">
+                    {{ item.name }}
+                  </option>
+                </select>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div *ngIf="grupofichasNoValido" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> Seleccione un Tema válido
               </div>
             </div>
           </div>
@@ -293,35 +326,17 @@
             </div>
 
             <div class="form-group">
-              <label for="porcentajecartonlleno" class="form-label">% Cartón Lleno</label>
+              <label for="percent_full" class="form-label">% Cartón Lleno</label>
               <div class="select-wrapper">
-                <select id="porcentajecartonlleno" class="form-select" formControlName="percent_full"
+                <input type="number" id="percent_full" class="form-control"
+                       formControlName="percent_full" readonly>
+                <!-- <select id="porcentajecartonlleno" class="form-select" formControlName="percent_full"
                         [class.is-invalid]="percentFullNoValido">
                   <option *ngFor="let p of listaPercent2" [ngValue]="p.id">{{ p.name }}</option>
                 </select>
-                <i class="fas fa-chevron-down"></i>
+                <i class="fas fa-chevron-down"></i> -->
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- ============ AD INLINE (solo móvil) ============ -->
-        <div class="ad-inline-mobile">
-          <span class="ad-label">Publicidad</span>
-          <app-publicity></app-publicity>
-        </div>
-
-        <!-- ============ SECCIÓN 4: GENERAL ============ -->
-        <div class="form-section">
-          <div class="section-header">
-            <div class="section-number">4</div>
-            <div>
-              <h3><i class="fas fa-cog"></i> Configuración General</h3>
-              <p>Opciones adicionales del sorteo</p>
-            </div>
-          </div>
-
-          <div class="form-grid">
             <div class="form-group">
               <label class="form-label">Tipo de Sorteo <span class="required">*</span></label>
               <div class="card-options">
@@ -338,9 +353,9 @@
                   </div>
                 </label>
               </div>
-            </div>
+          </div>
 
-            <div class="form-group">
+          <div class="form-group">
               <label class="form-label">Privacidad <span class="required">*</span></label>
               <div class="card-options">
                 <label *ngFor="let option of listaPublicPrivate" class="card-option"
@@ -357,13 +372,22 @@
                 </label>
               </div>
             </div>
-          </div>
+        </div>
+      </div>
+
+        <!-- ============ AD INLINE (solo móvil) ============ -->
+        <div class="ad-inline-mobile">
+          <span class="ad-label">Publicidad</span>
+          <app-publicity></app-publicity>
         </div>
 
-        <!-- ============ SECCIÓN 5: FECHAS ============ -->
+        <!-- ============ SECCIÓN 4: GENERAL ============ -->
+        
+
+        <!-- ============ SECCIÓN 4: FECHAS ============ -->
         <div class="form-section">
           <div class="section-header">
-            <div class="section-number">5</div>
+            <div class="section-number">4</div>
             <div>
               <h3><i class="fas fa-calendar-alt"></i> Fechas y Horarios</h3>
               <p>Programe el sorteo</p>
@@ -372,15 +396,17 @@
 
           <div class="form-grid">
             <div class="form-group">
+              <div></div>
               <label class="form-label">Fecha Programada</label>
               <div class="date-time-group">
                 <div class="input-with-icon">
-                  <i class="fas fa-calendar"></i>
-                  <input type="date" class="form-control" formControlName="scheduled_date"
+                  <!-- <i class="fas fa-calendar"></i> -->
+                  <input type="date" [min]="minDate" class="form-control" formControlName="scheduled_date"
                          [class.is-invalid]="scheduledDateNoValido">
                 </div>
+                
                 <div class="input-with-icon">
-                  <i class="fas fa-clock"></i>
+                  <!-- <i class="fas fa-clock"></i> -->
                   <input type="time" class="form-control" formControlName="scheduled_hour"
                          [class.is-invalid]="scheduledHourNoValido">
                 </div>
@@ -391,12 +417,23 @@
               <label class="form-label">Fecha de Inicio</label>
               <div class="date-time-group">
                 <div class="input-with-icon">
-                  <i class="fas fa-calendar"></i>
-                  <input type="date" class="form-control" formControlName="start_date">
+                  <!-- <i class="fas fa-calendar"></i> -->
+                  <input type="date" [min]="minDate" class="form-control" formControlName="start_date" 
+                  [class.is-invalid]="scheduledDateNoValido" readonly>
                 </div>
                 <div class="input-with-icon">
-                  <i class="fas fa-clock"></i>
-                  <input type="time" class="form-control" formControlName="start_hour">
+                  <!-- <i class="fas fa-clock"></i> -->
+                  <input type="time" class="form-control" formControlName="start_hour" readonly>
+                </div>
+              </div>
+              <div>
+                <div *ngIf="forma_Raffle.get('scheduled_date')?.errors?.['fechaPasada']" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> La fecha de programada no puede ser anterior a hoy
+                </div>
+                <div>
+                  <div *ngIf="forma_Raffle.get('start_date')?.errors?.['fechaPasada']" class="error-message">
+                  <i class="fas fa-exclamation-circle"></i> La fecha de inicio no puede ser anterior a hoy
+                  </div>
                 </div>
               </div>
             </div>
@@ -453,6 +490,9 @@
         <div class="form-actions">
           <button type="button" class="btn-secondary" (click)="toggleDebugInfo()">
             <i class="fas fa-code"></i> Info Debug
+          </button>
+          <button class="btn-secondary" (click)="limpiarFormulario()" type="button">
+            <i class="fas fa-eraser"></i> Limpiar
           </button>
           <button type="submit" class="btn-primary"
                   [disabled]="forma_Raffle.invalid || guardando || limiteAlcanzado || !puedeCrearSorteo">

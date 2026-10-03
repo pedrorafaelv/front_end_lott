@@ -34,6 +34,9 @@ export const firebaseUrl={
   appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
   measurementId: "G-BC17K6J8Q5"
 };
+
+
+ 
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

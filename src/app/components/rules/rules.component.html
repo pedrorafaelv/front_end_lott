@@ -1,0 +1,90 @@
+<div class="rules-container">
+
+  <!-- HEADER -->
+  <header class="rules-header">
+    <h1>Normas del Sistema de Niveles</h1>
+    <p class="intro">
+      Todo usuario registrado pertenece a uno de los siguientes seis niveles. El nivel determina
+      cuántos sorteos puede tener activos, el monto máximo que puede manejar, el porcentaje de
+      retención aplicable y las funcionalidades especiales a las que tiene acceso.
+      Cada usuario posee <strong>un solo nivel activo</strong> a la vez.
+    </p>
+  </header>
+
+  <!-- LISTADO DE NIVELES -->
+  <section class="levels-list">
+    <article
+      *ngFor="let level of niveles"
+      class="level-item"
+      [style.border-left-color]="level.color">
+
+      <div class="level-head">
+        <h2>
+          <i class="fa" [ngClass]="level.icon" [style.color]="level.color"></i>
+          {{ level.name }}
+        </h2>
+        <span class="level-tag">Nivel {{ level.id }}</span>
+      </div>
+
+      <p class="level-description">{{ level.description }}</p>
+
+      <div class="level-details">
+        <div class="detail-row">
+          <span class="label">Sorteos activos permitidos:</span>
+          <span class="value">{{ level.max_raffles_active }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Monto máximo:</span>
+          <span class="value">{{ level.max_amount }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Retención aplicable:</span>
+          <span class="value">{{ level.max_retention_percent }}%</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Sorteos privados:</span>
+          <span class="value" [class.yes]="level.can_create_private" [class.no]="!level.can_create_private">
+            {{ level.can_create_private ? 'Permitido' : 'No permitido' }}
+          </span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Tipo automático:</span>
+          <span class="value" [class.yes]="level.can_use_auto_type" [class.no]="!level.can_use_auto_type">
+            {{ level.can_use_auto_type ? 'Permitido' : 'No permitido' }}
+          </span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Fichas personalizadas:</span>
+          <span class="value" [class.yes]="level.can_use_custom_fichas" [class.no]="!level.can_use_custom_fichas">
+            {{ level.can_use_custom_fichas ? 'Permitido' : 'No permitido' }}
+          </span>
+        </div>
+        <div class="detail-row" *ngIf="level.id !== 1 && level.id !== 6">
+          <span class="label">Requisitos mínimos:</span>
+          <span class="value">
+            {{ level.min_games_played }} partidas ·
+            {{ level.min_days_registered }} días ·
+            {{ level.min_wins }} victorias
+          </span>
+        </div>
+        <div class="detail-row" *ngIf="level.id === 1">
+          <span class="label">Requisitos mínimos:</span>
+          <span class="value">Ninguno (nivel por defecto)</span>
+        </div>
+        <div class="detail-row" *ngIf="level.id === 6">
+          <span class="label">Requisitos mínimos:</span>
+          <span class="value">Asignación manual por administración</span>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- REGLAS GENERALES -->
+  <section class="rules-section">
+    <h2>Reglas generales de ascenso</h2>
+    <ol class="rules-list">
+      <li *ngFor="let regla of reglasGenerales">{{ regla }}</li>
+    </ol>
+  </section>
+
+</div>

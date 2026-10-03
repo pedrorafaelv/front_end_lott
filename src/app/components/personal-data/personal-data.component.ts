@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray,FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AuthService } from 'src/app/services/auth.service';
 import { ValidadoresService } from '../../services/validadores.service';
 
 @Component({
@@ -11,9 +10,9 @@ import { ValidadoresService } from '../../services/validadores.service';
 })
 export class PersonalDataComponent implements OnInit {
 
-  forma: FormGroup;
+  forma: FormGroup | undefined;
 
-  constructor(private auth: AuthService, 
+  constructor(
               private fb:FormBuilder,
              private validadores : ValidadoresService  ) {
     this.crearFormulario();
@@ -32,7 +31,7 @@ export class PersonalDataComponent implements OnInit {
      usuario: ['', ,  this.validadores.existeUsuario],
      pass1  : ['', [Validators.required] ],
      pass2  : ['', [Validators.required] ],
-     politics  : ['', [Validators.required] ],
+     Policies  : ['', [Validators.required] ],
      
      direccion: this.fb.group({
       pais   : ['', [Validators.required, Validators.minLength(5)] ],
@@ -51,18 +50,18 @@ export class PersonalDataComponent implements OnInit {
    }
 
    crearListeners(){
-    this.forma.valueChanges.subscribe((valor: any) => {
+    this.forma!.valueChanges.subscribe((valor: any) => {
 
       console.log(valor);
     })
 
   //  this.forma.statusChanges.subscribe(status => console.log({status}));
-    this.forma.get('nombre')!.valueChanges.subscribe(console.log);
+    this.forma!.get('nombre')!.valueChanges.subscribe(console.log);
    }
 
    cargarDataFormulario(){
     
-    this.forma.reset({
+    this.forma!.reset({
     //  this.forma.setValue({
         nombre: "",
         apellido: "",
@@ -85,77 +84,77 @@ export class PersonalDataComponent implements OnInit {
   }
 
   get pasatiempos(){
-    return this.forma.get('pasatiempos') as FormArray;
+    return this.forma!.get('pasatiempos') as FormArray;
   }
 
   get nombreNoValido(){
-    return this.forma.get('nombre')!.invalid && this.forma.get('nombre')!.touched
+    return this.forma!.get('nombre')!.invalid && this.forma!.get('nombre')!.touched
   }
 
   get apellidoNoValido(){
-    return this.forma.get('apellido')!.invalid && this.forma.get('apellido')!.touched
+    return this.forma!.get('apellido')!.invalid && this.forma!.get('apellido')!.touched
   }
 
   get correoNoValido(){
-    return this.forma.get('correo')!.invalid && this.forma.get('correo')!.touched
+    return this.forma!.get('correo')!.invalid && this.forma!.get('correo')!.touched
   }
 
   get usuarioNoValido(){
-    return this.forma.get('usuario')!.invalid && this.forma.get('usuario')!.touched
+    return this.forma!.get('usuario')!.invalid && this.forma!.get('usuario')!.touched
   }
 
   get paisNoValido(){
-    return this.forma.get('direccion.pais')!.invalid && this.forma.get('direccion.pais')!.touched
+    return this.forma!.get('direccion.pais')!.invalid && this.forma!.get('direccion.pais')!.touched
   }
 
   get estadoNoValido(){
-    return this.forma.get('direccion.estado')!.invalid && this.forma.get('direccion.estado')!.touched
+    return this.forma!.get('direccion.estado')!.invalid && this.forma!.get('direccion.estado')!.touched
   }
 
   get ciudadNoValido(){
-    return this.forma.get('direccion.ciudad')!.invalid && this.forma.get('direccion.ciudad')!.touched
+    return this.forma!.get('direccion.ciudad')!.invalid && this.forma!.get('direccion.ciudad')!.touched
   }
 
   get direccionNoValido(){
-    return this.forma.get('direccion.address')!.invalid && this.forma.get('direccion.address')!.touched
+    return this.forma!.get('direccion.address')!.invalid && this.forma!.get('direccion.address')!.touched
   }
 
   get telefonoNoValido(){
-    return this.forma.get('telefono')!.invalid && this.forma.get('telefono')!.touched
+    return this.forma!.get('telefono')!.invalid && this.forma!.get('telefono')!.touched
   }
 
   get generoNoValido(){
-    return this.forma.get('genero')!.invalid && this.forma.get('genero')!.touched
+    return this.forma!.get('genero')!.invalid && this.forma!.get('genero')!.touched
   }
 
   get documentNoValido(){
-    return this.forma.get('document')!.invalid && this.forma.get('document')!.touched
+    return this.forma!.get('document')!.invalid && this.forma!.get('document')!.touched
   }
 
   get birthDateNoValido(){
-    return this.forma.get('birth_date')!.invalid && this.forma.get('birth_date')!.touched
+    return this.forma!.get('birth_date')!.invalid && this.forma!.get('birth_date')!.touched
   }
 
-  get politicsNoValido(){
-    return this.forma.get('politics')!.invalid && this.forma.get('politics')!.touched
+  get PoliciesNoValido(){
+    return this.forma!.get('Policies')!.invalid && this.forma!.get('Policies')!.touched
   }
 
   get pass1NoValido(){
-    return this.forma.get('pass1')!.invalid && this.forma.get('pass1')!.touched
+    return this.forma!.get('pass1')!.invalid && this.forma!.get('pass1')!.touched
   }
   get pass2NoValido(){
-    const pass1=this.forma.get('pass1')!.value;
-    const pass2=this.forma.get('pass2')!.value;
+    const pass1=this.forma!.get('pass1')!.value;
+    const pass2=this.forma!.get('pass2')!.value;
     return(pass1===pass2) ? false : true ;
     
 
-    // return this.forma.get('pass2').invalid && this.forma.get('pass2').touched
+    // return this.forma!.get('pass2').invalid && this.forma!.get('pass2').touched
   }
 
   guardar(){
 
-    if (this.forma.invalid ){
-      Object.values(this.forma.controls).forEach (control =>{
+    if (this.forma!.invalid ){
+      Object.values(this.forma!.controls).forEach (control =>{
 
         if (control instanceof FormGroup){
 
@@ -166,7 +165,7 @@ export class PersonalDataComponent implements OnInit {
         }
       });
     }
-     this.forma.reset();
+     this.forma!.reset();
   }
 
   

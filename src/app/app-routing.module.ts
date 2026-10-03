@@ -12,7 +12,7 @@ import { AccountComponent } from './pages/account/account.component';
 import { LoginComponent } from './pages/log-in/login.component';
 import { LogOutComponent } from './pages/log-out/log-out.component';
 import { SingUpComponent } from './pages/sing-up/sing-up.component';
-import { PoliticsComponent } from './components/politics/politics.component';
+import { PoliciesComponent } from './components/policies/policies.component';
 import { AuthGuard } from './guards/auth.guard';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { ProfileComponent } from './pages/profile/profile.component';
@@ -22,6 +22,7 @@ import { EmailConfirmationComponent } from './components/email-confirmation/emai
 import { UsersComponent } from './pages/users/users.component';
 import { CartonesPosterGridComponent } from './components/cartones-poster-grid/cartones-poster-grid.component';
 import { AdminWithdrawalsComponent } from './pages/admin-withdrawals/admin-withdrawals.component';
+import { RulesComponent } from './components/rules/rules.component';
 
 
 const routes: Routes = [
@@ -72,7 +73,7 @@ const routes: Routes = [
     path: 'email-confirmation', component: EmailConfirmationComponent, canActivate:[AuthGuard]
   },
   { 
-    path: 'politics', component: PoliticsComponent
+    path: 'Policies', component: PoliciesComponent
   },
   { 
     path: 'profile', component: ProfileComponent, canActivate:[AuthGuard]
@@ -92,6 +93,9 @@ const routes: Routes = [
   { 
     path:'callback', component: CallbackComponent 
   }, 
+  {
+    path:'rules',component:RulesComponent
+  },
   {
     path: '**',  redirectTo: 'home'
   },

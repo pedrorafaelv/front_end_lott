@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, tap, switchMap } from 'rxjs';
+import { map, Observable, tap, switchMap, BehaviorSubject } from 'rxjs';
 import { environment, firebaseUrl } from '../../environments/environment';
 
 interface AuthResponse {
@@ -25,6 +25,7 @@ userToken: any;
 localId!: string;
 email!: string;
 localStorage!: Storage;
+// currentUserId$: any;
   constructor(private http: HttpClient) { 
      this.leerToken();
   }
@@ -185,6 +186,9 @@ exchangeFirebaseToken(): Observable<any> {
     tap((resp: any) => {
       if (resp.success && resp.token) {
         localStorage.setItem('sanctum_token', resp.token);
+        localStorage.setItem('user_id', resp.user.id);       // 👈 id interno de tu BD
+        this.currentUserId$.next(resp.user.id);               // 👈 lo exponemos reactivamente
+
         console.log('✅ Token de Sanctum guardado');
       }
     })
@@ -208,5 +212,16 @@ logoutAll(): void {
   localStorage.removeItem('sanctum_token');
 }
 
+private currentUserId$ = new BehaviorSubject<number | null>(
+  Number(localStorage.getItem('user_id')) || null
+);
+
+getUserId$(): Observable<number | null> {
+  return this.currentUserId$.asObservable();
+}
+
+getUserId(): number | null {
+  return this.currentUserId$.value;
+}
 
 }

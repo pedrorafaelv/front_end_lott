@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { GetGroupsResponse } from '../interfaces/get-groups-response';
 import { environment } from '../../environments/environment';
 import { Usuario, GetUsersListResponse } from "../models/user.model";
+import { User } from '@auth0/auth0-angular';
 
 
 @Injectable({
@@ -14,6 +15,16 @@ export class UserService {
   userToken: any;
   email!: string;
   localStorage!: Storage;
+  id!: string;
+
+  // Signal privado para el estado del usuario
+  private userSignal = signal<User | null>(null);
+  
+  // Signal público de solo lectura para que los componentes lean el usuario
+  public readonly currentUser = this.userSignal.asReadonly();
+
+  // Computed para obtener el ID fácilmente (si se necesita mucho)
+  public readonly userId = computed(() => this.userSignal() ? this.id : undefined);
   constructor(private http: HttpClient) { }
 
   getByLocalId(localId: string ){

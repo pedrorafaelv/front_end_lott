@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { GroupFichasResponse } from '../interfaces/get-groupficha-get-group';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupfichasService {
-  private baseUrl= 'http://127.0.0.1:8000/api/GroupFicha';
+  private baseUrl= `${environment.apiUrl}groupFicha`;
 
   constructor( private Http: HttpClient) { }
   
-  getGroupFichas(){
-    return this.Http.get(`${this.baseUrl}`);
-
+  getGroupFicha(){
+     return this.Http.get(`${this.baseUrl}/getGroupFicha`);
   }
   
-  getGroupFicha(id:string){
-    return this.Http.get(`${this.baseUrl}/getGroupFicha/${id}`);
+  getGroupFichas():Observable<GroupFichasResponse>{
+    return this.Http.get<GroupFichasResponse>(`${this.baseUrl}/getGroups`);
   }
 
 }

@@ -47,8 +47,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
+  gap: 10px;
+  padding: 10px;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   border: 1px solid var(--border-accent);
   border-radius: 16px;
@@ -212,6 +212,8 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  color-scheme: dark;
+
 }
 
 .form-section {
@@ -288,7 +290,7 @@
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
 
@@ -399,10 +401,6 @@
   color: var(--text-white);
 }
 
-/* Input con icono */
-.input-with-icon {
-  position: relative;
-}
 
 .input-with-icon i {
   position: absolute;
@@ -410,11 +408,11 @@
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .input-with-icon .form-control {
-  padding-left: 42px;
+  padding-left: 35px;
 }
 
 /* ============================================
@@ -494,8 +492,8 @@
    ============================================ */
 .card-options {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+  gap: 2px;
 }
 
 .card-option {
@@ -510,8 +508,8 @@
 }
 
 .card-option-content {
-  padding: 16px;
-  border: 2px solid var(--border-color);
+  padding: 1px;
+  border: 0.5px solid var(--border-color);
   border-radius: 12px;
   text-align: center;
   transition: all 0.3s ease;
@@ -519,7 +517,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 2px;
 }
 
 .card-option:hover:not(.disabled) .card-option-content {
@@ -533,7 +531,7 @@
 }
 
 .card-option-content i {
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: var(--accent);
 }
 
@@ -823,6 +821,11 @@
     flex-direction: column;
     align-items: stretch;
   }
+   
+  .header-center {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
   .level-card { justify-content: center; }
 
@@ -936,4 +939,76 @@
     display: none;
   }
 }
+ /* Invierte el color del ícono nativo del date/time picker para que se vea en fondo oscuro */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(2) saturate(0) contrast(3);
+  cursor: pointer;
+  opacity: 1;
+  background: transparent;
+  width: 20px;
+  height: 20px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Firefox usa un mecanismo distinto (no tiene picker-indicator estilizable igual),
+   pero el color-scheme ayuda a que use su propia UI oscura correctamente */
+input[type="date"],
+input[type="time"] {
+  color-scheme: dark;
+}
+}
+ /* Contenedor flex para input + botón */
+.input-with-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.input-with-button .form-control {
+  flex: 1 1 auto;
+  min-width: 0; /* evita desbordes en flex */
+}
+
+/* Botón compacto que no se estira */
+.btn-generate {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid var(--border-accent);
+  border-radius: 10px;
+  color: var(--accent);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-generate:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.btn-generate:active {
+  transform: translateY(0);
+}
+
+/* Opcional: en móvil que el botón no se encoja */
+@media (max-width: 480px) {
+  .btn-generate {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
 }

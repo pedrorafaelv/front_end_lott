@@ -188,5 +188,11 @@ deleteCard(raffleId:number, user_id:number, card_id:number): Observable<NewRecor
      getUserLevel(): Observable<any> {
   return this.http.get<any>(`${this.baseUrl}/user/level`);
 }
+
+ postRaffle(cuerpo: any): Observable<any> {
+    const url = `${this.baseUrl}raffle`; // endpoint limpio, sin datos en la URL
+    return this.http.post<any>(url, cuerpo);
+  }
+
 }
          

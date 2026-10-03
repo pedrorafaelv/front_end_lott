@@ -6,65 +6,34 @@ import {
   Validators,
   ReactiveFormsModule,
   AbstractControl,
-  ValidationErrors
+  ValidationErrors,
 } from '@angular/forms';
-import { HttpParams } from '@angular/common/http';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import Swal from 'sweetalert2';
-
 import { RaffleService } from '../../services/raffle.service';
 import { ValidadoresService } from '../../services/validadores.service';
-import { GroupService } from '../../services/group.service';
 import { Group } from '../../interfaces/get-groups-response';
 import { GroupfichasService } from '../../services/groupfichas.service';
 import { UserService } from '../../services/user.service';
 import { PublicityComponent } from '../../components/publicity/publicity.component';
 import { PipesModule } from '../../pipes/pipes.module';
+import { AuthService } from '../../services/auth.service';
+import { LotteryNameService } from '../../services/lotery-name.services';
+import { LevelConfig, UserLevel, niveles } from '../../interfaces/level';
 
-/* ============================================
-   INTERFACES
-   ============================================ */
-export interface UserLevel {
-  id: number;
-  name: string;
-  icon: string;
-  color: string;
-  maxRaffles: number;
-  maxAmount: number;
-  maxRetentionPercent: number;
-  canCreatePrivate: boolean;
-  canUseAuto: boolean;
-  canUseCustomFichas: boolean;
-}
-
-export interface LevelConfig {
-  id: number;
-  name: string;
-  icon: string;
-  color: string;
-  max_raffles_active: number;
-  max_amount: number;
-  max_retention_percent: number;
-  can_create_private: boolean;
-  can_use_auto_type: boolean;
-  can_use_custom_fichas: boolean;
-  min_games_played: number;
-  min_days_registered: number;
-  min_wins: number;
-}
 
 @Component({
   selector: 'app-raffle',
   templateUrl: './raffle.component.html',
   styleUrls: ['./raffle.component.css'],
   standalone: true,
-  imports: [CommonModule, 
-            PublicityComponent, 
-            ReactiveFormsModule, 
-            PipesModule]
+  imports: [CommonModule,
+    PublicityComponent,
+    ReactiveFormsModule,
+    PipesModule,
+  ]
 })
 export class RaffleComponent implements OnInit, OnDestroy {
-
   /* ============================================
      ESTADO
      ============================================ */
@@ -72,12 +41,15 @@ export class RaffleComponent implements OnInit, OnDestroy {
   showDebugInfo = false;
   loading = false;
   guardando = false;
+   minDate: string = '';
+
 
   // Nivel del usuario
   userLevel: UserLevel | null = null;
   userLevelConfig: LevelConfig | null = null;
   userStats: any = null;
   userId: number =0;
+  niveles: LevelConfig[]=niveles
 
   // Datos
   grupos: Group[] = [];
@@ -89,50 +61,9 @@ export class RaffleComponent implements OnInit, OnDestroy {
   totalCalculado = 0;
   retencionCalculada = 0;
   retencionAdminCalculada = 0;
+  percentFullCalculado = 0;
 
   private destroy$ = new Subject<void>();
-
-  /* ============================================
-     CONFIGURACIÓN DE NIVELES
-     ============================================ */
-  readonly niveles: LevelConfig[] = [
-    {
-      id: 1, name: 'Novato', icon: 'fa-seedling', color: '#909090',
-      max_raffles_active: 0, max_amount: 0, max_retention_percent: 0,
-      can_create_private: false, can_use_auto_type: false, can_use_custom_fichas: false,
-      min_games_played: 0, min_days_registered: 0, min_wins: 0
-    },
-    {
-      id: 2, name: 'Jugador', icon: 'fa-star', color: '#3a7ebf',
-      max_raffles_active: 1, max_amount: 100, max_retention_percent: 5,
-      can_create_private: false, can_use_auto_type: false, can_use_custom_fichas: false,
-      min_games_played: 50, min_days_registered: 30, min_wins: 0
-    },
-    {
-      id: 3, name: 'Avanzado', icon: 'fa-fire', color: '#f39c12',
-      max_raffles_active: 3, max_amount: 500, max_retention_percent: 10,
-      can_create_private: true, can_use_auto_type: false, can_use_custom_fichas: false,
-      min_games_played: 200, min_days_registered: 90, min_wins: 10
-    },
-    {
-      id: 4, name: 'Élite', icon: 'fa-gem', color: '#00e676',
-      max_raffles_active: 5, max_amount: 2000, max_retention_percent: 15,
-      can_create_private: true, can_use_auto_type: true, can_use_custom_fichas: true,
-      min_games_played: 500, min_days_registered: 180, min_wins: 30
-    },
-    {
-      id: 5, name: 'VIP', icon: 'fa-crown', color: '#ffd700',
-      max_raffles_active: 10, max_amount: 10000, max_retention_percent: 20,
-      can_create_private: true, can_use_auto_type: true, can_use_custom_fichas: true,
-      min_games_played: 1000, min_days_registered: 365, min_wins: 100
-    },
-    {
-      id: 6, name: 'Admin', icon: 'fa-user-shield', color: '#ff4757',
-      max_raffles_active: 999, max_amount: 999999, max_retention_percent: 100,
-      can_create_private: true, can_use_auto_type: true, can_use_custom_fichas: true,
-      min_games_played: 0, min_days_registered: 0, min_wins: 0
-    }
-  ];
 
   /* ============================================
      LISTAS PARA SELECTS
@@ -144,7 +75,7 @@ export class RaffleComponent implements OnInit, OnDestroy {
 
   listaPublicPrivate = [
     { id: 0, name: 'Público', icon: 'fa-globe' },
-    { id: 1, name: 'Privado', icon: 'fa-lock' }
+    { id: 1, name: 'Privado', icon: 'fa-lock' },
   ];
 
   listaRaffleType = [
@@ -154,7 +85,7 @@ export class RaffleComponent implements OnInit, OnDestroy {
 
   listaPercent = Array.from({ length: 21 }, (_, i) => ({ id: i, name: `${i}` }));
 
-  listaPercent2 = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+  listaPercent2 = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95,100]
     .map(v => ({ id: v, name: `${v}` }));
 
   date = new Date();
@@ -166,22 +97,21 @@ export class RaffleComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private raffleService: RaffleService,
     private validadores: ValidadoresService,
-    private groupService: GroupService,
-    private groupFichas: GroupfichasService,
-    private userService: UserService
+    private groupFichasService: GroupfichasService,
+    private userService: UserService,
+    private authService: AuthService,
+    private lotteryNameService:LotteryNameService,
   ) {
     this.crearFormulario();
     this.crearListeners();
   }
 
-
-
-
-  
   /* ============================================
      LIFECYCLE
      ============================================ */
   ngOnInit(): void {
+    this.userId = Number(this.authService.getUserId());
+    this.generarNombreAleatorio();
     this.cargarNivelUsuario();
     this.cargarGrupos();
     this.cargarFichas();
@@ -192,6 +122,18 @@ export class RaffleComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  private generarNombreAleatorio(): void {
+    const nombreBase = this.lotteryNameService.getRandomName(this.userId);
+    const nombre = `${nombreBase} - ${this.formatearFecha(this.date)}`;
+
+    this.forma_Raffle.patchValue({ nombre }, { emitEvent: false });
+    // this.forma_Raffle.patchValue({ description }, { emitEvent: false });
+  }
+
+  public regenerarNombre(): void {
+    this.generarNombreAleatorio();
+  }
+
   /* ============================================
      CREACIÓN DEL FORMULARIO
      ============================================ */
@@ -199,28 +141,28 @@ export class RaffleComponent implements OnInit, OnDestroy {
     const fechaFormateada = this.formatearFecha(this.date);
 
     this.forma_Raffle = this.fb.group({
-      nombre: [`Sorteo ${fechaFormateada}`, [Validators.required, Validators.minLength(5)]],
-      description: [`Sorteo del ${fechaFormateada}`, [Validators.required, Validators.minLength(10)]],
+      nombre: [` ${fechaFormateada}`, [Validators.required, Validators.minLength(5)]],
+      description: [` ${fechaFormateada}`, [Validators.required, Validators.minLength(10)]],
       grupo: ['', [Validators.required]],
       total_amount: [{ value: 0, disabled: true }, [Validators.min(0)]],
-      card_amount: [1, [Validators.required, Validators.min(0.01)]],
+      card_amount: [1, [Validators.required, Validators.min(0.10)]],
       minimun_play: [10, [Validators.min(1)]],
       maximun_play: [10000, [Validators.min(1)]],
       maximun_user_play: [10000, [Validators.min(1)]],
-      retention_percent: [0, [Validators.min(0), Validators.max(20)]],
+      retention_percent: [5, [Validators.min(0), Validators.max(20)]],
       retention_amount: [{ value: 0, disabled: true }],
       admin_retention_percent: [10, [Validators.min(0), Validators.max(20)]],
       admin_retention_amount: [{ value: 0, disabled: true }],
       raffle_type: [1, [Validators.required]],
-      privacy: [1, [Validators.required]],
+      privacy: [0, [Validators.required]],
       reward_line: [1, [Validators.required]],
-      percent_line: [40, [Validators.min(0), Validators.max(100)]],
+      percent_line: [10, [Validators.min(0), Validators.max(100)]],
       reward_full: [1, [Validators.required]],
-      percent_full: [0, [Validators.min(0), Validators.max(100)]],
-      scheduled_date: [this.date, [Validators.required]],
+      percent_full: [90, [Validators.min(0), Validators.max(100)]],
+      scheduled_date: [this.minDate, [Validators.required, this.fechaNoPasada.bind(this)]],
       scheduled_hour: ['', [Validators.required]],
       time_zone: ['chile'],
-      start_date: [''],
+      start_date: [this.minDate, [this.fechaNoPasada.bind(this)]],
       start_hour: [''],
       end_date: [''],
       end_hour: [''],
@@ -295,7 +237,7 @@ export class RaffleComponent implements OnInit, OnDestroy {
       .subscribe(() => this.recalcularMontos());
 
     // Listener específico para card_amount y maximun_play
-    ['card_amount', 'maximun_play', 'retention_percent', 'admin_retention_percent']
+    ['card_amount', 'maximun_play', 'retention_percent', 'admin_retention_percent', 'percent_line']
       .forEach(ctrl => {
         this.forma_Raffle.get(ctrl)?.valueChanges
           .pipe(takeUntil(this.destroy$))
@@ -323,19 +265,23 @@ export class RaffleComponent implements OnInit, OnDestroy {
     const maxPlay = Number(this.forma_Raffle.get('maximun_play')?.value) || 0;
     const retPercent = Number(this.forma_Raffle.get('retention_percent')?.value) || 0;
     const adminPercent = Number(this.forma_Raffle.get('admin_retention_percent')?.value) || 0;
+    const percentLine = Number(this.forma_Raffle.get('percent_line')?.value||0);
 
     const total = cardAmount * maxPlay;
     const retencion = total * (retPercent / 100);
     const retencionAdmin = total * (adminPercent / 100);
+    const percentFull = 100-percentLine;
 
     this.totalCalculado = total;
     this.retencionCalculada = retencion;
     this.retencionAdminCalculada = retencionAdmin;
+    this.percentFullCalculado = percentFull;
 
     this.forma_Raffle.patchValue({
       total_amount: total.toFixed(2),
       retention_amount: retencion.toFixed(2),
-      admin_retention_amount: retencionAdmin.toFixed(2)
+      admin_retention_amount: retencionAdmin.toFixed(2),
+      percent_full:percentFull.toFixed(0),
     }, { emitEvent: false });
   }
 
@@ -348,7 +294,9 @@ export class RaffleComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.destroy$))
     .subscribe({
       next: (resp: any) => {
-        const lvl = resp.level;
+        console.log('userlevel', resp.data.level);
+        const lvl = resp.data.level;
+        console.log('lvl',lvl);
         this.userLevelConfig = {
           id: lvl.id,
           name: lvl.name,
@@ -395,34 +343,59 @@ export class RaffleComponent implements OnInit, OnDestroy {
     });
 
   }
+  
 
-   
   private cargarGrupos(): void {
-    this.userService.getGroups('1')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (resp) => {
-          this.grupos = resp.Group || [];
-        },
-        error: (err) => {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudieron cargar los grupos'
-          });
+  this.userService.getGroups((this.userId).toString())
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (resp) => {
+        this.grupos = resp.Group || [];
+
+        // 👇 preseleccionar el primero si existe
+        if (this.grupos.length > 0 && !this.forma_Raffle.get('grupo')?.value) {
+          this.forma_Raffle.patchValue(
+            { grupo: this.grupos[0].id },
+            { emitEvent: false }
+          );
         }
-      });
-  }
+      },
+      error: (err) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron cargar los grupos'
+        });
+      }
+    });
+}
 
-  private cargarFichas(): void {
-    this.groupFichas.getGroupFichas()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (resp) => { this.grupofichas = resp; },
-        error: () => { /* silencioso */ }
-      });
-  }
 
+private cargarFichas(): void {
+  this.groupFichasService.getGroupFichas()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (resp) => {
+        console.log(resp.data.groupfichas);
+        this.grupofichas = resp.data.groupfichas;
+
+        // 👇 preseleccionar el primero si existe
+        const lista = this.grupofichas || [];
+        if (lista.length > 0 && !this.forma_Raffle.get('grupoficha')?.value) {
+          const primera = lista[0];
+          this.forma_Raffle.patchValue(
+            { grupoficha: primera.id },
+            { emitEvent: false }
+          );
+          // si quieres que quede reflejado también en tu variable de selección:
+          this.grupofichaSeleccionada = primera.id;
+          this.grupofichaSeleccionadaInfo = primera;
+        }
+      },
+      error: () => { /* silencioso */ }
+    });
+}
+  
   /* ============================================
      SELECCIÓN DE FICHA
      ============================================ */
@@ -479,7 +452,7 @@ export class RaffleComponent implements OnInit, OnDestroy {
 
   get nombreNoValido() { return this.esInvalido('nombre'); }
   get descriptionNoValido() { return this.esInvalido('description'); }
-  get grupoNoValido() { return this.esInvalido('grupo'); }
+  get grupoNoValido() { return this.esInvalido('grupoFicha'); }
   get totalAmountNoValido() { return this.esInvalido('total_amount'); }
   get cardAmountNoValido() { return this.esInvalido('card_amount'); }
   get minimunPlayNoValido() { return this.esInvalido('minimun_play'); }
@@ -539,8 +512,8 @@ export class RaffleComponent implements OnInit, OnDestroy {
     }).then((result) => {
       if (result.isConfirmed) {
         this.forma_Raffle.reset({
-          nombre: `Sorteo ${this.formatearFecha(this.date)}`,
-          description: `Sorteo del ${this.formatearFecha(this.date)}`,
+          nombre: `${this.lotteryNameService.getRandomName(this.userId)}`,
+          description: `${this.lotteryNameService.getRandomName(this.userId)}`,
           card_amount: 1,
           minimun_play: 10,
           maximun_play: 10000,
@@ -561,8 +534,63 @@ export class RaffleComponent implements OnInit, OnDestroy {
     });
   }
 
-  guardar(): void {
-    if (this.forma_Raffle.invalid || this.limiteAlcanzado) {
+
+  trackByIndex(index: number): number { return index; }
+  trackByGroupId(_: number, item: any): any { return item.id; }
+  trackByFicha(_: number, item: any): any { return item.groupfichas_id; }
+
+   /* ============================================
+     FECHAS
+     ============================================ */
+private formatearFechaISO(d: Date): string {
+  const anio = d.getFullYear();
+  const mes = String(d.getMonth() + 1).padStart(2, '0');
+  const dia = String(d.getDate()).padStart(2, '0');
+  return `${anio}-${mes}-${dia}`; // formato que <input type="date"> entiende
+}
+
+ // Validador: rechaza fechas anteriores a hoy (por si el usuario la escribe manualmente,
+// ya que el atributo "min" del input no bloquea el tecleo directo en todos los navegadores)
+private fechaNoPasada(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) return null;
+  const hoy = this.formatearFechaISO(new Date());
+  return control.value < hoy ? { fechaPasada: true } : null;
+}
+
+
+// Reemplaza el método construirRuta original
+private construirCuerpo(): any {
+  const v = this.forma_Raffle.getRawValue();
+  return {
+    admin_retention_amount: v.admin_retention_amount,
+    admin_retention_percent: v.admin_retention_percent,
+    card_amount: v.card_amount,
+    description: v.description, // Ya no necesitas encodeURIComponent
+    grupo: v.grupo,
+    maximun_play: v.maximun_play,
+    maximun_user_play: v.maximun_user_play,
+    minimun_play: v.minimun_play,
+    nombre: v.nombre, // Ya no necesitas encodeURIComponent
+    percent_full: v.percent_full,
+    percent_line: v.percent_line,
+    privacy: v.privacy,
+    raffle_type: v.raffle_type,
+    retention_amount: v.retention_amount,
+    retention_percent: v.retention_percent,
+    reward_full: v.reward_full,
+    reward_line: v.reward_line,
+    scheduled_date: v.scheduled_date,
+    scheduled_hour: v.scheduled_hour,
+    time_zone: v.time_zone,
+    grupoficha: this.grupofichaSeleccionada ?? '',
+    // '1' // El significado de este campo debe determinarse según la lógica del backend
+  };
+}
+
+// Modifica la llamada en el método guardar
+guardar(): void {
+  // ... La lógica de validación previa se mantiene igual ...
+  if (this.forma_Raffle.invalid || this.limiteAlcanzado) {
       Object.values(this.forma_Raffle.controls).forEach(c => c.markAsTouched());
       if (this.limiteAlcanzado) {
         Swal.fire({
@@ -573,15 +601,16 @@ export class RaffleComponent implements OnInit, OnDestroy {
       }
       return;
     }
+  this.guardando = true;
+  const cuerpo = this.construirCuerpo();
 
-    this.guardando = true;
-    const ruta = this.construirRuta();
-
-    this.raffleService.putRaffle(ruta)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (resp: any) => {
-          this.guardando = false;
+  // Suponiendo que el método del servicio ya fue cambiado para aceptar el cuerpo
+  this.raffleService.postRaffle(cuerpo) 
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (resp: any) => {
+        // ... El manejo de éxito se mantiene igual ...
+           this.guardando = false;
           Swal.fire({
             allowOutsideClick: false,
             icon: 'success',
@@ -589,48 +618,26 @@ export class RaffleComponent implements OnInit, OnDestroy {
             text: resp?.message || 'El sorteo se creó correctamente'
           });
           this.limpiarFormulario();
-        },
-        error: (err) => {
-          this.guardando = false;
+
+      },
+      error: (err) => {
+        // ... El manejo de error se mantiene igual ...
+              this.guardando = false;
           Swal.fire({
             allowOutsideClick: false,
             icon: 'error',
             title: 'Error',
             text: err?.error?.message || 'No se pudo crear el sorteo'
           });
-        }
-      });
-  }
+      }
+    });
+}
+ duplicarUltimo(){
+  // buscar el último
+  // llenar el formulario con la misma informacion del ulitmo 
+  //cambiar el nombre del ultimo 
 
-  private construirRuta(): string {
-    const v = this.forma_Raffle.getRawValue();
-    return [
-      v.admin_retention_amount,
-      v.admin_retention_percent,
-      v.card_amount,
-      encodeURIComponent(v.description),
-      v.grupo,
-      v.maximun_play,
-      v.maximun_user_play,
-      v.minimun_play,
-      encodeURIComponent(v.nombre),
-      v.percent_full,
-      v.percent_line,
-      v.privacy,
-      v.raffle_type,
-      v.retention_amount,
-      v.retention_percent,
-      v.reward_full,
-      v.reward_line,
-      v.scheduled_date,
-      v.scheduled_hour,
-      v.time_zone,
-      this.grupofichaSeleccionada ?? '',
-      '1'
-    ].join('/');
-  }
+ }
 
-  trackByIndex(index: number): number { return index; }
-  trackByGroupId(_: number, item: any): any { return item.id; }
-  trackByFicha(_: number, item: any): any { return item.groupfichas_id; }
+
 } 

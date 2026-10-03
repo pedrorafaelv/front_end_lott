@@ -1,0 +1,79 @@
+// ============================================
+// RESPUESTA GENÉRICA DE LA API
+// ============================================
+export interface ApiResponse<T> {
+  success: boolean;
+  error: boolean;
+  code: string;
+  message: string;
+  data: T;
+}
+
+// ============================================
+// RESPUESTA ESPECÍFICA DEL ENDPOINT getUserLevel
+// ============================================
+export type UserLevelResponse = ApiResponse<UserLevelData>;
+
+export interface UserLevelData {
+  date: string;          // ISO 8601: "2026-09-27T16:59:56+00:00"
+  user: UserBasicInfo;
+  level: LevelInfo;
+}
+
+// ============================================
+// USUARIO (info básica que devuelve el endpoint)
+// ============================================
+export interface UserBasicInfo {
+  id: number;
+  name: string;
+}
+
+// ============================================
+// NIVEL
+// ============================================
+export interface LevelInfo {
+  id: number;
+  slug: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  order: number;
+
+  // Límites y beneficios
+  max_raffles_active: number;
+  max_amount: number;
+  max_retention_percent: number;
+  can_create_private: boolean;
+  can_use_auto_type: boolean;
+  can_use_custom_fichas: boolean;
+
+  // Requisitos para alcanzar el nivel
+  requirements: LevelRequirements;
+
+  // Estadísticas del usuario en este nivel
+  user_stats: UserLevelStats;
+}
+
+// ============================================
+// REQUISITOS DEL NIVEL
+// ============================================
+export interface LevelRequirements {
+  min_games_played: number;
+  min_days_registered: number;
+  min_wins: number;
+}
+
+// ============================================
+// ESTADÍSTICAS DEL USUARIO EN EL NIVEL (pivote)
+// ============================================
+export interface UserLevelStats {
+  games_played: number;
+  wins: number;
+  active_raffles: number;
+  total_raffles: number;
+  total_prizes: number;
+  is_current: boolean;
+  assigned_at: string | null;   // ISO 8601 o null
+  notes: string | null;
+}

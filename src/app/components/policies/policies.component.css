@@ -1,0 +1,176 @@
+/* ============================================
+   CONTENEDOR
+   ============================================ */
+.policies-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+  font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+  color: #1f2937;
+  background: #ffffff;
+  line-height: 1.65;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.policies-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.policies-header h1 {
+  font-size: 1.75rem;
+  margin: 0 0 1rem;
+  color: #111827;
+}
+
+.policies-header .intro {
+  margin: 0;
+  color: #4b5563;
+  font-size: 1rem;
+}
+
+.policies-header .intro strong {
+  color: #111827;
+}
+
+/* ============================================
+   LISTA DE NIVELES
+   ============================================ */
+.levels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.level-item {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #3a7ebf;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+}
+
+.level-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.level-head h2 {
+  font-size: 1.15rem;
+  margin: 0;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.level-tag {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #6b7280;
+  background: #e5e7eb;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.level-description {
+  font-size: 0.92rem;
+  color: #4b5563;
+  margin: 0 0 1rem;
+}
+
+/* ============================================
+   DETALLES
+   ============================================ */
+.level-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.88rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row .label {
+  color: #6b7280;
+}
+
+.detail-row .value {
+  color: #111827;
+  font-weight: 600;
+  text-align: right;
+}
+
+.detail-row .value.yes {
+  color: #059669;
+}
+
+.detail-row .value.no {
+  color: #dc2626;
+}
+
+/* ============================================
+   REGLAS GENERALES
+   ============================================ */
+.rules-section h2 {
+  font-size: 1.25rem;
+  color: #111827;
+  margin: 0 0 1rem;
+}
+
+.rules-list {
+  padding-left: 1.25rem;
+  margin: 0;
+  color: #374151;
+}
+
+.rules-list li {
+  padding: 0.5rem 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.rules-list li:last-child {
+  border-bottom: none;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 640px) {
+  .policies-container {
+    padding: 1.25rem 1rem;
+  }
+
+  .policies-header h1 {
+    font-size: 1.35rem;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+  }
+
+  .detail-row .value {
+    text-align: left;
+  }
+}

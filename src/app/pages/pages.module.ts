@@ -27,7 +27,7 @@ import { LogOutComponent } from './log-out/log-out.component';
 import { LoginComponent } from './log-in/login.component';
 import { SingUpComponent } from './sing-up/sing-up.component';
 import { RaffleComponent } from './raffle/raffle.component';
-import { PoliticsComponent } from '../components/politics/politics.component';
+import { PoliciesComponent } from '../components/policies/policies.component';
 import { PublicityComponent } from '../components/publicity/publicity.component';
 import { CardRaffleComponent } from './card-raffle/card-raffle.component';
 import { PersonalDataComponent } from '../components/personal-data/personal-data.component';
@@ -45,7 +45,6 @@ import { RecordsComponent } from '../components/records/records.component';
   declarations: [
     BuscarComponent,
     LogOutComponent,
-    PoliticsComponent,
     CardRaffleComponent,
     CallbackComponent,
   ],
@@ -64,6 +63,7 @@ import { RecordsComponent } from '../components/records/records.component';
     MatInputModule,
     DashboardComponent,
     AccountComponent,
+    PoliciesComponent,
     GroupsComponent,
     UsersComponent,
     EmailConfirmationComponent,
