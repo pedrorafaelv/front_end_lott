@@ -823,8 +823,10 @@
   }
    
   .header-center {
-    flex-direction: column;
-    align-items: stretch;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
   }
 
   .level-card { justify-content: center; }
@@ -1011,4 +1013,23 @@ input[type="time"] {
     height: 40px;
     font-size: 0.9rem;
   }
+}
+
+/* Header center: alinea duplicar + buscador en fila */
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* El buscador no debe ocupar todo el ancho del header */
+.header-search {
+  width: auto;
+  max-width: 280px;
+  flex: 1 1 220px;
+}
+
+.header-search .form-control {
+  min-width: 0;
 }

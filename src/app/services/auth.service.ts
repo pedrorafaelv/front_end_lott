@@ -121,7 +121,8 @@ localStorage!: Storage;
    private guardarToken(idToken: any){
     this.userToken =idToken;
     let hoy = new Date();
-      hoy.setSeconds( 3600 );
+      // hoy.setSeconds( 3600 );
+      hoy.setTime(hoy.getTime() + 3600 * 1000); // 1 hora en milisegundos
     localStorage.setItem('expira', hoy.getTime().toString());
     localStorage.setItem('token',idToken); 
  }
@@ -151,6 +152,7 @@ localStorage!: Storage;
    return this.userToken.length > 2;
 
   }
+
   logout(){
 
     // if (localStorage.getItem('token'))
@@ -159,6 +161,7 @@ localStorage!: Storage;
       localStorage.removeItem('expira');
     // }
   }
+
   getEmail(): string {
     this.email = localStorage.getItem('email') ?? '';
     return this.email;

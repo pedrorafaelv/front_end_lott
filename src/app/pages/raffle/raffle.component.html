@@ -12,19 +12,17 @@
       <p class="header-subtitle">Complete todos los campos para configurar su sorteo</p>
     </div>
     <div class="header-center">
-      <button class="btn-secondary" (click)="duplicarUltimo()" type="button">
-            <!-- <i class="fa-solid fa-clone"></i>  -->
-            Duplicar último
-      </button>
       <div class="input-with-button">
-        <input type="input" id="buscar" class="form-control" 
-          formControlName="buscar">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        <button class="btn-secondary" (click)="duplicarUltimo()" type="button">
-              <i class="fa-solid fa-magnifying-glass"></i> 
-        </button>
-      </div>
-    </div>
+      <button class="btn-secondary" (click)="duplicarUltimo()" type="button">
+         Duplicar último  </button>
+
+     <input type="text" id="buscar" class="form-control"
+       placeholder="Buscar..." [value]="buscarTexto" (input)="buscarTexto = $any($event.target).value">
+    <button class="btn-generate" (click)="buscarSorteo()" type="button" title="Buscar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
+  </div>
+</div>
 
     <div class="header-right">
       <!-- Card de nivel -->
@@ -109,19 +107,20 @@
             <div class="form-group">
               <label for="nombre" class="form-label">Nombre del Sorteo <span class="required">*</span></label>
               <div class="input-with-button">
-
                 <input type="text" id="nombre" class="form-control"
                        placeholder="Ingrese un nombre atractivo"
                        formControlName="nombre" [class.is-invalid]="nombreNoValido">
-                <button type="button" class="btn" (click)="regenerarNombre()" title="Generar otro nombre">
-                  🎲  <i class="fa-solid fa-clone"></i>  </button>
-                <div class="form-hint">Ej: Gran Sorteo Navideño 2026</div>
-                <div *ngIf="nombreNoValido" class="error-message">
-                  <i class="fas fa-exclamation-circle"></i> Mínimo 5 caracteres
-                </div>
+                <button type="button" class="btn-generate" (click)="regenerarNombre()" title="Generar otro nombre">
+                  <i class="fa-solid fa-dice-six"></i>
+                </button>
               </div>
-              
+              <div class="form-hint">Ej: Gran Sorteo Navideño 2026</div>
+              <div *ngIf="nombreNoValido" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> Mínimo 5 caracteres
+              </div>
             </div>
+              
+            <!-- </div> -->
             
             <div class="form-group">
               <label for="description" class="form-label">Descripción <span class="required">*</span></label>

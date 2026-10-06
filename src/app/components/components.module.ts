@@ -21,7 +21,6 @@ import { BouncingBallComponent } from './bouncing-ball/bouncing-ball.component';
 
 @NgModule({
   declarations: [
-    NavbarComponent,
     SlideshowComponent,
     FontawesomeComponent,
     CartonesPosterGridComponent,
@@ -29,7 +28,6 @@ import { BouncingBallComponent } from './bouncing-ball/bouncing-ball.component';
     TotalComponent, 
   ],
   exports: [
-    NavbarComponent,
     SlideshowComponent,
     FontawesomeComponent,
     CartonesPosterGridComponent,
@@ -49,6 +47,7 @@ import { BouncingBallComponent } from './bouncing-ball/bouncing-ball.component';
     FormsModule,
     ReactiveFormsModule,
     FooterComponent,
+    NavbarComponent,
     SeleccionCartonesComponent,
     CarruselCartonesComponent,
     CartonComponent,  // <-- Solo una vez

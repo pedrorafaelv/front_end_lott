@@ -8,9 +8,9 @@ import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-sing-up',
-    templateUrl: './sing-up.component.html',
-    styleUrls: ['./sing-up.component.css'],
+    selector: 'app-sign-up',
+    templateUrl: './sign-up.component.html',
+    styleUrls: ['./sign-up.component.css'],
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule]
 })

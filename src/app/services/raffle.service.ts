@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GetFichasResponse, Ficha } from '../interfaces/get-fichas-response';
 import { Observable, catchError, map, tap, throwError } from 'rxjs';
@@ -6,6 +6,7 @@ import { GetCardsRaffleResponse } from '../interfaces/get-cards-raffle-response'
 import { GetCardAvailableRaffleResponse } from '../interfaces/get-card-available-raffle-response';
 import { environment } from '../../environments/environment';
 import { NewRecordResponse } from '../interfaces/get-new-record-response';
+import { GetLastRaffleResponse } from '../interfaces/get-last-user-raffle-response';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +17,8 @@ export class RaffleService {
   fichas: Ficha[] = [];
   ficha: any;
   baseUrl = `${environment.apiUrl}raffle/`;
+  authService: any;
+  raffleService: any;
   constructor(private http: HttpClient) { 
   }
 
@@ -158,15 +161,6 @@ deleteCard(raffleId:number, user_id:number, card_id:number): Observable<NewRecor
       );
     }
 
-
-
-    // async deleteCard(raffle_id:number, user_id:number, card_id:number) {
-    // const resp = await fetch(`${this.baseUrl}cancelBet/${raffle_id}/${user_id}/${card_id}`, 
-    //   { method: 'POST' });   
-    //   return resp.json();
-    // }
-
-
     /**obtiene los detalles del sorteo se usa para obtener el nombre del grupo de fichas  */
      async getRaffleDetails(raffle_id: number){
       const resp = await fetch(`${this.baseUrl}getRaffleDetails/${raffle_id}`);
@@ -193,6 +187,43 @@ deleteCard(raffleId:number, user_id:number, card_id:number): Observable<NewRecor
     const url = `${this.baseUrl}raffle`; // endpoint limpio, sin datos en la URL
     return this.http.post<any>(url, cuerpo);
   }
+
+  buscarRafflePorNombre(nombre: string): Observable<any> {
+    const url = `${this.baseUrl}searchRaffleByName/${nombre}`;
+    return this.http.get<any>(url);
+  }
+
+  buscarRaffleById(raffleId: number): Observable<any> {
+    const url = `${this.baseUrl}show/${raffleId}`;
+    return this.http.get<any>(url);
+  }
+
+  
+ getLastUserRaffle(UserId: number): Observable<GetLastRaffleResponse> {
+    const params = new HttpParams().set('user_id', (UserId.toString()));
+    return this.http.get<GetLastRaffleResponse>(
+      `${this.baseUrl}getLastUserRaffle`,
+      { params }  
+    );
+  }
+
+// raffle.service.ts
+searchRaffle(userId: number | string, search: string): Observable<GetLastRaffleResponse> {
+  const params = new HttpParams()
+    .set('user_id', userId.toString())
+    .set('search', search.trim());
+
+  return this.http.get<GetLastRaffleResponse>(
+    `${this.baseUrl}searchRaffle`,
+    { params }
+  );
+}
+
+  
+   // buscarUltimoRaffle(): Observable<GetLastRaffleResponse> {
+  //   const url = `${this.baseUrl}getLastUserRaffle/${this.authService.getUserId()}`;
+  //   return this.http.get<GetLastRaffleResponse>(url);
+  // }
 
 }
          

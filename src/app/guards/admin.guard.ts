@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { AdminService } from '../services/admin.service';
 import Swal from 'sweetalert2';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -97,7 +98,8 @@ export class AdminGuard implements CanActivate {
         // ============================================
         try {
             console.log('🔄 AdminGuard: FALLBACK → Verificando con checkAdmin...');
-            const isAdmin = await this.adminService.checkAdmin(userId).toPromise();
+            // const isAdmin = await this.adminService.checkAdmin(userId).toPromise();
+            const isAdmin = await firstValueFrom(this.adminService.checkAdmin(userId));
 
             if (isAdmin === true) {
                 console.log('✅ AdminGuard: Acceso permitido por checkAdmin (fallback)');

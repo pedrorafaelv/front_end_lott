@@ -20,6 +20,7 @@ import { PipesModule } from '../../pipes/pipes.module';
 import { AuthService } from '../../services/auth.service';
 import { LotteryNameService } from '../../services/lotery-name.services';
 import { LevelConfig, UserLevel, niveles } from '../../interfaces/level';
+import { Raffle} from '../../interfaces/get-last-user-raffle-response';
 
 
 @Component({
@@ -89,6 +90,11 @@ export class RaffleComponent implements OnInit, OnDestroy {
     .map(v => ({ id: v, name: `${v}` }));
 
   date = new Date();
+   buscarTexto: string = '';
+  hasError: boolean =false;
+  message: string= "";
+  raffle: Raffle|null = null;
+
 
   /* ============================================
      CONSTRUCTOR
@@ -632,12 +638,176 @@ guardar(): void {
       }
     });
 }
- duplicarUltimo(){
-  // buscar el último
-  // llenar el formulario con la misma informacion del ulitmo 
-  //cambiar el nombre del ultimo 
 
+ duplicarUltimo(): void {
+  console.log('duplicarUltimo' );
+  this.loadLastRaffle();  
  }
 
+ 
+loadLastRaffle(): void {
+  this.loading = true;
+  this.hasError = false;
 
+  this.raffleService.getLastUserRaffle(this.userId)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (resp) => {
+        this.loading = false;
+        this.message = resp.message;
+
+        if (resp.success && resp.data?.raffle) {
+          this.raffle = resp.data.raffle;
+          this.cargarRaffleEnFormulario(this.raffle);
+        } else {
+          this.raffle = null;
+          this.hasError = false;
+          Swal.fire({
+            icon: 'info',
+            title: 'Sin sorteos',
+            text: resp.message || 'No hay sorteos previos para duplicar'
+          });
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        this.raffle = null;
+        this.hasError = true;
+        this.message = err?.error?.message || 'Error al conectar con el servidor';
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: this.message
+        });
+        console.error('Error getLastUserRaffle:', err);
+      }
+    });
+}
+
+
+ private cargarRaffleEnFormulario(raffle: Raffle): void {
+  // Normalizar fechas para <input type="date"> (solo YYYY-MM-DD)
+  const soloFecha = (valor: string | null): string => {
+    if (!valor) return '';
+    return valor.substring(0, 10); // "2026-10-04 01:08:43" -> "2026-10-04"
+  };
+
+  // Normalizar hora (HH:mm) desde un string tipo "15:35:02"
+  const soloHora = (valor: string | null): string => {
+    if (!valor) return '';
+    return valor.substring(0, 5); // "15:35:02" -> "15:35"
+  };
+
+  // Nombre nuevo para no sobrescribir el original
+  const nombreBase = raffle.name || this.lotteryNameService.getRandomName(this.userId);
+  const nuevoNombre = `${nombreBase} (copia ${this.formatearFecha(new Date())})`;
+
+  // Construir el patch con los nombres del FormGroup
+  const patch: any = {
+    nombre:               nuevoNombre,
+    description:          raffle.description ?? '',
+    grupo:                raffle.group_id ?? '',
+    grupoficha:           raffle.groupficha_id ?? '',
+
+    card_amount:          raffle.card_amount ?? 1,
+    minimun_play:         raffle.minimun_play ?? 10,
+    maximun_play:         raffle.maximun_play ?? 10000,
+    maximun_user_play:    raffle.maximun_user_play ?? 10000,
+
+    retention_percent:       raffle.retention_percent ?? 0,
+    admin_retention_percent: raffle.admin_retention_percent ?? 10,
+
+    raffle_type:   raffle.raffle_type ?? 1,
+    privacy:       raffle.privacy ?? 0,
+    reward_line:   raffle.reward_line ?? 1,
+    percent_line:  raffle.percent_line ?? 10,
+    reward_full:   raffle.reward_full ?? 1,
+
+    scheduled_date: soloFecha(raffle.scheduled_date),
+    scheduled_hour: soloHora(raffle.scheduled_hour),
+    start_date:     soloFecha(raffle.start_date),
+    start_hour:     soloHora(raffle.start_hour),
+    end_date:       soloFecha(raffle.end_date),
+    end_hour:       soloHora(raffle.end_hour),
+    time_zone:      raffle.time_zone ?? 'chile',
+  };
+
+  // ⚠️ total_amount, retention_amount, admin_retention_amount y percent_full
+  // están deshabilitados, pero igual los seteamos con emitEvent:false
+  this.forma_Raffle.patchValue(patch, { emitEvent: false });
+
+  // Ahora sí forzamos un recálculo para que los campos disabled se actualicen
+  this.recalcularMontos();
+
+  // Sincronizar variables externas
+  this.grupofichaSeleccionada = raffle.groupficha_id != null ? String(raffle.groupficha_id) : null;
+  this.grupofichaSeleccionadaInfo = null;
+
+  // Si tienes el objeto completo de la ficha cargado, puedes buscarlo:
+  // const lista = this.grupofichas?.GrupoInifichas || [];
+  // this.grupofichaSeleccionadaInfo = lista.find((f: any) => f.id === raffle.groupficha_id) || null;
+
+  Swal.fire({
+    icon: 'success',
+    title: 'Sorteo cargado',
+    text: `Se cargó "${raffle.name}" en el formulario. Modifícalo y guarda como nuevo.`,
+    timer: 2500,
+    showConfirmButton: false
+  });
+}
+
+ buscarSorteo(): void {
+  const texto = (this.buscarTexto || '').trim();
+
+  if (!texto) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Búsqueda vacía',
+      text: 'Escribe un ID o nombre de sorteo',
+      timer: 2000,
+      showConfirmButton: false
+    });
+    return;
+  }
+
+  this.loading = true;
+  this.hasError = false;
+
+  this.raffleService.searchRaffle(this.userId, texto)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (resp) => {
+        this.loading = false;
+        this.message = resp.message;
+
+        if (resp.success && resp.data?.raffle) {
+          this.raffle = resp.data.raffle;
+          this.cargarRaffleEnFormulario(this.raffle);
+          this.buscarTexto = '';
+        } else {
+          this.raffle = null;
+          this.hasError = false;
+
+          const titulo = resp.code === 'ERR-024' ? 'Sin permisos' : 'No encontrado';
+          const icono  = resp.code === 'ERR-024' ? 'warning' : 'info';
+
+          Swal.fire({
+            icon: icono,
+            title: titulo,
+            text: resp.message,
+            timer: 2500,
+            showConfirmButton: false
+          });
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        this.raffle = null;
+        this.hasError = true;
+        this.message = err?.error?.message || 'Error al conectar con el servidor';
+        Swal.fire({ icon: 'error', title: 'Error', text: this.message });
+        console.error('Error searchRaffle:', err);
+      }
+    });
+}
 } 

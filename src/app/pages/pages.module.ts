@@ -25,7 +25,7 @@ import { GroupsComponent } from './groups/groups.component';
 import { AccountComponent } from './account/account.component';
 import { LogOutComponent } from './log-out/log-out.component';
 import { LoginComponent } from './log-in/login.component';
-import { SingUpComponent } from './sing-up/sing-up.component';
+import { SingUpComponent } from './sign-up/sign-up.component';
 import { RaffleComponent } from './raffle/raffle.component';
 import { PoliciesComponent } from '../components/policies/policies.component';
 import { PublicityComponent } from '../components/publicity/publicity.component';
