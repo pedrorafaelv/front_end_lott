@@ -16,19 +16,36 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-     // 👇 No tocar peticiones a dominios externos (Firebase, Google, etc.)
-    // Solo interceptar las llamadas a TU API de Laravel
+    // 1. No tocar peticiones a dominios externos (Firebase, Google, etc.)
     if (!req.url.startsWith(environment.apiUrl)) {
       return next.handle(req);
     }
-    // Obtener el token de Sanctum del localStorage
+
+    // 2. 👇 URLs de tu API que NO deben llevar el token Sanctum
+    const excludedUrls = [
+      '/auth/exchange',
+      '/auth/login',
+      '/auth/register',
+    ];
+
+    const isExcluded = excludedUrls.some(url => req.url.includes(url));
+
+    if (isExcluded) {
+      // Deja la petición sin Authorization, pero con Accept JSON
+      const cloned = req.clone({
+        setHeaders: { 'Accept': 'application/json' },
+      });
+      return next.handle(cloned);
+    }
+
+    // 3. Para el resto de la API, añade el token Sanctum si existe
     const sanctumToken = this.authService.getSanctumToken();
 
     const cloned = req.clone({
       setHeaders: {
         'Accept': 'application/json',
-        'Authorization': sanctumToken ? `Bearer ${sanctumToken}` : ''
-      }
+        ...(sanctumToken ? { 'Authorization': `Bearer ${sanctumToken}` } : {}),
+      },
     });
 
     return next.handle(cloned);

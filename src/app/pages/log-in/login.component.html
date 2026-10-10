@@ -1,67 +1,102 @@
-    <div class="login-container">
-        <div class="login-header">
-            <i class="bi bi-dice-5-fill lottery-icon"></i>
-            <h2>Loterías App</h2>
-            <p>Ingresa a tu cuenta para continuar</p>
-        </div>
-        
-        <div class="login-form">
-            <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()">
-                <div class="mb-3">
-                    <label for="email" class="form-label">Correo electrónico</label>
-                    <input 
-                        type="email" 
-                        class="form-control" 
-                        id="email" 
-                        placeholder="nombre@ejemplo.com"
-                        formControlName="correo"
-                        [class.is-invalid]="correoNoValido">
-                    <div class="invalid-feedback" *ngIf="correoNoValido">
-                        Por favor ingresa un correo válido
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="contrasena" class="form-label">Contraseña</label>
-                    <input 
-                        type="password" 
-                        class="form-control" 
-                        id="contrasena" 
-                        placeholder="Tu contraseña"
-                        formControlName="pass1"
-                        [class.is-invalid]="pass1NoValido">
-                    <div class="invalid-feedback" *ngIf="pass1NoValido">
-                        La contraseña es requerida
-                    </div>
-                </div>
-                
-                <div class="mb-3 form-check">
-                    <input 
-                        type="checkbox" 
-                        class="form-check-input" 
-                        id="recordarme"
-                        formControlName="recordarme">  
-                    <label class="form-check-label" for="recordarme">Recordar mi usuario</label>
-                </div>
-                
-                <button type="submit" class="btn btn-primary mb-3">Ingresar</button>
-                
-                <div class="form-links">
-                    <a routerLink="/sign-up">¿No tienes cuenta? Regístrate</a>
-                    <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
-                </div>
-            </form>
-            
-            <div class="divider">
-                <span>O intenta tu suerte</span>
-            </div>
-            
-            <div class="lottery-balls">
-                <div class="ball">15</div>
-                <div class="ball">22</div>
-                <div class="ball">37</div>
-                <div class="ball">41</div>
-                <div class="ball">58</div>
-            </div>
-        </div>
+<div class="login-page">
+
+  <!-- Panel izquierdo: branding (solo en desktop) -->
+ <aside class="login-brand">
+  <div class="brand-content">
+    <div class="brand-logo">
+            <!-- <img src="/assets/images/full_circle_cari_ia/376.png" alt="Loterías App" /> -->
+
+      <!-- <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 3v18M3 12h18"/>
+      </svg> -->
     </div>
+    <h1>Loterías App</h1>
+    <p>Gestión profesional de sorteos y cartones.</p>
+  </div>
+  <footer class="brand-footer">
+    <!-- <div class="ball-image">
+      <img src="/assets/images/full_circle_ia/376.png" alt="Loterías App" />
+    </div> -->
+    <span>© {{ year }} Loterías App</span>
+  </footer>
+</aside>
+
+  <!-- Panel derecho: formulario -->
+  <main class="login-main">
+    <div class="login-card">
+
+      <header class="login-header">
+        <h2>Bienvenido de nuevo</h2>
+        <p>Ingresa tus credenciales para continuar</p>
+      </header>
+
+      <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()" class="login-form">
+
+        <!-- Email -->
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="correo"
+            placeholder="nombre@ejemplo.com"
+            [class.is-invalid]="correoNoValido"
+            autocomplete="email">
+          @if (correoNoValido) {
+            <span class="field-error">Ingresa un correo válido</span>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <div class="field-label-row">
+            <label for="contrasena">Contraseña</label>
+            <a routerLink="/forgot-password" class="link-muted">¿Olvidaste tu contraseña?</a>
+          </div>
+          <input
+            id="contrasena"
+            type="password"
+            formControlName="pass1"
+            placeholder="••••••••"
+            [class.is-invalid]="pass1NoValido"
+            autocomplete="current-password">
+          @if (pass1NoValido) {
+            <span class="field-error">La contraseña es requerida</span>
+          }
+        </div>
+
+        <!-- Recordarme -->
+        <div class="field-check">
+          <input type="checkbox" id="recordarme" formControlName="recordarme">
+          <label for="recordarme">Recordarme en este dispositivo</label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-primary" [disabled]="cargando">
+          @if (cargando) {
+            <span class="spinner"></span>
+            <span>Ingresando...</span>
+          } @else {
+            <span>Ingresar</span>
+          }
+        </button>
+
+        <!-- Mensaje de error global -->
+        @if (errorMessage) {
+          <div class="alert-error">
+            {{ errorMessage }}
+          </div>
+        }
+
+      </form>
+
+      <footer class="login-footer">
+        <span>¿No tienes cuenta?</span>
+        <a routerLink="/sign-up" class="link-accent">Crear una cuenta</a>
+      </footer>
+
+    </div>
+  </main>
+
+</div>

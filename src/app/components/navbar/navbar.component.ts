@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Auth0Service } from '../../services/auth0.service';
 import { faUsersRectangle, faHouseChimneyUser, faChessBoard, faHatWizard, faFloppyDisk, faCommentsDollar, faDice, 
@@ -16,12 +16,17 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     standalone: true,
     imports: [RouterLink,
       CommonModule,
-      FontAwesomeModule
+      FontAwesomeModule, 
+      RouterLinkActive,
     ]
 
 
 })
 export class NavbarComponent implements OnInit {
+
+  // 👇 inyecta el AuthService público
+  public auth = inject(AuthService);
+
 
 faUsersRectangle= faUsersRectangle;
 faHouseChimneyUser = faHouseChimneyUser;
@@ -43,25 +48,21 @@ faCircleDot=faCircleDot;
 faCircleUser=faCircleUser;
 userId!: number;
 level: number = 0;
+
+
+
 constructor(public auth0: Auth0Service,
   private authService: AuthService,
   private userService: UserService) { }
 
 
   ngOnInit(): void {
-        // this.userId = Number(this.authService.getUserId());
-        // this.userService.getUserLevel(this.userId).subscribe(
-        //   (value: Object) => {
-        //     const level = Number(value);
-        //     this.level = level;
-        //     console.log('Nivel del usuario:', level);
-        //   },
-        //   (error) => {
-        //     console.error('Error al obtener el nivel del usuario:', error);
-        //   }
-        // );
-
-
+ 
+  }
+   logout() {
+    this.auth.logoutAll();
+    // opcional: redirigir
+    // this.router.navigateByUrl('/log-in');
   }
 
 }

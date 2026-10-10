@@ -1,155 +1,153 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { ValidadoresService } from '../../services/validadores.service';
-import { AuthService } from '../../services/auth.service';
-import Swal from "sweetalert2";
-import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
- import { FormsModule } from '@angular/forms';
+import { Component,  OnInit } from '@angular/core';
+import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css'],
-    standalone: true,
-    imports: [ReactiveFormsModule, 
-              FormsModule,
-            CommonModule]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+  ],
 })
 export class LoginComponent implements OnInit {
-
+  cargando = false;
+  errorMessage = '';
   forma!: FormGroup;
-  recordarme =false;
 
-
-  constructor(private fb:FormBuilder,
-             private validadores : ValidadoresService,
-             private auth: AuthService,
-             private router:Router,
-             private UserService: UserService) {
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router,
+  ) {
     this.crearFormulario();
-   }
+  }
 
-  crearFormulario() {
+  // ============================================
+  // FORMULARIO
+  // ============================================
+  crearFormulario(): void {
     this.forma = this.fb.group({
-        correo: ['', [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$")]],
-        usuario: [''],
-        pass1: ['', [Validators.required]],
-        recordarme: [false]  // <-- Agregar campo
+      correo: ['', [
+        Validators.required,
+        Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$'),
+      ]],
+      usuario: [''],
+      pass1: ['', [Validators.required]],
+      recordarme: [false],
     });
-}
+  }
 
-   crearListeners(){
-    this.forma.valueChanges.subscribe((valor: any) => {
-      console.log(valor);
-    })
-   }
-
-   cargarDataFormulario(){
-    
-    this.forma.reset({
-    //  this.forma.setValue({
-        nombre: "",
-        correo: "",
-        pass1:'123',
-    });
-    
-   }
-
- ngOnInit(): void {
+  ngOnInit(): void {
+    // Auto-rellenar email si "recordarme" estaba activo
     const email = localStorage.getItem('email');
     if (email) {
-        this.forma.patchValue({ 
-            correo: email,
-            recordarme: true 
-        });
+      this.forma.patchValue({
+        correo: email,
+        recordarme: true,
+      });
     }
-}
-
-  get correoNoValido(){
-    return this.forma.get('correo')!.invalid && this.forma.get('correo')!.touched
   }
 
-  get usuarioNoValido(){
-    return this.forma.get('usuario')!.invalid && this.forma.get('usuario')!.touched
+  // ============================================
+  // GETTERS DE VALIDACIÓN
+  // ============================================
+  get correoNoValido(): boolean {
+    const ctrl = this.forma.get('correo')!;
+    return ctrl.invalid && ctrl.touched;
   }
- 
-  get pass1NoValido(){
-    return this.forma.get('pass1')!.invalid && this.forma.get('pass1')!.touched
+
+  get usuarioNoValido(): boolean {
+    const ctrl = this.forma.get('usuario')!;
+    return ctrl.invalid && ctrl.touched;
   }
 
-  guardar(){
+  get pass1NoValido(): boolean {
+    const ctrl = this.forma.get('pass1')!;
+    return ctrl.invalid && ctrl.touched;
+  }
 
-    if (this.forma.invalid ){
-      Object.values(this.forma.controls).forEach (control =>{
+  // ============================================
+  // SUBMIT
+  // ============================================
+  guardar(): void {
+    // Si el formulario es inválido, marcar todos los campos como touched
 
-        if (control instanceof FormGroup){
-
-          Object.values(control.controls).forEach(control => control.markAsTouched());
-        }else {
+    if (this.forma.invalid) {
+      Object.values(this.forma.controls).forEach(control => {
+        if (control instanceof FormGroup) {
+          Object.values(control.controls).forEach(c => c.markAsTouched());
+        } else {
           control.markAsTouched();
         }
       });
+      return;   // 👈 NO llamar a login si es inválido
     }
-    
-    this.login(this.forma);
-    this.forma.reset();
+
+    const email = this.forma.get('correo')!.value;
+    const password = this.forma.get('pass1')!.value;
+    const recordarme = this.forma.get('recordarme')!.value;
+
+    this.cargando = true;
+    this.errorMessage = '';
+
+    // Guardar email si "recordarme" está activo
+    if (recordarme) {
+      localStorage.setItem('email', email);
+    } else {
+      localStorage.removeItem('email');
+    }
+
+    this.login(email, password);
   }
 
- login(form: FormGroup) {
-  if (form.invalid) return true;
+  // ============================================
+  // LOGIN
+  // ============================================
+  login(email: string, password: string): void {
+    this.cargando = true;
 
-  Swal.fire({
-    allowOutsideClick: false,
-    icon: 'info',
-    text: 'Espere por favor'
-  });
-  Swal.showLoading();
+    Swal.fire({
+      allowOutsideClick: false,
+      icon: 'info',
+      text: 'Espere por favor',
+    });
+    Swal.showLoading();
 
-  const email = this.forma.get('correo')!.value;
-  const password = this.forma.get('pass1')!.value;
+    // 👇 auth.login() YA hace el exchange internamente (por el switchMap)
+    // No hace falta llamarlo otra vez
+    this.auth.login(email, password).subscribe({
+      next: (resp) => {
+        console.log('✅ Login + Exchange OK', resp);
+        Swal.close();
+        this.cargando = false;
+        this.router.navigateByUrl('/dashboard');
+      },
+      error: (err) => {
+        console.error('❌ Login error', err);
+        Swal.close();
+        this.cargando = false;
 
-  this.auth.login(email, password).subscribe({
-    next: (resp) => {
-      console.log('✅ Login Firebase OK', resp);
-
-      // 1. Guardar email si "recordarme"
-      if (this.recordarme) {
-        localStorage.setItem('email', email);
-      }
-
-      // 2. Hacer el exchange con el backend (idToken → sanctum_token)
-      this.auth.exchangeFirebaseToken().subscribe({
-        next: (exchangeResp) => {
-          console.log('✅ Exchange OK', exchangeResp);
-          Swal.close();
-
-          // 3. AHORA sí, navegar al dashboard
-          this.router.navigateByUrl('/dashboard');
-        },
-        error: (err) => {
-          console.error('❌ Exchange error', err);
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudo completar la autenticación',
-          });
-        }
-      });
-    },
-    error: (err) => {
-      console.error('❌ Login Firebase error', err);
-      Swal.close();
-      Swal.fire({
-        icon: 'error',
-        title: 'Error al autenticar',
-        text: err.error?.error?.message || 'Credenciales inválidas',
-      });
-    }
-  });
-
-  return true;
-}
-  
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al autenticar',
+          text: err?.error?.error?.message
+              ?? err?.error?.error
+              ?? 'Credenciales inválidas. Intenta de nuevo.',
+        });
+      },
+    });
+  }
+   
+  get year() {
+    return new Date().getFullYear();
+  }
 }

@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule]
 })
-export class SingUpComponent implements OnInit {
+export class SignUpComponent implements OnInit {
 
   forma!: FormGroup;
 
@@ -25,8 +25,7 @@ export class SingUpComponent implements OnInit {
               private user: UserService
            ) {
     this.crearFormulario();
-    // this.cargarDataFormulario();
-    // this.crearListeners();
+  
    }
    ngOnInit(): void {
     

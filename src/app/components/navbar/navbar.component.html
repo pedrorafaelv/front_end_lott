@@ -6,41 +6,49 @@
     </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/home" routerLinkActive="active">
-                        <fa-icon [icon]="faHouseChimneyUser"></fa-icon> Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/message" routerLinkActive="active">
-                        <fa-icon [icon]="faSquareEnvelope"></fa-icon> Mensajes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/admin/withdrawals" routerLinkActive="active">
-                        <fa-icon [icon]="faHatWizard"></fa-icon> Admin Retiros</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/groups" routerLinkActive="active">
-                        <fa-icon [icon]="faPeopleGroup"></fa-icon> Grupos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/users" routerLinkActive="active">
-                        <fa-icon [icon]="faCircleUser"></fa-icon> Users</a>
-                </li>
-                <li class="nav-item">
+                @if (auth.isAuthenticated()) {
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/home" routerLinkActive="active">
+                            <fa-icon [icon]="faHouseChimneyUser"></fa-icon> Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/message" routerLinkActive="active">
+                            <fa-icon [icon]="faSquareEnvelope"></fa-icon> Mensajes</a>
+                      </li>
+                      <li class="nav-item">
                     <a class="nav-link" aria-current="page" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/raffle" routerLinkActive="active">
-                        <fa-icon [icon]="faDice"></fa-icon> Sorteos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/account" routerLinkActive="active">
-                        <fa-icon [icon]="faUserGear"></fa-icon> Mi cuenta</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/profile" routerLinkActive="active">
-                        <fa-icon [icon]="faIdBadge"></fa-icon> Mi Perfil</a>
-                </li>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/raffle" routerLinkActive="active">
+                            <fa-icon [icon]="faDice"></fa-icon> Sorteos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/account" routerLinkActive="active">
+                            <fa-icon [icon]="faUserGear"></fa-icon> Mi cuenta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/profile" routerLinkActive="active">
+                            <fa-icon [icon]="faIdBadge"></fa-icon> Mi Perfil</a>
+                    </li>
+                }
+
+                @if (auth.isAdminAuthenticated()) {
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/admin/withdrawals" routerLinkActive="active">
+                            <fa-icon [icon]="faHatWizard"></fa-icon> Admin Retiros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/groups" routerLinkActive="active">
+                            <fa-icon [icon]="faPeopleGroup"></fa-icon> Grupos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/users" routerLinkActive="active">
+                            <fa-icon [icon]="faCircleUser"></fa-icon> Users</a>
+                    </li>
+                
+                } 
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" routerLink="/log-in" routerLinkActive="active">
                         <fa-icon [icon]="faUserCheck"></fa-icon> Ingresar</a>
@@ -50,6 +58,7 @@
                     <a class="nav-link" aria-current="page" routerLink="/sign-up" routerLinkActive="active">
                         <fa-icon [icon]="faUserplus"></fa-icon> Registrarse</a>
                 </li>
+            
                 <!-- <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
                 </li> -->
@@ -79,10 +88,13 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" routerLink="/log-out" routerLinkActive="active">
-                        <fa-icon [icon]="faDoorOpen"></fa-icon> cerrar sesión</a>
-                </li>
+                @if (auth.isAuthenticated()) {
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" routerLink="/log-out" routerLinkActive="active">
+                            <fa-icon [icon]="faDoorOpen"></fa-icon> cerrar sesión</a>
+                    </li>
+                }
                 <!-- <li>
                     <button *ngIf="!auth0.loggedIn" (click)="auth0.login()" Class="btn btn-outline-primary">
                         Ingresar

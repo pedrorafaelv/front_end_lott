@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, tap, switchMap, BehaviorSubject } from 'rxjs';
 import { environment, firebaseUrl } from '../../environments/environment';
@@ -26,36 +26,35 @@ localId!: string;
 email!: string;
 localStorage!: Storage;
 // currentUserId$: any;
-  constructor(private http: HttpClient) { 
-     this.leerToken();
+
+// 👇 Signal de admin, inicializado desde localStorage
+  private _isAdmin = signal<boolean>(
+    localStorage.getItem('is_admin') === 'true'
+  );
+  readonly isAdmin = this._isAdmin.asReadonly();
+
+  // 👇 Signal de autenticación (para el navbar)
+  private _isAuthenticated = signal<boolean>(
+    !!localStorage.getItem('token') && !!localStorage.getItem('sanctum_token')
+  );
+  readonly isAuthenticated = this._isAuthenticated.asReadonly();
+
+  // 👇 Computed: admin Y autenticado a la vez
+  readonly isAdminAuthenticated = computed(
+    () => this._isAuthenticated() && this._isAdmin()
+  );
+
+  private currentUserId$ = new BehaviorSubject<number | null>(
+    Number(localStorage.getItem('user_id')) || null
+  );
+
+  constructor(private http: HttpClient) {
+    this.leerToken();
   }
-
-
-  //  login(email:string, pass:string){
-  //   const authData={
-  //     email: email,
-  //     password: pass,
-  //     returnSecureToken: true,
-  //   };
-  //   return this.http.post<AuthResponse>(
-  //     `${this.url}/accounts:signInWithPassword?key=${this.apiKey}`,authData
-  //   ).pipe(
-  //     map( resp=>{
-  //       this.guardarToken(resp.idToken);
-  //       this.guardarProfile(resp.localId);
-  //       console.log('respuesta de login', resp);
-  //       return resp;
-  //     })
-  //   );
-  //  }
-
+  
 
   login(email: string, pass: string): Observable<any> {
-  const authData = {
-    email,
-    password: pass,
-    returnSecureToken: true,
-  };
+  const authData = { email, password: pass, returnSecureToken: true };
 
   return this.http.post<AuthResponse>(
     `${this.fbLoginUrl}${this.apiKey}`,
@@ -65,7 +64,6 @@ localStorage!: Storage;
       this.guardarToken(resp.idToken);
       this.guardarProfile(resp.localId);
     }),
-    // 👇 Encadenar el exchange para obtener el token de Sanctum
     switchMap(() => this.exchangeFirebaseToken())
   );
 }
@@ -182,7 +180,7 @@ localStorage!: Storage;
  */
 exchangeFirebaseToken(): Observable<any> {
   const idToken = localStorage.getItem('token');   // el de Firebase
-
+ console.log('🔄 Intercambiando token de Firebase por token de Sanctum...');
   return this.http.post<any>(`${this.apiUrl}auth/exchange`, {
     id_token: idToken
   }).pipe(
@@ -190,7 +188,13 @@ exchangeFirebaseToken(): Observable<any> {
       if (resp.success && resp.token) {
         localStorage.setItem('sanctum_token', resp.token);
         localStorage.setItem('user_id', resp.user.id);       // 👈 id interno de tu BD
+        localStorage.setItem('is_admin', String(resp.user.is_admin));  
+
         this.currentUserId$.next(resp.user.id);               // 👈 lo exponemos reactivamente
+         this._isAdmin.set(resp.user.is_admin === true);                 
+          this._isAuthenticated.set(true);                                
+        localStorage.setItem('is_admin', resp.user.is_admin);
+
 
         console.log('✅ Token de Sanctum guardado');
       }
@@ -208,16 +212,18 @@ getSanctumToken(): string {
 /**
  * Limpia los tokens al hacer logout.
  */
-logoutAll(): void {
-  localStorage.removeItem('token');
-  localStorage.removeItem('expira');
-  localStorage.removeItem('localId');
-  localStorage.removeItem('sanctum_token');
-}
 
-private currentUserId$ = new BehaviorSubject<number | null>(
-  Number(localStorage.getItem('user_id')) || null
-);
+logoutAll(): void {
+    ['token', 'expira', 'localId', 'sanctum_token', 'user_id', 'is_admin', 'refresh_token']
+      .forEach(k => localStorage.removeItem(k));
+
+    this.currentUserId$.next(null);
+    this._isAdmin.set(false);            // 👈 resetear signal
+    this._isAuthenticated.set(false);    // 👈 resetear signal
+  }
+// private currentUserId$ = new BehaviorSubject<number | null>(
+//   Number(localStorage.getItem('user_id')) || null
+// );
 
 getUserId$(): Observable<number | null> {
   return this.currentUserId$.asObservable();

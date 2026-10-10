@@ -9,7 +9,7 @@ import { RaffleComponent } from './pages/raffle/raffle.component';
 import { AccountComponent } from './pages/account/account.component';
 import { LoginComponent } from './pages/log-in/login.component';
 import { LogOutComponent } from './pages/log-out/log-out.component';
-import { SingUpComponent } from './pages/sign-up/sign-up.component';
+import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { PoliciesComponent } from './components/policies/policies.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
@@ -37,7 +37,7 @@ export const routes: Routes = [
   { path: 'admin/withdrawals',     component: AdminWithdrawalsComponent,    canActivate: [AuthGuard, AdminGuard] },
   { path: 'log-in',                component: LoginComponent },
   { path: 'log-out',               component: LogOutComponent,              canActivate: [AuthGuard] },
-  { path: 'sign-up',               component: SingUpComponent },
+  { path: 'sign-up',               component: SignUpComponent },
   { path: 'email-confirmation',    component: EmailConfirmationComponent,   canActivate: [AuthGuard] },
   { path: 'Policies',              component: PoliciesComponent },
   { path: 'profile',               component: ProfileComponent,             canActivate: [AuthGuard] },
