@@ -27,7 +27,6 @@ sorteosEnVivo: Sorteo[] = [];
   ngOnInit(): void {
   this.raffles= this.RaffleService.getDetailActiveRafflesByUser(1)
     .then((datos)=>{
-     // console.log('datos = ',datos);
       this.raffles= datos;
        //console.log('this.raffles=', this.raffles );
     })

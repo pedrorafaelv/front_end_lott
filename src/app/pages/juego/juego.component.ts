@@ -66,7 +66,7 @@ export class JuegoComponent implements OnInit {
  lastRecord: NewFicha | undefined;
  nombreFichaActual:string ="";
  imagenFichaActual:string ="";
- baseUrlImage:string = './assets/images/full_circle_cari_ia/';
+ baseUrlImage:string = './assets/images/Caricatures/';
     // ⭐ Trigger para actualizar marcas (cambia cada vez que se presiona el botón)
   triggerActualizarMarcas: number = 0;
 

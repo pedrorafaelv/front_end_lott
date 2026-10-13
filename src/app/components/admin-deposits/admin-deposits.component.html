@@ -1,0 +1,593 @@
+<div class="admin-container">
+
+    <!-- HEADER -->
+    <header class="admin-header">
+        <div class="header-left">
+            <h1>
+                <i class="fas fa-hand-holding-usd"></i>
+                Panel de Depósitos
+            </h1>
+            <p class="header-subtitle">Aprobación y creación de depósitos</p>
+        </div>
+        <div class="header-right">
+            <button class="btn-secondary" (click)="exportData()">
+                <i class="fas fa-download"></i> Exportar
+            </button>
+        </div>
+    </header>
+
+    <!-- TABS PRINCIPALES -->
+    <section class="main-tabs">
+        <button class="main-tab" [class.active]="activeTab === 'requests'" (click)="changeTab('requests')">
+            <i class="fas fa-list"></i>
+            Solicitudes
+            <span class="tab-badge" *ngIf="dashboardStats?.pending_count">
+                {{ dashboardStats?.pending_count }}
+            </span>
+        </button>
+        <button class="main-tab" [class.active]="activeTab === 'create'" (click)="changeTab('create')">
+            <i class="fas fa-plus-circle"></i>
+            Crear Depósito
+        </button>
+        <button class="main-tab" [class.active]="activeTab === 'history'" (click)="changeTab('history')">
+            <i class="fas fa-history"></i>
+            Historial
+        </button>
+    </section>
+
+    <!-- ============================================
+         TAB 1: SOLICITUDES
+         ============================================ -->
+    <ng-container *ngIf="activeTab === 'requests'">
+
+        <!-- STATS GRID -->
+        <section class="stats-grid" *ngIf="dashboardStats">
+            <div class="stat-card stat-pending">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ dashboardStats.pending_count }}</span>
+                    <span class="stat-label">Pendientes</span>
+                    <span class="stat-amount">{{ formatCurrency(dashboardStats.pending_amount) }}</span>
+                </div>
+            </div>
+            <div class="stat-card stat-approved">
+                <div class="stat-icon"><i class="fas fa-check"></i></div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ dashboardStats.approved_today }}</span>
+                    <span class="stat-label">Aprobados hoy</span>
+                </div>
+            </div>
+            <div class="stat-card stat-completed">
+                <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ dashboardStats.completed_today }}</span>
+                    <span class="stat-label">Completados hoy</span>
+                </div>
+            </div>
+            <div class="stat-card stat-rejected">
+                <div class="stat-icon"><i class="fas fa-times"></i></div>
+                <div class="stat-content">
+                    <span class="stat-value">{{ dashboardStats.rejected_today }}</span>
+                    <span class="stat-label">Rechazados hoy</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- TABS DE ESTADO -->
+        <section class="status-tabs">
+            <button *ngFor="let tab of statusTabs"
+                    class="status-tab"
+                    [class.active]="selectedStatusTab === tab.key"
+                    [style.--tab-color]="tab.color"
+                    (click)="changeStatusTab(tab.key)">
+                <i [class]="tab.icon"></i>
+                {{ tab.label }}
+                <span class="tab-count">{{ getStatusCount(tab.key) }}</span>
+            </button>
+        </section>
+
+        <!-- BÚSQUEDA Y FILTROS -->
+        <section class="search-bar">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar por usuario o email..." (input)="onSearch($event)">
+            </div>
+            <button class="btn-filters" (click)="toggleFilters()">
+                <i class="fas fa-filter"></i> Filtros
+            </button>
+        </section>
+
+        <section class="filters-panel" *ngIf="showFilters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Moneda</label>
+                    <select [(ngModel)]="filters.currency_code" (change)="applyFilters()">
+                        <option [ngValue]="null">Todas</option>
+                        <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Desde</label>
+                    <input type="date" [(ngModel)]="filters.date_from" (change)="applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <label>Hasta</label>
+                    <input type="date" [(ngModel)]="filters.date_to" (change)="applyFilters()">
+                </div>
+                <div class="filter-group filter-actions">
+                    <button class="btn-clear" (click)="clearFilters()">
+                        <i class="fas fa-eraser"></i> Limpiar
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TABLA -->
+        <section class="withdrawals-section">
+            <div class="loading-state" *ngIf="loading">
+                <div class="spinner"></div>
+                <p>Cargando solicitudes...</p>
+            </div>
+
+            <div class="table-container" *ngIf="!loading">
+                <table class="withdrawals-table" *ngIf="deposits.length > 0; else emptyState">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th class="text-right">Monto</th>
+                            <th>Moneda</th>
+                            <th>Método</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let d of deposits; trackBy: trackByDepositId"
+                            [class.row-pending]="d.status === 'pending'"
+                            [class.row-approved]="d.status === 'approved'">
+                            <td class="cell-id">#{{ d.id }}</td>
+                            <td class="cell-user">
+                                <div class="user-info">
+                                    <span class="user-name">{{ d.user?.name || 'Usuario #' + d.user_id }}</span>
+                                    <span class="user-email">{{ d.user?.email || '-' }}</span>
+                                </div>
+                            </td>
+                            <td class="cell-amount text-right">{{ formatCurrency(d.amount, d.currency_code) }}</td>
+                            <td class="cell-currency">{{ d.currency_code }}</td>
+                            <td>{{ d.via?.label || '-' }}</td>
+                            <td class="cell-status">
+                                <span class="status-badge" [class]="getStatusClass(d.status)">
+                                    <i [class]="getStatusIcon(d.status)"></i>
+                                    {{ getStatusLabel(d.status) }}
+                                </span>
+                            </td>
+                            <td class="cell-date">{{ formatDate(d.created_at) }}</td>
+                            <td class="cell-actions text-center">
+                                <button class="btn-action" (click)="openDetail(d)" title="Ver detalle">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ng-template #emptyState>
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>No hay solicitudes para mostrar</p>
+                    </div>
+                </ng-template>
+            </div>
+
+            <div class="pagination" *ngIf="!loading && pagination.last_page > 1">
+                <button class="page-btn" [disabled]="pagination.current_page === 1" (click)="goToPage(pagination.current_page - 1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button *ngFor="let page of pages" class="page-btn" [class.active]="page === pagination.current_page" (click)="goToPage(page)">
+                    {{ page }}
+                </button>
+                <button class="page-btn" [disabled]="pagination.current_page === pagination.last_page" (click)="goToPage(pagination.current_page + 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+    </ng-container>
+
+    <!-- ============================================
+         TAB 2: CREAR DEPÓSITO
+         ============================================ -->
+    <ng-container *ngIf="activeTab === 'create'">
+        <section class="create-deposit-section">
+
+            <!-- Paso 1: Buscar usuario -->
+            <div class="create-card" *ngIf="!selectedUser">
+                <div class="create-card-header">
+                    <h2><i class="fas fa-user-search"></i> Paso 1: Buscar usuario</h2>
+                </div>
+                <div class="create-card-body">
+                    <div class="search-user-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" 
+                               placeholder="Buscar por ID, nombre o email..."
+                               [value]="searchUserQuery"
+                               (input)="onUserSearchInput($event)">
+                        <div class="searching-spinner" *ngIf="searchingUsers">
+                            <div class="spinner-small"></div>
+                        </div>
+                    </div>
+
+                    <!-- Resultados -->
+                    <div class="user-results" *ngIf="searchUserResults.length > 0">
+                        <div class="user-result-item" *ngFor="let u of searchUserResults" (click)="selectUser(u)">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-result-info">
+                                <span class="user-result-name">{{ u.name }}</span>
+                                <span class="user-result-email">{{ u.email }}</span>
+                                <span class="user-result-id">ID: {{ u.id }}</span>
+                            </div>
+                            <button class="btn-select-user">Seleccionar</button>
+                        </div>
+                    </div>
+
+                    <div class="no-results" *ngIf="searchUserQuery.length >= 2 && !searchingUsers && searchUserResults.length === 0">
+                        <i class="fas fa-user-slash"></i>
+                        <p>No se encontraron usuarios</p>
+                    </div>
+
+                    <div class="search-hint" *ngIf="searchUserQuery.length < 2">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Ingresa al menos 2 caracteres para buscar</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 2: Formulario de depósito -->
+            <div class="create-card" *ngIf="selectedUser">
+                <div class="create-card-header">
+                    <h2><i class="fas fa-plus-circle"></i> Paso 2: Datos del depósito</h2>
+                    <button class="btn-change-user" (click)="clearSelectedUser()">
+                        <i class="fas fa-exchange-alt"></i> Cambiar usuario
+                    </button>
+                </div>
+                <div class="create-card-body">
+
+                    <!-- Info del usuario -->
+                    <div class="selected-user-info">
+                        <div class="selected-user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="selected-user-details">
+                            <h3>{{ selectedUser.name }}</h3>
+                            <p>{{ selectedUser.email }}</p>
+                            <span class="user-id-badge">ID: {{ selectedUser.id }}</span>
+                        </div>
+                        <div class="selected-user-balance">
+                            <span class="balance-label">Balance actual</span>
+                            <span class="balance-value">{{ formatCurrency(userCurrentBalance) }}</span>
+                            <span class="promo-value" *ngIf="userCurrentPromo > 0">
+                                + Bono: {{ formatCurrency(userCurrentPromo) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Formulario -->
+                    <form [formGroup]="depositForm" class="deposit-form">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-dollar-sign"></i> Monto *</label>
+                                <input type="number" 
+                                       formControlName="amount" 
+                                       class="form-control"
+                                       [class.is-invalid]="amountInvalid"
+                                       placeholder="0.00"
+                                       step="0.01"
+                                       min="0.01">
+                                <small class="error-text" *ngIf="amountInvalid">Ingresa un monto válido</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="fas fa-coins"></i> Moneda *</label>
+                                <select formControlName="currency_code" class="form-control">
+                                    <option value="USD">USD - Dólar</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="VES">VES - Bolívar</option>
+                                    <option value="USDT">USDT - Tether</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-exchange-alt"></i> Método *</label>
+                                <select formControlName="via_id" 
+                                        class="form-control"
+                                        [class.is-invalid]="viaInvalid">
+                                    <option value="">Selecciona un método</option>
+                                    <option *ngFor="let v of vias" [value]="v.id">{{ v.label }}</option>
+                                </select>
+                                <small class="error-text" *ngIf="viaInvalid">Selecciona un método</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label><i class="fas fa-hashtag"></i> Referencia</label>
+                                <input type="text" 
+                                       formControlName="reference" 
+                                       class="form-control"
+                                       placeholder="Ej: TRANSF-123456">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-align-left"></i> Descripción</label>
+                            <input type="text" 
+                                   formControlName="description" 
+                                   class="form-control"
+                                   placeholder="Ej: Pago en efectivo, ajuste manual, etc.">
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-comment"></i> Notas del admin</label>
+                            <textarea formControlName="admin_notes" 
+                                      class="form-control"
+                                      rows="2"
+                                      placeholder="Notas internas (opcional)"></textarea>
+                        </div>
+
+                        <!-- Bono promocional -->
+                        <div class="promotion-section">
+                            <label class="checkbox-label">
+                                <input type="checkbox" formControlName="add_promotion">
+                                <span><i class="fas fa-gift"></i> Agregar bono promocional</span>
+                            </label>
+
+                            <div class="promotion-fields" *ngIf="depositForm.value.add_promotion">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Monto del bono</label>
+                                        <input type="number" 
+                                               formControlName="promotion_amount" 
+                                               class="form-control"
+                                               placeholder="0.00"
+                                               step="0.01"
+                                               min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Fecha de expiración (opcional)</label>
+                                        <input type="date" 
+                                               formControlName="expires_at" 
+                                               class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preview -->
+                        <div class="balance-preview" *ngIf="depositForm.value.amount">
+                            <div class="preview-row">
+                                <span>Balance actual:</span>
+                                <span>{{ formatCurrency(userCurrentBalance) }}</span>
+                            </div>
+                            <div class="preview-row highlight">
+                                <span>Monto del depósito:</span>
+                                <span class="success">+ {{ formatCurrency(depositForm.value.amount) }}</span>
+                            </div>
+                            <div class="preview-row highlight" *ngIf="depositForm.value.add_promotion && depositForm.value.promotion_amount">
+                                <span>Bono promocional:</span>
+                                <span class="warning">+ {{ formatCurrency(depositForm.value.promotion_amount) }}</span>
+                            </div>
+                            <div class="preview-row total">
+                                <span>Nuevo balance:</span>
+                                <span class="total-value">{{ formatCurrency(newBalancePreview) }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel-deposit" (click)="clearSelectedUser()">
+                                Cancelar
+                            </button>
+                            <button type="button" 
+                                    class="btn-submit-deposit" 
+                                    (click)="submitManualDeposit()"
+                                    [disabled]="depositForm.invalid || submittingDeposit">
+                                <i class="fas" [class.fa-check]="!submittingDeposit" [class.fa-spinner]="submittingDeposit" [class.fa-spin]="submittingDeposit"></i>
+                                {{ submittingDeposit ? 'Procesando...' : 'Crear Depósito' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </ng-container>
+
+    <!-- ============================================
+         TAB 3: HISTORIAL
+         ============================================ -->
+    <ng-container *ngIf="activeTab === 'history'">
+        <section class="history-section">
+            <div class="history-header">
+                <h2><i class="fas fa-history"></i> Historial de depósitos</h2>
+                <span class="history-count">{{ pagination.total }} registros</span>
+            </div>
+
+            <div class="search-bar">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar..." (input)="onSearch($event)">
+                </div>
+                <button class="btn-filters" (click)="toggleFilters()">
+                    <i class="fas fa-filter"></i> Filtros
+                </button>
+            </div>
+
+            <div class="loading-state" *ngIf="loading">
+                <div class="spinner"></div>
+            </div>
+
+            <div class="table-container" *ngIf="!loading">
+                <table class="withdrawals-table" *ngIf="deposits.length > 0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th class="text-right">Monto</th>
+                            <th>Moneda</th>
+                            <th>Método</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let d of deposits; trackBy: trackByDepositId">
+                            <td class="cell-id">#{{ d.id }}</td>
+                            <td>{{ d.user?.name || 'Usuario #' + d.user_id }}</td>
+                            <td class="cell-amount text-right">{{ formatCurrency(d.amount, d.currency_code) }}</td>
+                            <td>{{ d.currency_code }}</td>
+                            <td>{{ d.via?.label || '-' }}</td>
+                            <td>
+                                <span class="status-badge" [class]="getStatusClass(d.status)">
+                                    {{ getStatusLabel(d.status) }}
+                                </span>
+                            </td>
+                            <td class="cell-date">{{ formatDate(d.created_at) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </ng-container>
+
+</div>
+
+<!-- ============================================
+     MODAL DE DETALLE
+     ============================================ -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetail()">
+    <div class="modal-content modal-lg" (click)="$event.stopPropagation()" *ngIf="selectedDeposit">
+
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-hand-holding-usd"></i>
+                Depósito #{{ selectedDeposit.id }}
+            </h2>
+            <button class="modal-close" (click)="closeDetail()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+
+            <!-- Info -->
+            <div class="detail-section">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Usuario</span>
+                        <span class="detail-value">{{ selectedDeposit.user?.name || 'N/A' }}</span>
+                        <span class="detail-sub">{{ selectedDeposit.user?.email || '-' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Estado</span>
+                        <span class="status-badge" [class]="getStatusClass(selectedDeposit.status)">
+                            <i [class]="getStatusIcon(selectedDeposit.status)"></i>
+                            {{ getStatusLabel(selectedDeposit.status) }}
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Monto solicitado</span>
+                        <span class="detail-value big">{{ formatCurrency(selectedDeposit.amount, selectedDeposit.currency_code) }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Método</span>
+                        <span class="detail-value">{{ selectedDeposit.via?.label || '-' }}</span>
+                    </div>
+                    <div class="detail-item" *ngIf="selectedDeposit.reference">
+                        <span class="detail-label">Referencia</span>
+                        <span class="detail-value">{{ selectedDeposit.reference }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Fecha de solicitud</span>
+                        <span class="detail-value">{{ formatDate(selectedDeposit.created_at) }}</span>
+                    </div>
+                    <div class="detail-item" *ngIf="selectedDeposit.approved_at">
+                        <span class="detail-label">Fecha de aprobación</span>
+                        <span class="detail-value">{{ formatDate(selectedDeposit.approved_at) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Balance preview -->
+            <div class="detail-section" *ngIf="selectedDepositDetail">
+                <h3><i class="fas fa-chart-line"></i> Impacto en el balance</h3>
+                <div class="balance-impact">
+                    <div class="impact-row">
+                        <span>Balance actual:</span>
+                        <span>{{ formatCurrency(selectedDepositDetail.user_balance, selectedDeposit.currency_code) }}</span>
+                    </div>
+                    <div class="impact-row highlight">
+                        <span>Depósito:</span>
+                        <span class="success">+ {{ formatCurrency(selectedDeposit.amount, selectedDeposit.currency_code) }}</span>
+                    </div>
+                    <div class="impact-row total">
+                        <span>Nuevo balance:</span>
+                        <span class="total-value">{{ formatCurrency(selectedDepositDetail.user_balance + selectedDeposit.amount, selectedDeposit.currency_code) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comprobante -->
+            <div class="detail-section" *ngIf="selectedDeposit.voucher_path">
+                <h3><i class="fas fa-file-image"></i> Comprobante</h3>
+                <div class="voucher-container">
+                    <img [src]="selectedDeposit.voucher_path" alt="Comprobante">
+                </div>
+            </div>
+
+            <!-- Notas -->
+            <div class="detail-section" *ngIf="selectedDeposit.user_notes || selectedDeposit.admin_notes">
+                <h3><i class="fas fa-comments"></i> Notas</h3>
+                <div class="notes-box" *ngIf="selectedDeposit.user_notes">
+                    <span class="notes-label">Usuario:</span>
+                    <p>{{ selectedDeposit.user_notes }}</p>
+                </div>
+                <div class="notes-box admin" *ngIf="selectedDeposit.admin_notes">
+                    <span class="notes-label">Admin:</span>
+                    <p>{{ selectedDeposit.admin_notes }}</p>
+                </div>
+            </div>
+
+            <!-- ACCIONES -->
+            <div class="detail-section actions-section">
+
+                <div class="action-box approve-box" *ngIf="canApprove">
+                    <h3><i class="fas fa-check-circle"></i> Aprobar</h3>
+                    <textarea class="form-control" placeholder="Notas (opcional)" formControlName="admin_notes" [formGroup]="approveForm" rows="2"></textarea>
+                    <button class="btn-approve" (click)="approve()">
+                        <i class="fas fa-check"></i> Aprobar depósito
+                    </button>
+                </div>
+
+                <div class="action-box reject-box" *ngIf="canReject">
+                    <h3><i class="fas fa-times-circle"></i> Rechazar</h3>
+                    <textarea class="form-control" [class.is-invalid]="rejectNotesInvalid" placeholder="Motivo (requerido)" formControlName="admin_notes" [formGroup]="rejectForm" rows="2"></textarea>
+                    <small class="error-text" *ngIf="rejectNotesInvalid">Ingresa un motivo (mín. 5 caracteres)</small>
+                    <button class="btn-reject" (click)="reject()" [disabled]="rejectForm.invalid">
+                        <i class="fas fa-times"></i> Rechazar
+                    </button>
+                </div>
+
+                <div class="action-box complete-box" *ngIf="canComplete">
+                    <h3><i class="fas fa-check-double"></i> Completar</h3>
+                    <p class="help-text">Confirma que recibiste el pago para acreditar el monto</p>
+                    <textarea class="form-control" placeholder="Notas (opcional)" formControlName="admin_notes" [formGroup]="completeForm" rows="2"></textarea>
+                    <button class="btn-complete" (click)="complete()">
+                        <i class="fas fa-check-double"></i> Completar y acreditar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

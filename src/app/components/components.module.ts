@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 // Componentes
 import { NavbarComponent } from './navbar/navbar.component';
 import { SlideshowComponent } from './slideshow/slideshow.component';
-import { FontawesomeComponent } from './fontawesome/fontawesome.component';
+// import { FontawesomeComponent } from './fontawesome/fontawesome.component';
 import { CartonesPosterGridComponent } from './cartones-poster-grid/cartones-poster-grid.component';
 import { FooterComponent } from './footer/footer.component';
 import { CartComponent } from './cart/cart.component';
@@ -22,14 +22,14 @@ import { BouncingBallComponent } from './bouncing-ball/bouncing-ball.component';
 @NgModule({
   declarations: [
     SlideshowComponent,
-    FontawesomeComponent,
+    // FontawesomeComponent,
     CartonesPosterGridComponent,
     CartComponent,
     TotalComponent, 
   ],
   exports: [
     SlideshowComponent,
-    FontawesomeComponent,
+    // FontawesomeComponent,
     CartonesPosterGridComponent,
     CartComponent,
     TotalComponent,

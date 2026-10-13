@@ -21,6 +21,7 @@ import { UsersComponent } from './pages/users/users.component';
 import { CartonesPosterGridComponent } from './components/cartones-poster-grid/cartones-poster-grid.component';
 import { AdminWithdrawalsComponent } from './pages/admin-withdrawals/admin-withdrawals.component';
 import { RulesComponent } from './components/rules/rules.component';
+import { AdminDepositsComponent } from './components/admin-deposits/admin-deposits.component';
 
 export const routes: Routes = [
   { path: '',                      redirectTo: 'home', pathMatch: 'full' },
@@ -44,6 +45,7 @@ export const routes: Routes = [
   { path: 'juego',                 component: JuegoComponent,               canActivate: [AuthGuard] },
   { path: 'poster-grid',           component: CartonesPosterGridComponent,  canActivate: [AuthGuard] },
   { path: 'message',               component: MessageComponent,             canActivate: [AuthGuard] },
+  { path: 'admin/deposits',        component: AdminDepositsComponent,       canActivate: [AuthGuard, AdminGuard] },
   { path: 'users',                 component: UsersComponent,               canActivate: [AuthGuard, AdminGuard] },
   { path: 'callback',              component: CallbackComponent },
   { path: 'rules',                 component: RulesComponent },

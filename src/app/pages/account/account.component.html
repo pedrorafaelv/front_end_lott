@@ -26,6 +26,12 @@
             </div>
 
             <button
+                class="btn-deposits"
+                (click)="openDepositModal()">
+                <i class="fas fa-arrow-up"></i>
+                Cargar Depósito
+            </button>
+              <button
                 class="btn-withdrawal"
                 (click)="openWithdrawalModal()"
                 [disabled]="!currentBalance || currentBalance.amount <= 0">
@@ -128,6 +134,44 @@
                 </div>
             </div>
         </section>
+         <!-- ============================================
+     SOLICITUDES DE DEPÓSITO PENDIENTES
+     ============================================ -->
+<section class="withdrawal-section" *ngIf="depositRequests.length > 0">
+    <div class="section-header">
+        <h2>
+            <i class="fas fa-arrow-down"></i>
+            Depósitos pendientes
+        </h2>
+    </div>
+    <div class="withdrawal-list">
+        <div class="withdrawal-item"
+             *ngFor="let dr of depositRequests"
+             [class.status-pending]="dr.status === 'pending'"
+             [class.status-approved]="dr.status === 'approved'">
+            <div class="wr-left">
+                <div class="wr-status" [class]="getStatusClass(dr.status)">
+                    {{ getStatusLabel(dr.status) }}
+                </div>
+                <div class="wr-details">
+                    <span class="wr-amount">{{ formatCurrency(dr.amount, dr.currency_code) }}</span>
+                    <span class="wr-net">
+                        Método: {{ dr.via?.label || 'N/A' }}
+                        <span *ngIf="dr.reference"> | Ref: {{ dr.reference }}</span>
+                    </span>
+                    <span class="wr-date">{{ formatDate(dr.created_at) }}</span>
+                </div>
+            </div>
+            <button
+                class="btn-cancel-wr"
+                *ngIf="dr.status === 'pending'"
+                (click)="cancelDeposit(dr)">
+                <i class="fas fa-times"></i>
+                Cancelar
+            </button>
+        </div>
+    </div>
+</section>
 
         <!-- ============================================
              FILTROS
@@ -420,6 +464,192 @@
                 <button type="submit" class="btn-submit" [disabled]="withdrawalForm.invalid">
                     <i class="fas fa-paper-plane"></i>
                     Solicitar retiro
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================
+     MODAL DE DEPÓSITO
+     ============================================ -->
+<div class="modal-overlay" *ngIf="showDepositModal" (click)="closeDepositModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <h2>
+                <i class="fas fa-arrow-down"></i>
+                Depósito
+            </h2>
+            <button class="modal-close" (click)="closeDepositModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <form [formGroup]="depositForm" (ngSubmit)="submitDeposit()" class="modal-body">
+
+        <div class="form-group">
+            <label for="deposit_currency">
+                <i class="fas fa-dollar-sign"></i>
+                Moneda
+            </label>
+            <select
+                    id="currency_id"
+                    formControlName="currency_id"
+                    class="form-control"
+                    [class.is-invalid]="currencyInvalid">
+                    <option value="">Selecciona una moneda</option>
+                    <option *ngFor="let currency of currencies" [value]="currency.id">
+                        {{ currency.name }}
+                    </option>
+                </select>               
+                 <small class="form-hint" *ngIf="!depositAmountInvalid">
+                    <!-- Moneda: {{ selectedCurrency }} -->
+                </small>
+                <small class="form-error" *ngIf="depositAmountInvalid">
+                    Ingresa una moneda válida
+                </small>
+        </div>
+
+
+
+            <!-- Monto -->
+            <div class="form-group">
+                <label for="deposit_amount">
+                    <i class="fas fa-dollar-sign"></i>
+                    Monto del depósito *
+                </label>
+                <input
+                    type="number"
+                    id="deposit_amount"
+                    formControlName="amount"
+                    class="form-control"
+                    [class.is-invalid]="depositAmountInvalid"
+                    placeholder="0.00"
+                    min="0.01"
+                    step="0.01">
+                <small class="form-hint" *ngIf="!depositAmountInvalid">
+                    <!-- Moneda: {{ selectedCurrency }} -->
+                </small>
+                <small class="form-error" *ngIf="depositAmountInvalid">
+                    Ingresa un monto válido (mín. 0.01)
+                </small>
+            </div>
+
+            <!-- Método de depósito -->
+            <div class="form-group">
+                <label for="deposit_via_id">
+                    <i class="fas fa-exchange-alt"></i>
+                    Método de depósito *
+                </label>
+                <select
+                    id="deposit_via_id"
+                    formControlName="via_id"
+                    class="form-control"
+                    [class.is-invalid]="depositViaInvalid">
+                    <option value="">Selecciona un método</option>
+                    <option *ngFor="let via of depositVias" [value]="via.id">
+                        {{ via.label }}
+                    </option>
+                </select>
+                <small class="form-error" *ngIf="depositViaInvalid">
+                    Selecciona un método
+                </small>
+            </div>
+
+            <!-- Referencia -->
+            <div class="form-group">
+                <label for="reference">
+                    <i class="fas fa-hashtag"></i>
+                    Referencia *
+                </label>
+                <input
+                    type="text"
+                    id="reference"
+                    formControlName="reference"
+                    class="form-control"
+                    [class.is-invalid]="referenceInvalid"
+                    placeholder="Ej: REF-123456, últimos 4 dígitos, etc."
+                    maxlength="255">
+                <small class="form-error" *ngIf="referenceInvalid">
+                    Ingresa la referencia del pago
+                </small>
+            </div>
+
+            <!-- Comprobante (opcional) -->
+            <div class="form-group">
+                <label for="voucher">
+                    <i class="fas fa-paperclip"></i>
+                    Comprobante (opcional)
+                </label>
+
+                <div class="file-input-wrapper" *ngIf="!selectedVoucher">
+                    <input
+                        type="file"
+                        id="voucher"
+                        accept=".jpg,.jpeg,.png,.pdf"
+                        (change)="onVoucherSelected($event)"
+                        hidden>
+                    <label for="voucher" class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Seleccionar archivo</span>
+                        <small>JPG, PNG o PDF (máx. 5MB)</small>
+                    </label>
+                </div>
+
+                <!-- Preview del archivo -->
+                <div class="voucher-preview" *ngIf="selectedVoucher">
+                    <div class="voucher-info">
+                        <i class="fas" 
+                           [class.fa-file-image]="voucherPreview"
+                           [class.fa-file-pdf]="!voucherPreview"></i>
+                        <div class="voucher-details">
+                            <span class="voucher-name">{{ selectedVoucher.name }}</span>
+                            <span class="voucher-size">
+                                {{ (selectedVoucher.size / 1024).toFixed(2) }} KB
+                            </span>
+                        </div>
+                        <button type="button" class="btn-remove-voucher" (click)="removeVoucher()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Preview de imagen -->
+                    <div class="voucher-image-preview" *ngIf="voucherPreview">
+                        <img [src]="voucherPreview" alt="Vista previa">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notas -->
+            <div class="form-group">
+                <label for="deposit_notes">
+                    <i class="fas fa-comment"></i>
+                    Notas (opcional)
+                </label>
+                <textarea
+                    id="deposit_notes"
+                    formControlName="user_notes"
+                    class="form-control"
+                    rows="2"
+                    placeholder="Información adicional sobre tu pago...">
+                </textarea>
+            </div>
+
+            <!-- Advertencia -->
+            <div class="modal-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Los depósitos requieren aprobación de un administrador. El monto se acreditará una vez confirmado el pago.</span>
+            </div>
+
+            <!-- Botones -->
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" (click)="closeDepositModal()">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-submit" [disabled]="depositForm.invalid">
+                    <i class="fas fa-paper-plane"></i>
+                    Subir Depósito
                 </button>
             </div>
         </form>

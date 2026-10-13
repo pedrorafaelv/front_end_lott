@@ -12,8 +12,10 @@
     --accent: #ffd700;
     --accent-light: #ffe44d;
     --success: #00e676;
+    --success-dark: #045c27;
     --warning: #f39c12;
     --info: #3a7ebf;
+    --info-dark: #1a3d5c;
 
     --text-white: #ffffff;
     --text-light: #e8e8e8;
@@ -144,6 +146,32 @@
     cursor: not-allowed;
 }
 
+/* Botón de deposito */
+.btn-deposits {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--info), var(--info-dark));
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+}
+
+.btn-deposits:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
+}
+
+.btn-deposits:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 /* ============================================
    TARJETAS DE BALANCE
    ============================================ */
@@ -1098,4 +1126,112 @@ textarea.form-control {
         height: 35px;
         font-size: 0.8rem;
     }
+     /* ============================================
+   FILE INPUT / VOUCHER
+   ============================================ */
+.file-input-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.file-input-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 20px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.file-input-label:hover {
+    border-color: var(--accent);
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.file-input-label i {
+    font-size: 2rem;
+    color: var(--accent);
+}
+
+.file-input-label span {
+    color: var(--text-white);
+    font-weight: 600;
+}
+
+.file-input-label small {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.voucher-preview {
+    padding: 12px;
+    background: rgba(0, 230, 118, 0.08);
+    border: 1px solid rgba(0, 230, 118, 0.2);
+    border-radius: 12px;
+}
+
+.voucher-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.voucher-info > i {
+    font-size: 1.8rem;
+    color: var(--success);
+}
+
+.voucher-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.voucher-name {
+    color: var(--text-white);
+    font-weight: 600;
+    font-size: 0.85rem;
+    word-break: break-all;
+}
+
+.voucher-size {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.btn-remove-voucher {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 71, 87, 0.2);
+    color: var(--primary);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-remove-voucher:hover {
+    background: rgba(255, 71, 87, 0.4);
+    color: white;
+    transform: scale(1.1);
+}
+
+.voucher-image-preview {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.voucher-image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
 }

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Auth0Service } from '../../services/auth0.service';
 import { faUsersRectangle, faHouseChimneyUser, faChessBoard, faHatWizard, faFloppyDisk, faCommentsDollar, faDice, 
          faUserPlus, faDoorOpen, faUserCheck, faUserGear, faMoneyBill1Wave, faPeopleGroup,  faIdBadge, faSquareEnvelope, 
-         faBars, faCircleDot, faCircleUser} from '@fortawesome/free-solid-svg-icons';
+         faBars, faCircleDot, faCircleUser,faMoneyBillTransfer,faSackDollar, faHouseLock, faGamepad } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -20,13 +20,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
       RouterLinkActive,
     ]
 
-
 })
 export class NavbarComponent implements OnInit {
 
   // 👇 inyecta el AuthService público
   public auth = inject(AuthService);
-
 
 faUsersRectangle= faUsersRectangle;
 faHouseChimneyUser = faHouseChimneyUser;
@@ -46,8 +44,13 @@ faSquareEnvelope= faSquareEnvelope;
 faBars= faBars;
 faCircleDot=faCircleDot;
 faCircleUser=faCircleUser;
+faMoneyBillTransfer=faMoneyBillTransfer;
+faSackDollar=faSackDollar;
+faHouseLock=faHouseLock;
+faGamepad=faGamepad;
 userId!: number;
 level: number = 0;
+// faMoneyBillTransfer: IconProp;
 
 
 
@@ -61,8 +64,7 @@ constructor(public auth0: Auth0Service,
   }
    logout() {
     this.auth.logoutAll();
-    // opcional: redirigir
-    // this.router.navigateByUrl('/log-in');
+    
   }
 
 }
