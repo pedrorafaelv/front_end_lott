@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 import { AdminDepositService } from '../../services/admin-deposit.service';
 import { AuthService } from '../../services/auth.service';
@@ -60,7 +61,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
     // Filtros
     filters: AdminDepositFilters = {
         status: null,
-        currency_code: null,
+        currency_id: null,
         user_id: null,
         date_from: null,
         date_to: null,
@@ -115,7 +116,8 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private userService: UserService,
         private fb: FormBuilder,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private router:Router
     ) {
         // Formulario de aprobación
         this.approveForm = this.fb.group({
@@ -135,7 +137,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
         // Formulario de crear depósito
         this.depositForm = this.fb.group({
             amount: ['', [Validators.required, Validators.min(0.01)]],
-            currency_code: ['USD', Validators.required],
+            currency_id: ['USD', Validators.required],
             via_id: ['', Validators.required],
             reference: [''],
             description: [''],
@@ -147,6 +149,12 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        const id = this.authService.getUserId();
+        if (id === null) {
+             this.router.navigateByUrl('/log-in');   // sin sesión no debería estar aquí
+         return;
+        }
+        this.adminId = id;
         this.loadAdminUser();
         this.setupUserSearch();
     }
@@ -165,8 +173,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
             if (!localId) return;
 
             const user = await this.userService.getUserByLocalId(localId);
-            this.adminId = user.user[0]['id'];
-            console.log('👤 Admin ID:', this.adminId);
+            // console.log('👤 Admin ID:', this.adminId);
 
             this.loadDeposits();
             this.loadStats();
@@ -203,6 +210,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (resp) => {
+                    console.log('adminsDepositServices.getDeposits', resp);
                     if (resp.success && resp.data) {
                         this.deposits = resp.data.deposits;
                         this.pagination = resp.data.pagination;
@@ -221,7 +229,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
 
                         // Extraer monedas únicas
                         const currenciesSet = new Set<string>();
-                        this.deposits.forEach(d => currenciesSet.add(d.currency_code));
+                        this.deposits.forEach(d => currenciesSet.add(d.currency_id));
                         this.currencies = Array.from(currenciesSet);
                     }
                     this.loading = false;
@@ -295,7 +303,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
     clearFilters(): void {
         this.filters = {
             status: null,
-            currency_code: null,
+            currency_id: null,
             user_id: null,
             date_from: null,
             date_to: null,
@@ -568,7 +576,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
         // Actualizar moneda del formulario si hay balance
         const currencyCodes = Object.keys(balances);
         if (currencyCodes.length > 0) {
-            this.depositForm.patchValue({ currency_code: currencyCodes[0] });
+            this.depositForm.patchValue({ currency_id: currencyCodes[0] });
         }
     }
 
@@ -578,7 +586,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
         this.userCurrentPromo = 0;
         this.depositForm.reset({
             amount: '',
-            currency_code: 'USD',
+            currency_id: 'USD',
             via_id: '',
             reference: '',
             description: '',
@@ -628,10 +636,10 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
             html: `
                 <div style="text-align: left; padding: 10px;">
                     <p><b>Usuario:</b> ${this.selectedUser.name}</p>
-                    <p><b>Monto:</b> ${this.formatCurrency(formValue.amount, formValue.currency_code)}</p>
-                    ${formValue.add_promotion ? `<p><b>Bono:</b> ${this.formatCurrency(formValue.promotion_amount, formValue.currency_code)}</p>` : ''}
-                    <p><b>Balance actual:</b> ${this.formatCurrency(this.userCurrentBalance, formValue.currency_code)}</p>
-                    <p><b>Nuevo balance:</b> ${this.formatCurrency(this.userCurrentBalance + Number(formValue.amount), formValue.currency_code)}</p>
+                    <p><b>Monto:</b> ${this.formatCurrency(formValue.amount, formValue.currency_id)}</p>
+                    ${formValue.add_promotion ? `<p><b>Bono:</b> ${this.formatCurrency(formValue.promotion_amount, formValue.currency_id)}</p>` : ''}
+                    <p><b>Balance actual:</b> ${this.formatCurrency(this.userCurrentBalance, formValue.currency_id)}</p>
+                    <p><b>Nuevo balance:</b> ${this.formatCurrency(this.userCurrentBalance + Number(formValue.amount), formValue.currency_id)}</p>
                 </div>
             `,
             showCancelButton: true,
@@ -651,7 +659,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
         const payload = {
             user_id: this.selectedUser!.id,
             admin_id: this.adminId,
-            currency_code: formValue.currency_code,
+            currency_id: formValue.currency_id,
             amount: Number(formValue.amount),
             via_id: Number(formValue.via_id),
             reference: formValue.reference || null,
@@ -673,7 +681,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
                         title: '¡Depósito creado!',
                         html: `
                             <p>El monto ha sido acreditado</p>
-                            <p><b>Nuevo balance:</b> ${this.formatCurrency(resp.new_balance, formValue.currency_code)}</p>
+                            <p><b>Nuevo balance:</b> ${this.formatCurrency(resp.new_balance, formValue.currency_id)}</p>
                         `,
                         confirmButtonColor: '#176585'
                     });
@@ -739,7 +747,7 @@ export class AdminDepositsComponent implements OnInit, OnDestroy {
             d.user?.name ?? '',
             d.user?.email ?? '',
             d.amount,
-            d.currency_code,
+            d.currency_id,
             d.via?.label ?? '',
             d.status,
             this.formatDate(d.created_at),

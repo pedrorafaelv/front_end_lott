@@ -2,7 +2,7 @@ import { Component,  OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink} from '@angular/router';
 import Swal from 'sweetalert2';
 
 import { AuthService } from '../../services/auth.service';
@@ -15,6 +15,7 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     ReactiveFormsModule,
     FormsModule,
+    RouterLink,
     CommonModule,
   ],
 })

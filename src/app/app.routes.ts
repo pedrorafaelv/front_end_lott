@@ -22,6 +22,7 @@ import { CartonesPosterGridComponent } from './components/cartones-poster-grid/c
 import { AdminWithdrawalsComponent } from './pages/admin-withdrawals/admin-withdrawals.component';
 import { RulesComponent } from './components/rules/rules.component';
 import { AdminDepositsComponent } from './components/admin-deposits/admin-deposits.component';
+import { TermConditionsComponent } from './components/term-conditions/term-conditions.component';
 
 export const routes: Routes = [
   { path: '',                      redirectTo: 'home', pathMatch: 'full' },
@@ -47,8 +48,15 @@ export const routes: Routes = [
   { path: 'message',               component: MessageComponent,             canActivate: [AuthGuard] },
   { path: 'admin/deposits',        component: AdminDepositsComponent,       canActivate: [AuthGuard, AdminGuard] },
   { path: 'users',                 component: UsersComponent,               canActivate: [AuthGuard, AdminGuard] },
+  { path: 'terms-conditions',      component: TermConditionsComponent},
   { path: 'callback',              component: CallbackComponent },
   { path: 'rules',                 component: RulesComponent },
+  { path: 'accept-terms', loadComponent: () => import('./components/term-conditions/term-conditions.component').then(m => m.TermConditionsComponent) },
+  // {
+  //   path: 'lobby',
+  //   canActivate: [authGuard, termsGuard],
+  //   loadComponent: () => import('./features/lobby/lobby.component').then(m => m.LobbyComponent),
+  // },
 
   { path: '**',                    redirectTo: 'home' },
 ];

@@ -30,7 +30,7 @@ export class AdminDepositService {
         let params = new HttpParams();
 
         if (filters.status) params = params.set('status', filters.status);
-        if (filters.currency_code) params = params.set('currency_code', filters.currency_code);
+        if (filters.currency_id) params = params.set('currency_id', filters.currency_id);
         if (filters.user_id) params = params.set('user_id', filters.user_id.toString());
         if (filters.date_from) params = params.set('date_from', filters.date_from);
         if (filters.date_to) params = params.set('date_to', filters.date_to);
@@ -107,7 +107,7 @@ export class AdminDepositService {
     export(filters: Partial<AdminDepositFilters>): Observable<any> {
         let params = new HttpParams();
         if (filters.status) params = params.set('status', filters.status);
-        if (filters.currency_code) params = params.set('currency_code', filters.currency_code);
+        if (filters.currency_id) params = params.set('currency_id', filters.currency_id);
         if (filters.date_from) params = params.set('date_from', filters.date_from);
         if (filters.date_to) params = params.set('date_to', filters.date_to);
 

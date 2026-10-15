@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable, tap, switchMap, BehaviorSubject } from 'rxjs';
 import { environment, firebaseUrl } from '../../environments/environment';
 
-interface AuthResponse {
+export interface AuthResponse {
   idToken: string;
   localId: string;
 }
@@ -19,13 +19,13 @@ export class AuthService {
   private fbChangePasswdUrl=firebaseUrl.changePasswd;
   private fbemailConfirmPasswUrl=firebaseUrl.emailConfirmPassw;
   private fbconfirmRestorePasswdUrl = firebaseUrl.confirmRestorePasswd;
+  private fbDeleteAccount = firebaseUrl.deleteAccount;
   private apiKey =environment.Firebase_apiKey;
 
 userToken: any;
 localId!: string;
 email!: string;
-localStorage!: Storage;
-// currentUserId$: any;
+
 
 // 👇 Signal de admin, inicializado desde localStorage
   private _isAdmin = signal<boolean>(
@@ -67,24 +67,33 @@ localStorage!: Storage;
     switchMap(() => this.exchangeFirebaseToken())
   );
 }
-   nuevoUsuario(email:string, pass:string){
-    const authData ={
-      email: email,
-      password: pass,
-      returnSecureToken: true
-    };
-    return this.http.post<AuthResponse>(
-      `${this.fbNewUserUrl}${ this.apiKey}`,authData
-    ).pipe(
-      map( resp=>{
-        this.guardarToken(resp.idToken);
-        this.guardarProfile(resp.localId);
-        return resp;
-      })
-    );
-   }
 
-   cambiarContrasena(idToken:string, newPass:string){
+  //  nuevoUsuario(email:string, pass:string){
+  //   const authData ={
+  //     email: email,
+  //     password: pass,
+  //     returnSecureToken: true
+  //   };
+  //   return this.http.post<AuthResponse>(
+  //     `${this.fbNewUserUrl}${ this.apiKey}`,authData
+  //   ).pipe(
+  //     map( resp=>{
+  //       this.guardarToken(resp.idToken);
+  //       this.guardarProfile(resp.localId);
+  //       return resp;
+  //     })
+  //   );
+  //  }
+
+nuevoUsuario(email: string, pass: string): Observable<AuthResponse> {
+  return this.http.post<AuthResponse>(
+    `${this.fbNewUserUrl}${this.apiKey}`,
+    { email, password: pass, returnSecureToken: true }
+  );
+}
+
+
+ cambiarContrasena(idToken:string, newPass:string){
     const authData ={
       idtoken: idToken,
       newPass: newPass,
@@ -110,7 +119,7 @@ localStorage!: Storage;
       oobCode: resetCod,
       newPassword: newPass
     };
-    console.log('confirmar restablecimiento constrasena',authData);
+    // console.log('confirmar restablecimiento constrasena',authData);
     return this.http.post(
       `${this.fbconfirmRestorePasswdUrl}${ this.apiKey}`,authData
     );
@@ -133,6 +142,7 @@ localStorage!: Storage;
    }
    return this.userToken;
  }
+
   estaAutenticado(): boolean {
 
    if( this.userToken.length < 2 ){
@@ -180,7 +190,7 @@ localStorage!: Storage;
  */
 exchangeFirebaseToken(): Observable<any> {
   const idToken = localStorage.getItem('token');   // el de Firebase
- console.log('🔄 Intercambiando token de Firebase por token de Sanctum...');
+//  console.log('🔄 Intercambiando token de Firebase por token de Sanctum...');
   return this.http.post<any>(`${this.apiUrl}auth/exchange`, {
     id_token: idToken
   }).pipe(
@@ -193,10 +203,7 @@ exchangeFirebaseToken(): Observable<any> {
         this.currentUserId$.next(resp.user.id);               // 👈 lo exponemos reactivamente
          this._isAdmin.set(resp.user.is_admin === true);                 
           this._isAuthenticated.set(true);                                
-        localStorage.setItem('is_admin', resp.user.is_admin);
-
-
-        console.log('✅ Token de Sanctum guardado');
+        // console.log('✅ Token de Sanctum guardado');
       }
     })
   );
@@ -231,6 +238,32 @@ getUserId$(): Observable<number | null> {
 
 getUserId(): number | null {
   return this.currentUserId$.value;
+}
+
+registrarEnBackend(
+  idToken: string,
+  name: string,
+  docs: { doc_type: string; version: string; content_hash: string }[]
+) {
+  return this.http.post<{ success: boolean; user: { id: number } }>(
+    `${this.apiUrl}auth/register`,
+    { id_token: idToken, name, accepted_documents: docs }
+  );
+}
+
+enviarVerificacionEmail(idToken: string) {
+  return this.http.post(`${this.fbemailConfirmPasswUrl}${this.apiKey}`,
+    { requestType: 'VERIFY_EMAIL', idToken });
+}
+
+eliminarCuentaFirebase(idToken: string) {
+  return this.http.post(`${firebaseUrl.deleteAccount}${this.apiKey}`, { idToken });
+}
+
+me(): Observable<{ success: boolean; user: { id: number; name: string; email: string; is_admin: boolean } }> {
+  return this.http.get<{ success: boolean; user: { id: number; name: string; email: string; is_admin: boolean } }>(
+    `${this.apiUrl}auth/me`
+  );
 }
 
 }

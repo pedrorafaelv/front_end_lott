@@ -3,7 +3,7 @@ import { Via } from './via.interface';
 export interface DepositRequest {
     id: number;
     user_id: number;
-    currency_code: string;
+    currency_id: string;
     amount: number;
     via_id: number | null;
     reference: string | null;

@@ -36,7 +36,7 @@ export class AccountService {
     getTransactions(userId: number, filters: Partial<TransactionFilters>): Observable<TransactionsResponse> {
         let params = new HttpParams().set('user_id', userId.toString());
 
-        if (filters.currency_code) params = params.set('currency_code', filters.currency_code);
+        if (filters.currency_id) params = params.set('currency_id', filters.currency_id);
         if (filters.via_id) params = params.set('via_id', filters.via_id.toString());
         if (filters.type) params = params.set('type', filters.type);
         if (filters.date_from) params = params.set('date_from', filters.date_from);

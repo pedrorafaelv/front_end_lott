@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RaffleService } from '../../services/raffle.service';
 import { Ficha, Raffle } from '../../interfaces/get-fichas-response';
 import { NewFicha } from '../../interfaces/get-new-record-response';
@@ -79,6 +79,7 @@ export class JuegoComponent implements OnInit {
               private UserService: UserService,
               private fb : FormBuilder,
               private Cartones:CartonesService,
+              private router:Router,
               private route: ActivatedRoute) { 
               this.forma = this.fb.group({
                   grupo: ['', [Validators.required]],
@@ -86,7 +87,12 @@ export class JuegoComponent implements OnInit {
   }
  
   ngOnInit(): void {
-
+     const id = this.AuthService.getUserId();
+        if (id === null) {
+             this.router.navigateByUrl('/log-in');   // sin sesión no debería estar aquí
+         return;
+        }
+        this.userId = id;
     this.route.queryParams.subscribe(params => {
       this.raffleId = params['raffleId'];
       // console.log('ID del sorteo en componente juego:', this.raffleId);
@@ -161,7 +167,7 @@ async getAvailableCardsByRaffle(): Promise<GetCardAvailableRaffleResponse> {
 
   async getInfo(){
     const user =  await this.UserService.getUserByLocalId(this.localId);
-    this.userId = user.user[0]['id'];
+    // this.userId = user.user[0]['id'];
     // console.log('userId', this.userId);
     if(this.userId){
       const MyCards = await this.getAvailableCardsByRaffle();

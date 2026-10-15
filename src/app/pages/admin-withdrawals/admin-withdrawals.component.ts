@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
+import { Route, Router } from '@angular/router';
 
 import { AdminWithdrawalService } from '../../services/admin-withdrawal.service';
 import { AuthService } from '../../services/auth.service';
@@ -93,7 +94,8 @@ export class AdminWithdrawalsComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private userService: UserService,
         private fb: FormBuilder,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private router: Router,
     ) {
         // Formulario de aprobación
         this.approveForm = this.fb.group({
@@ -113,6 +115,12 @@ export class AdminWithdrawalsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+         const id = this.authService.getUserId();
+        if (id === null) {
+             this.router.navigateByUrl('/log-in');   // sin sesión no debería estar aquí
+         return;
+        }
+        this.adminId = id;
         this.loadAdminUser();
     }
 
@@ -133,7 +141,7 @@ export class AdminWithdrawalsComponent implements OnInit, OnDestroy {
             }
 
             const user = await this.userService.getUserByLocalId(localId);
-            this.adminId = user.user[0]['id'];
+            // this.adminId = user.user[0]['id'];
             console.log('👤 Admin ID:', this.adminId);
 
             this.loadWithdrawals();

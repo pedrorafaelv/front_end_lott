@@ -2,16 +2,19 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
+//services
 import { AccountService } from '../../services/account.service';
 import { WithdrawalService } from '../../services/withdrawal.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { DepositService } from '../../services/deposit.service';
 import { ViaService } from '../../services/via.service';
+//intefaces
 import { DepositRequest } from '../../interfaces/deposit.interface';
-import { GetCurrenciesResponse, CurrenciesData, Currency } from '../../interfaces/currency-response.interface';
+import { Currency } from '../../interfaces/currency-response.interface';
 
 import {
     AccountSummary,
@@ -45,7 +48,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     // ============================================
     // ESTADO
     // ============================================
-    userId: number = 0;
+    userId: number= 0;
     selectedCurrency: string = 'USD';
 
     // Data
@@ -67,7 +70,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     // Filtros
     filters: TransactionFilters = {
-        currency_code: 'USD',
+        currency_id: 'USD',
         via_id: null,
         type: null,
         date_from: null,
@@ -102,7 +105,8 @@ export class AccountComponent implements OnInit, OnDestroy {
         private viaService: ViaService,             
         private fb: FormBuilder,
         private currencyService:CurrencyService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private router:Router,
     ) {
         // Inicializar formularios
         // Formulario de retiro
@@ -123,7 +127,12 @@ export class AccountComponent implements OnInit, OnDestroy {
         });
     }
     ngOnInit(): void {
-
+         const id = this.authService.getUserId();
+        if (id === null) {
+             this.router.navigateByUrl('/log-in');   // sin sesión no debería estar aquí
+         return;
+        }
+        this.userId = id;
         this.loadVias();
         this.loadCurrencies();
         this.loadUserAndData();
@@ -150,8 +159,8 @@ export class AccountComponent implements OnInit, OnDestroy {
             }
 
             // Obtener el ID del usuario
-            const user = await this.userService.getUserByLocalId(localId);
-            this.userId = user.user[0]['id'];
+            // const user = await this.userService.getUserByLocalId(localId);
+            // this.userId = user.user[0]['id'];
 
             console.log('👤 Usuario ID:', this.userId);
 
@@ -194,7 +203,6 @@ export class AccountComponent implements OnInit, OnDestroy {
       }
       });
     }
-
      // ============================================
     // CARGAR VÍAS
     // ============================================
@@ -238,7 +246,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     // CARGAR RESUMEN
     // ============================================
     private loadSummary(): void {
-        this.accountService.getSummary(this.userId)
+        this.accountService.getSummary((this.userId))
             .pipe(takeUntil(this.destroy$))
             .subscribe({
                 next: (resp) => {
@@ -254,14 +262,14 @@ export class AccountComponent implements OnInit, OnDestroy {
 
                         // Si hay balances y no hay moneda seleccionada, usar la primera
                         if (this.balances.length > 0 && !this.selectedCurrency) {
-                            this.selectedCurrency = this.balances[0].currency_code;
+                            this.selectedCurrency = this.balances[0].currency_id;
                         }
 
                         // Actualizar balance actual
                         this.updateCurrentBalance();
 
                         // Cargar transacciones del balance actual
-                        this.filters.currency_code = this.selectedCurrency;
+                        this.filters.currency_id = this.selectedCurrency;
                         this.loadTransactions();
 
                         console.log('✅ Resumen cargado:', this.summary);
@@ -311,7 +319,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     // ============================================
     changeCurrency(currencyCode: string): void {
         this.selectedCurrency = currencyCode;
-        this.filters.currency_code = currencyCode;
+        this.filters.currency_id = currencyCode;
         this.filters.page = 1;
         this.updateCurrentBalance();
         this.loadTransactions();
@@ -319,7 +327,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     private updateCurrentBalance(): void {
         this.currentBalance = this.balances.find(
-            b => b.currency_code === this.selectedCurrency
+            b => b.currency_id === this.selectedCurrency
         ) || null;
     }
 
@@ -337,7 +345,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     clearFilters(): void {
         this.filters = {
-            currency_code: this.selectedCurrency,
+            currency_id: this.selectedCurrency,
             via_id: null,
             type: null,
             date_from: null,
@@ -456,7 +464,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     private processWithdrawal(formValue: any): void {
         const payload = {
             user_id: this.userId,
-            currency_code: this.selectedCurrency,
+            currency_id: this.selectedCurrency,
             amount: formValue.amount,
             via_id: formValue.via_id,
             payment_data: { details: formValue.payment_data },

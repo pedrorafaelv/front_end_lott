@@ -4,7 +4,8 @@
 export interface DepositRequest {
     id: number;
     user_id: number;
-    currency_code: string;
+    currency_id: string;
+    currency_code:string| null;
     amount: number;
     via_id: number | null;
     reference: string | null;
@@ -37,7 +38,7 @@ export interface UserInfo {
 }
 
 export interface UserBalance {
-    currency_code: string;
+    currency_id: string;
     total_amount: number;
     total_promo: number;
 }
@@ -68,7 +69,7 @@ export interface DepositStats {
         cancelled: number;
     };
     by_currency: Array<{
-        currency_code: string;
+        currency_id: string;
         count: number;
         total: number;
     }>;
@@ -92,7 +93,7 @@ export interface DashboardStats {
 // ============================================
 export interface AdminDepositFilters {
     status: string | null;
-    currency_code: string | null;
+    currency_id: string | null;
     user_id: number | null;
     date_from: string | null;
     date_to: string | null;
@@ -159,7 +160,7 @@ export interface CompleteAction {
 export interface ManualDepositPayload {
     user_id: number;
     admin_id: number;
-    currency_code: string;
+    currency_id: string;
     amount: number;
     via_id: number;
     reference?: string;

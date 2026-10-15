@@ -1,184 +1,407 @@
-/* Estilos para el componente de Registro de Usuarios */
-.registration-container {
-  padding: 2rem 0;
+/* ============================================
+   VARIABLES DE DISEÑO (idénticas a login)
+   ============================================ */
+:host {
+  --bg-page: #0f1115;
+  --bg-panel: #16181d;
+  --bg-card: #1c1f26;
+  --bg-input: #22262f;
+  --bg-input-hover: #262b35;
+
+  --border-soft: rgba(255, 255, 255, 0.06);
+  --border-input: rgba(255, 255, 255, 0.1);
+  --border-input-focus: #6366f1;
+
+  --text-primary: #f1f3f7;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+
+  --accent: #6366f1;
+  --accent-hover: #7c7ff2;
+  --accent-soft: rgba(99, 102, 241, 0.12);
+
+  --danger: #ef4444;
+  --danger-soft: rgba(239, 68, 68, 0.1);
+
+  --success: #10b981;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  --shadow-card: 0 20px 40px -20px rgba(0, 0, 0, 0.5);
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  display: block;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background: var(--bg-page);
 }
 
-.registration-card {
-  border-radius: 1rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+/* ============================================
+   LAYOUT PRINCIPAL: 2 columnas
+   ============================================ */
+.signup-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
 }
 
-.card-header {
-  background: linear-gradient(135deg, #3f51b5, #2196f3);
-  color: white;
-  padding: 2rem;
-  text-align: center;
+@media (min-width: 960px) {
+  .signup-page {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-.registration-header i {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.registration-header h2 {
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.registration-header p {
-  opacity: 0.9;
-  margin-bottom: 0;
-}
-
-.card-body {
-  padding: 2rem;
-}
-
-.section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #3f51b5;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e9ecef;
-}
-
-.form-floating {
+/* ============================================
+   PANEL IZQUIERDO: BRANDING
+   ============================================ */
+.signup-brand {
+  display: none;
   position: relative;
+  padding: 48px;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--border-soft);
+  overflow: hidden;
+  isolation: isolate;
+
+  background-image:
+    linear-gradient(
+      135deg,
+      rgba(15, 17, 21, 0.85) 0%,
+      rgba(15, 17, 21, 0.55) 40%,
+      rgba(15, 17, 21, 0.75) 100%
+    ),
+    url('/assets/images/login-brand-bg.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.form-floating > label {
-  color: #6c757d;
+@media (min-width: 960px) {
+  .signup-brand {
+    display: flex;
+  }
 }
 
-.form-control {
-  border-radius: 0.5rem;
-  padding: 1rem 0.75rem;
-  border: 1px solid #ced4da;
-  transition: all 0.2s ease;
+.brand-content,
+.brand-footer {
+  position: relative;
+  z-index: 1;
 }
 
-.form-control:focus {
-  border-color: #3f51b5;
-  box-shadow: 0 0 0 0.2rem rgba(63, 81, 181, 0.25);
+.brand-content {
+  max-width: 380px;
 }
 
-.form-select {
-  border-radius: 0.5rem;
-  padding: 1rem 0.75rem;
-  border: 1px solid #ced4da;
-  transition: all 0.2s ease;
-}
-
-.form-select:focus {
-  border-color: #3f51b5;
-  box-shadow: 0 0 0 0.2rem rgba(63, 81, 181, 0.25);
-}
-
-.form-check-input {
-  width: 1.2em;
-  height: 1.2em;
-  margin-top: 0.15em;
-  margin-right: 0.5em;
-}
-
-.form-check-input:checked {
-  background-color: #3f51b5;
-  border-color: #3f51b5;
-}
-
-.form-check-label {
+.brand-logo {
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  color: var(--accent-hover);
+  margin-bottom: 32px;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #3f51b5, #2196f3);
-  border: none;
-  border-radius: 0.5rem;
-  padding: 1rem;
+.signup-brand h1 {
+  font-size: 2rem;
   font-weight: 600;
-  transition: all 0.3s ease;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.signup-brand p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0 0 32px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Lista de features */
+.brand-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.brand-features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.brand-features li i {
+  color: var(--success);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.brand-footer {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   PANEL DERECHO: FORMULARIO
+   ============================================ */
+.signup-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  background: var(--bg-page);
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+/* ============================================
+   HEADER DEL CARD
+   ============================================ */
+.signup-header {
+  margin-bottom: 28px;
+}
+
+.signup-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  color: var(--text-primary);
+}
+
+.signup-header p {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ============================================
+   CAMPOS DEL FORMULARIO
+   ============================================ */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.field input[type="text"],
+.field input[type="email"],
+.field input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field input::placeholder {
+  color: var(--text-muted);
+}
+
+.field input:hover:not(:focus) {
+  background: var(--bg-input-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.field input:focus {
+  border-color: var(--border-input-focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field input.is-invalid {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+.field-error {
+  font-size: 0.8125rem;
+  color: var(--danger);
+}
+
+.field-hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+/* ============================================
+   CHECKBOX TÉRMINOS
+   ============================================ */
+.field-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.field-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.field-check label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.5;
+}
+
+/* ============================================
+   BOTÓN PRINCIPAL
+   ============================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  margin-top: 4px;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #303f9f, #1976d2);
-  transform: translateY(-2px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  background: var(--accent-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .btn-primary:disabled {
-  background: #9fa8da;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-.btn-primary i {
-  margin-right: 0.5rem;
+/* ============================================
+   SPINNER
+   ============================================ */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
 }
 
-.link-primary {
-  color: #3f51b5;
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   ALERTA DE ERROR
+   ============================================ */
+.alert-error {
+  padding: 12px 14px;
+  font-size: 0.875rem;
+  color: #fca5a5;
+  background: var(--danger-soft);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================
+   LINKS
+   ============================================ */
+.link-accent {
+  font-size: 0.875rem;
+  color: var(--accent);
+  font-weight: 500;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 0.15s ease;
 }
 
-.link-primary:hover {
-  color: #303f9f;
+.link-accent:hover {
+  color: var(--accent-hover);
   text-decoration: underline;
 }
 
-.debug-info {
-  background-color: #f8f9fa;
-  border-left: 4px solid #3f51b5;
-  padding: 1.5rem;
-  border-radius: 0 0.5rem 0.5rem 0;
-}
-
-.debug-info h5 {
-  color: #3f51b5;
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.debug-info pre {
-  background-color: #e9ecef;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  margin-bottom: 0;
-}
-
-.text-success {
-  color: #28a745 !important;
-}
-
-.text-danger {
-  color: #dc3545 !important;
-}
-
-.invalid-feedback {
-  display: block;
+/* ============================================
+   FOOTER DEL CARD
+   ============================================ */
+.signup-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-soft);
   font-size: 0.875rem;
-  margin-top: 0.25rem;
+  color: var(--text-secondary);
 }
 
-/* Responsividad */
-@media (max-width: 768px) {
-  .registration-container {
-    padding: 1rem;
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 480px) {
+  .signup-card {
+    padding: 32px 24px;
+    border: none;
+    box-shadow: none;
+    background: transparent;
   }
-  
-  .card-body {
-    padding: 1.5rem;
+
+  .signup-main {
+    padding: 16px;
   }
-  
-  .registration-header h2 {
-    font-size: 1.5rem;
-  }
-  
-  .section-title {
-    font-size: 1.1rem;
+
+  .signup-header h2 {
+    font-size: 1.375rem;
   }
 }

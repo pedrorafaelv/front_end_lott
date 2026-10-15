@@ -101,7 +101,7 @@
             <div class="filter-row">
                 <div class="filter-group">
                     <label>Moneda</label>
-                    <select [(ngModel)]="filters.currency_code" (change)="applyFilters()">
+                    <select [(ngModel)]="filters.currency_id" (change)="applyFilters()">
                         <option [ngValue]="null">Todas</option>
                         <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
                     </select>
@@ -154,7 +154,7 @@
                                     <span class="user-email">{{ d.user?.email || '-' }}</span>
                                 </div>
                             </td>
-                            <td class="cell-amount text-right">{{ formatCurrency(d.amount, d.currency_code) }}</td>
+                            <td class="cell-amount text-right">{{ formatCurrency(d.amount, d.currency_id) }}</td>
                             <td class="cell-currency">{{ d.currency_code }}</td>
                             <td>{{ d.via?.label || '-' }}</td>
                             <td class="cell-status">
@@ -291,7 +291,7 @@
 
                             <div class="form-group">
                                 <label><i class="fas fa-coins"></i> Moneda *</label>
-                                <select formControlName="currency_code" class="form-control">
+                                <select formControlName="currency_id" class="form-control">
                                     <option value="USD">USD - Dólar</option>
                                     <option value="EUR">EUR - Euro</option>
                                     <option value="VES">VES - Bolívar</option>
@@ -445,7 +445,7 @@
                         <tr *ngFor="let d of deposits; trackBy: trackByDepositId">
                             <td class="cell-id">#{{ d.id }}</td>
                             <td>{{ d.user?.name || 'Usuario #' + d.user_id }}</td>
-                            <td class="cell-amount text-right">{{ formatCurrency(d.amount, d.currency_code) }}</td>
+                            <td class="cell-amount text-right">{{ formatCurrency(d.amount, d.currency_id) }}</td>
                             <td>{{ d.currency_code }}</td>
                             <td>{{ d.via?.label || '-' }}</td>
                             <td>
@@ -498,7 +498,7 @@
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Monto solicitado</span>
-                        <span class="detail-value big">{{ formatCurrency(selectedDeposit.amount, selectedDeposit.currency_code) }}</span>
+                        <span class="detail-value big">{{ formatCurrency(selectedDeposit.amount, selectedDeposit.currency_id) }}</span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">Método</span>
@@ -525,15 +525,15 @@
                 <div class="balance-impact">
                     <div class="impact-row">
                         <span>Balance actual:</span>
-                        <span>{{ formatCurrency(selectedDepositDetail.user_balance, selectedDeposit.currency_code) }}</span>
+                        <span>{{ formatCurrency(selectedDepositDetail.user_balance, selectedDeposit.currency_id) }}</span>
                     </div>
                     <div class="impact-row highlight">
                         <span>Depósito:</span>
-                        <span class="success">+ {{ formatCurrency(selectedDeposit.amount, selectedDeposit.currency_code) }}</span>
+                        <span class="success">+ {{ formatCurrency(selectedDeposit.amount, selectedDeposit.currency_id) }}</span>
                     </div>
                     <div class="impact-row total">
                         <span>Nuevo balance:</span>
-                        <span class="total-value">{{ formatCurrency(selectedDepositDetail.user_balance + selectedDeposit.amount, selectedDeposit.currency_code) }}</span>
+                        <span class="total-value">{{ formatCurrency(selectedDepositDetail.user_balance + selectedDeposit.amount, selectedDeposit.currency_id) }}</span>
                     </div>
                 </div>
             </div>

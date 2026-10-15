@@ -28,7 +28,10 @@ export const firebaseConfig = {
   emailConfirmPassw: 'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=',
   
   // confirmar restablecimiento de contraseña
-   confirmRestorePasswd:'https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key=[API_KEY]'
+   confirmRestorePasswd:'https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key=[API_KEY]',
+
+  deleteAccount: 'https://identitytoolkit.googleapis.com/v1/accounts:delete?key=',
+
 }
 
  

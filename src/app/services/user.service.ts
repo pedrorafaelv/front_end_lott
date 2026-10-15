@@ -1,9 +1,9 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { GetGroupsResponse } from '../interfaces/get-groups-response';
 import { environment } from '../../environments/environment';
-import { Usuario, GetUsersListResponse } from "../models/user.model";
+import { GetUsersListResponse } from "../models/user.model";
 import { User } from '@auth0/auth0-angular';
 
 
@@ -33,24 +33,23 @@ export class UserService {
     );
 }
 
-updateDataFirebase(localId: string, token: string, last_connection: string){
-  return this.http.post<any>(`${this.baseUrl}updateDataFirebase/${localId}/${token}/${last_connection}`, { title: 'Angular POST Request ' });
-}
+// updateDataFirebase(localId: string, token: string, last_connection: string){
+//   return this.http.post<any>(`${this.baseUrl}updateDataFirebase/${localId}/${token}/${last_connection}`, { title: 'Angular POST Request ' });
+// }
 
- async getUserByLocalId(localId: string){
-   const respuesta =  await fetch(`${ this.baseUrl }getUserByFirebase/${localId}`);
-   const datos =  await respuesta.json();
-   console.log((`${ this.baseUrl }getUserByFirebase/${localId}`));
-   console.log('getUserByLocalId', datos);
-   return datos;
+ getUserByLocalId(localId: string) {
+   return this.http.get(`${this.baseUrl}getUserByFirebase/${localId}`);
  }
 
-
- async getGroupByUser(userId: string){
-  const respuesta =  await fetch(`${ this.baseUrl }getGrupos/${userId}`);
-  const datos =  await respuesta.json();
-  return datos;
+getGroupByUser(userId: string) {
+  return firstValueFrom(this.http.get<any>(`${this.baseUrl}getGrupos/${userId}`));
 }
+
+getPermissionsByUser(userId: string) {
+  return firstValueFrom(this.http.get<any>(`${this.baseUrl}getUserPermissions/${userId}`));
+}
+ 
+
 
 getUserLevel(userId: number){
   return this.http.get(
@@ -67,13 +66,7 @@ getUserPermissions(userId: string){
     `${ this.baseUrl }getUserPermissions/${userId}`
   );
 }
-async getPermissionsByUser(userId: string){
 
-  const respuesta =  await fetch(`${ this.baseUrl }getUserPermissions/${userId}`);
-  const datos =  await respuesta.json();
-  return datos;
-
-}
 
 getGroups(id: string): Observable<GetGroupsResponse>{
 
@@ -81,16 +74,16 @@ getGroups(id: string): Observable<GetGroupsResponse>{
 
 }
 
- singUpUser(email: string, name: string, pass: string, localid: string, token: string){
-  // console.log(`${this.baseUrl}newUser/${email}/${name}/${localid}/${token}`);
-   return this.http.post<any>(`${this.baseUrl}newUser/${email}/${name}/${pass}/${localid}/${token}`, { title: 'User POST Request'});
- }
+//  singUpUser(email: string, name: string, pass: string, localid: string, token: string){
+//   // console.log(`${this.baseUrl}newUser/${email}/${name}/${localid}/${token}`);
+//    return this.http.post<any>(`${this.baseUrl}newUser/${email}/${name}/${pass}/${localid}/${token}`, { title: 'User POST Request'});
+//  }
 
- getUserEmailConfirm(correo: string){
+//  getUserEmailConfirm(correo: string){
     
-  return this.http.get<GetGroupsResponse>(`${this.baseUrl}getUserEmailConfirm/${correo}`);
+//   return this.http.get<GetGroupsResponse>(`${this.baseUrl}getUserEmailConfirm/${correo}`);
 
- }
+//  }
 
 
   getUsersList(

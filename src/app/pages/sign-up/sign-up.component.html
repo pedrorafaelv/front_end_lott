@@ -1,87 +1,151 @@
+<div class="signup-page">
 
-<div class="registration-container">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="card registration-card">
-        <div class="card-header">
-          <div class="registration-header">
-            <i class="bi bi-person-plus"></i>
-            <h2>Registro de Usuarios</h2>
-            <p>Crear una nueva cuenta</p>
-          </div>
-        </div>
-        
-        <div class="card-body">
-          <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()" class="needs-validation" novalidate>
-            <div class="row">
-              <div class="col-md-6">
-                <h3 class="section-title">Información de acceso</h3>
-                
-                <div class="form-floating mb-3">
-                  <input type="text" class="form-control" id="usuario" placeholder="Nombre de Usuario" formControlName="usuario" [class.is-invalid]="usuarioNoValido">
-                  <label for="usuario">Nombre de usuario</label>
-                  <div *ngIf="usuarioNoValido" class="invalid-feedback">
-                    Usuario no disponible
-                  </div>
-                </div>
-                
-                <div class="form-floating mb-3">
-                  <input type="email" class="form-control" id="email" placeholder="Correo electrónico" formControlName="correo" [class.is-invalid]="correoNoValido">
-                  <label for="email">Correo electrónico</label>
-                  <div *ngIf="correoNoValido" class="invalid-feedback">
-                    Ingrese un correo válido
-                  </div>
-                </div>
-                
-                <div class="form-floating mb-3">
-                  <input type="password" class="form-control" id="contrasena" placeholder="Contraseña" formControlName="pass1" [class.is-invalid]="pass1NoValido">
-                  <label for="contrasena">Contraseña</label>
-                  <div *ngIf="pass1NoValido" class="invalid-feedback">
-                    La contraseña debe tener al menos 8 caracteres
-                  </div>
-                </div>
-                
-                <div class="form-floating mb-4">
-                  <input type="password" class="form-control" id="confirmar" placeholder="Confirmar Contraseña" formControlName="pass2" [class.is-invalid]="pass2NoValido">
-                  <label for="confirmar">Confirmar Contraseña</label>
-                  <div *ngIf="pass2NoValido" class="invalid-feedback">
-                    Las contraseñas no coinciden
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <h3 class="section-title">Datos personales</h3>
-                              </div>
-            </div>
-            <div class="d-grid gap-2 mb-3">
-              <button type="submit" class="btn btn-primary btn-lg" [disabled]="!forma.valid">
-                <i class="bi bi-person-check"></i> Registrarte
-              </button>
-            </div>
-            
-            <div class="text-center">
-              <p>¿Ya tienes una cuenta? <a routerLink="/log-in" class="link-primary">Inicia sesión aquí</a></p>
-            </div>
-          </form>
-        </div>
+  <!-- Panel izquierdo: branding (solo en desktop) -->
+  <aside class="signup-brand">
+    <div class="brand-content">
+      <div class="brand-logo">
+        <!-- Tu imagen aquí -->
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 3v18M3 12h18"/>
+        </svg>
       </div>
-      
-      <div class="debug-info mt-4">
-        <h5>Estado del formulario</h5>
-        <div class="row">
-          <div class="col-md-6">
-            <p><strong>Válido:</strong> <span [class.text-success]="forma.valid" [class.text-danger]="!forma.valid">{{ forma.valid ? 'Sí' : 'No' }}</span></p>
-            <p><strong>Estado:</strong> {{ forma.status }}</p>
-          </div>
-          <div class="col-md-6">
-            <p><strong>Enviado:</strong> No</p>
-            <p><strong>Modificado:</strong> No</p>
-          </div>
-        </div>
-        
-        <h5>Valores del Formulario</h5>
-        <pre>{{ forma.value | json }}</pre>
-      </div>
+      <h1>Únete a Loterías App</h1>
+      <p>Crea tu cuenta y empieza a participar en sorteos de figuras únicas.</p>
+
+      <!-- Features / beneficios -->
+      <ul class="brand-features">
+        <li>
+          <i class="fas fa-check-circle"></i>
+          <span>Cartones exclusivos por sorteo</span>
+        </li>
+        <li>
+          <i class="fas fa-check-circle"></i>
+          <span>Juega en tiempo real</span>
+        </li>
+        <li>
+          <i class="fas fa-check-circle"></i>
+          <span>Premios instantáneos</span>
+        </li>
+      </ul>
     </div>
-  </div>
+
+    <footer class="brand-footer">
+      <span>© {{ year }} Loterías App</span>
+    </footer>
+  </aside>
+
+  <!-- Panel derecho: formulario -->
+  <main class="signup-main">
+    <div class="signup-card">
+
+      <header class="signup-header">
+        <h2>Crear una cuenta</h2>
+        <p>Completa el formulario para comenzar</p>
+      </header>
+
+      <form autocomplete="off" [formGroup]="forma" (ngSubmit)="guardar()" class="signup-form">
+
+        <!-- Usuario -->
+        <div class="field">
+          <label for="usuario">Nombre de usuario</label>
+          <input
+            id="usuario"
+            type="text"
+            formControlName="usuario"
+            placeholder="tu_usuario"
+            [class.is-invalid]="usuarioNoValido"
+            autocomplete="username">
+          @if (usuarioNoValido) {
+            <span class="field-error">Este usuario no está disponible</span>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="correo"
+            placeholder="nombre@ejemplo.com"
+            [class.is-invalid]="correoNoValido"
+            autocomplete="email">
+          @if (correoNoValido) {
+            <span class="field-error">Ingresa un correo válido</span>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <label for="contrasena">Contraseña</label>
+          <input
+            id="contrasena"
+            type="password"
+            formControlName="pass1"
+            placeholder="••••••••"
+            [class.is-invalid]="pass1NoValido"
+            autocomplete="new-password">
+          @if (pass1NoValido) {
+            <span class="field-error">La contraseña debe tener al menos 8 caracteres</span>
+          } @else {
+            <span class="field-hint">Mínimo 8 caracteres</span>
+          }
+        </div>
+
+        <!-- Confirmar Password -->
+        <div class="field">
+          <label for="confirmar">Confirmar contraseña</label>
+          <input
+            id="confirmar"
+            type="password"
+            formControlName="pass2"
+            placeholder="••••••••"
+            [class.is-invalid]="pass2NoValido"
+            autocomplete="new-password">
+          @if (pass2NoValido) {
+            <span class="field-error">Las contraseñas no coinciden</span>
+          }
+        </div>
+
+        <!-- Términos -->
+        <div class="field-check">
+          <input type="checkbox" id="terminos" formControlName="terminos">
+            <label for="terminos">
+          Acepto los
+          <a routerLink="/terms-conditions" target="_blank" class="link-accent">términos y condiciones</a>
+          (v{{ termsVersion() }}) y la
+          <a routerLink="/privacy-policy" target="_blank" class="link-accent">política de privacidad</a>
+          (v{{ privacyVersion() }})
+        </label>
+      </div>
+
+        <!-- Submit -->
+      <button type="submit" class="btn-primary"
+        [disabled]="cargando || forma.invalid || !versionesListas()">
+        @if (cargando) {
+            <span class="spinner"></span>
+            <span>Creando cuenta...</span>
+          } @else {
+            <span>Registrarme</span>
+          }
+        </button>
+
+        <!-- Mensaje de error global -->
+        @if (errorMessage) {
+          <div class="alert-error">
+            {{ errorMessage }}
+          </div>
+        }
+
+      </form>
+
+      <footer class="signup-footer">
+        <span>¿Ya tienes una cuenta?</span>
+        <a routerLink="/log-in" class="link-accent">Inicia sesión</a>
+      </footer>
+
+    </div>
+  </main>
+
 </div>

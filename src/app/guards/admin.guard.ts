@@ -46,8 +46,15 @@ export class AdminGuard implements CanActivate {
         let userId: number | null = null;
 
         try {
-            const userRes = await this.usr.getUserByLocalId(localId);
-            userId = userRes?.user?.[0]?.id ?? null;
+
+        const id = this.auth.getUserId();
+        if (id === null) {
+             this.router.navigateByUrl('/log-in');   // sin sesión no debería estar aquí
+               return false;
+        }
+        userId = id;
+            // const userRes = await this.usr.getUserByLocalId(localId);
+            // userId = userRes?.user?.[0]?.id ?? null;
 
             if (!userId) {
                 console.warn('⚠️ AdminGuard: No se encontró el usuario');

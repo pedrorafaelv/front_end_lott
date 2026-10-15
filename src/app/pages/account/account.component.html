@@ -18,10 +18,10 @@
                 <button
                     *ngFor="let balance of balances"
                     class="currency-btn"
-                    [class.active]="balance.currency_code === selectedCurrency"
-                    (click)="changeCurrency(balance.currency_code)">
+                    [class.active]="balance.currency_id === selectedCurrency"
+                    (click)="changeCurrency(balance.currency_id)">
                     <i class="fas fa-coins"></i>
-                    {{ balance.currency_code }}
+                    {{ balance.currency_id }}
                 </button>
             </div>
 
@@ -116,10 +116,10 @@
                             {{ getStatusLabel(wr.status) }}
                         </div>
                         <div class="wr-details">
-                            <span class="wr-amount">{{ formatCurrency(wr.amount, wr.currency_code) }}</span>
+                            <span class="wr-amount">{{ formatCurrency(wr.amount, wr.currency_id) }}</span>
                             <span class="wr-net">
-                                Recibirás: {{ formatCurrency(wr.net_amount, wr.currency_code) }}
-                                (comisión: {{ formatCurrency(wr.commission, wr.currency_code) }})
+                                Recibirás: {{ formatCurrency(wr.net_amount, wr.currency_id) }}
+                                (comisión: {{ formatCurrency(wr.commission, wr.currency_id) }})
                             </span>
                             <span class="wr-date">{{ formatDate(wr.created_at) }}</span>
                         </div>
@@ -154,7 +154,7 @@
                     {{ getStatusLabel(dr.status) }}
                 </div>
                 <div class="wr-details">
-                    <span class="wr-amount">{{ formatCurrency(dr.amount, dr.currency_code) }}</span>
+                    <span class="wr-amount">{{ formatCurrency(dr.amount, dr.currency_id) }}</span>
                     <span class="wr-net">
                         Método: {{ dr.via?.label || 'N/A' }}
                         <span *ngIf="dr.reference"> | Ref: {{ dr.reference }}</span>
