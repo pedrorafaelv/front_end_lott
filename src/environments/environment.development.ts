@@ -2,6 +2,11 @@ export const environment = {
     production: false,
     apiUrl: 'http://127.0.0.1:8000/api/',
     Firebase_apiKey: "AIzaSyCY8stzMT8SVuqJYp24v0mpmWppXkYewjM",
+    firebaseWeb : {
+    authDomain: "lotteapp-d4cba.firebaseapp.com",
+    projectId: "lotteapp-d4cba",
+    appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
+    }
 };
 
 export const firebaseUrl={
@@ -31,4 +36,10 @@ export const firebaseUrl={
   messagingSenderId: "372154165741",
   appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
   measurementId: "G-BC17K6J8Q5"
+};
+
+export const firebaseWeb = {
+  authDomain: "lotteapp-d4cba.firebaseapp.com",
+  projectId: "lotteapp-d4cba",
+  appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
 };

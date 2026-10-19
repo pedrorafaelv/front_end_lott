@@ -6,6 +6,11 @@ import { Router, RouterLink} from '@angular/router';
 import Swal from 'sweetalert2';
 
 import { AuthService } from '../../services/auth.service';
+import { firstValueFrom } from 'rxjs';
+import { SocialAuthService, SocialResult } from '../../services/social-auth.service';
+
+// en el constructor:
+
 
 @Component({
   selector: 'app-login',
@@ -28,6 +33,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private auth: AuthService,
     private router: Router,
+    private social: SocialAuthService,
   ) {
     this.crearFormulario();
   }
@@ -151,4 +157,53 @@ export class LoginComponent implements OnInit {
   get year() {
     return new Date().getFullYear();
   }
+
+  async loginConGoogle(): Promise<void> {  let social: SocialResult | null = null;
+//  console.log('login con google ');
+  try {
+    social = await this.social.signInWithGoogle();
+    // console.log('▶️ [3] social =', social);
+    // console.log('▶️ [4] idToken?', !!social?.idToken, 'localId?', social?.localId);
+
+    // console.log('▶️ [5] llamando backend iniciarSesionConIdToken…');
+    // await firstValueFrom(this.auth.iniciarSesionConIdToken(social.idToken, social.localId));
+    const resp = await firstValueFrom(
+      this.auth.iniciarSesionConIdToken(social.idToken, social.localId)
+    );
+        //  console.log('▶️ [6] resp backend =', resp);
+    //  console.log('▶️ [7] discard…');
+
+    await this.social.discard(false);
+        //  console.log('▶️ [8] navegando a /');
+
+    this.router.navigateByUrl('/dashboard');   // ajusta a tu pantalla principal
+        // console.log('▶️ [9] FIN OK');
+
+  } catch (err: any) {
+  // console.error('LOGIN GOOGLE ERROR:', JSON.stringify(err, null, 2));
+  // console.error('code:', err?.code);
+  // console.error('status:', err?.status);
+  // console.error('error:', err?.error);
+  // console.error('message:', err?.message);
+  // console.error('stack:', err?.stack);
+    const code = err?.code as string | undefined;
+
+    // El usuario cerró la ventana: no es un error
+    if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
+      await this.social.discard(false);
+      return;
+    }
+
+    // Entró con Google, pero no tiene cuenta en nuestro sistema
+    if (err?.status === 404 && err?.error?.code === 'USER_NOT_REGISTERED') {
+      // Firebase acaba de crear una cuenta que no usaremos: la borramos si es nueva
+      await this.social.discard(!!social?.isNewUser);
+      this.router.navigateByUrl('/sign-up');   // ajusta la ruta
+      return;
+    }
+
+    await this.social.discard(false);
+    // muestra tu error habitual, por ejemplo con Swal
+  }
+}
 }

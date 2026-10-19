@@ -11,6 +11,10 @@ import { ValidadoresService } from '../../services/validadores.service';
 import { TermsService } from '../../services/term-cond.service';
 import { PublicVersionResponse } from '../../interfaces/get-public-version-response';
 
+import { firstValueFrom } from 'rxjs';
+import { SocialAuthService,  SocialResult } from '../../services/social-auth.service';
+
+// en el constructor:
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -34,7 +38,9 @@ export class SignUpComponent implements OnInit {
     private fb: FormBuilder,
     private validadores: ValidadoresService,
     private router: Router,
-    private termsService: TermsService
+    private termsService: TermsService,
+    private social: SocialAuthService
+
   ) {
     this.crearFormulario();
   }
@@ -167,7 +173,66 @@ export class SignUpComponent implements OnInit {
     }
     return err?.error?.message || 'No pudimos crear tu cuenta. Inténtalo más tarde.';
   }
+
+  async registrarConGoogle(): Promise<void> {
+  const check = this.forma.get('terminos')!;
+  if (!check.value) {
+    check.markAsTouched();
+    this.errorMessage = 'Debes aceptar los términos y la política de privacidad para continuar.';
+    return;
+  }
+  if (!this.versionesListas()) return;
+
+  this.cargando = true;
+  this.errorMessage = '';
+
+  let social: SocialResult | null = null;
+  let registrado = false;
+
+  try {
+    social = await this.social.signInWithGoogle();
+
+    const docs = this.docs().map(d => ({
+      doc_type: d.docType, version: d.version, content_hash: d.contentHash,
+    }));
+    const nombre = (social.displayName ?? '').trim();
+
+    await firstValueFrom(this.auth.registrarEnBackend(
+      social.idToken, nombre.length >= 3 ? nombre.slice(0, 50) : '', docs));
+    registrado = true;
+
+    await firstValueFrom(this.auth.iniciarSesionConIdToken(social.idToken, social.localId));
+    await this.social.discard(false);
+
+    this.cargando = false;
+    this.router.navigateByUrl('/');   // ajusta a tu pantalla principal
+  } catch (err: any) {
+    // Solo borramos la cuenta de Firebase si es nueva Y el backend no llegó a registrarla
+    await this.social.discard(!!social?.isNewUser && !registrado);
+    this.cargando = false;
+
+    const code = err?.code as string | undefined;
+    if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return;
+
+    this.errorMessage = this.mensajeGoogle(err, registrado);
+  }
 }
+
+private mensajeGoogle(err: any, registrado: boolean): string {
+  const code = err?.code as string | undefined;
+  if (code === 'auth/popup-blocked') return 'Tu navegador bloqueó la ventana emergente. Permítela e inténtalo de nuevo.';
+  if (code === 'auth/account-exists-with-different-credential')
+    return 'Ya existe una cuenta con ese correo con otro método de acceso. Inicia sesión con ese método.';
+  if (code === 'auth/network-request-failed') return 'Error de red. Revisa tu conexión.';
+  if (err?.error?.code === 'EMAIL_TAKEN')
+    return 'Ese correo ya está registrado. Usa "Iniciar sesión".';
+  if (err?.error?.code === 'TERMS_VERSION_OUTDATED')
+    return 'Los términos se actualizaron. Recarga la página y acéptalos de nuevo.';
+  if (registrado) return 'Tu cuenta se creó, pero no pudimos iniciar sesión. Inicia sesión desde la pantalla de acceso.';
+  return err?.error?.message || 'No pudimos completar el registro. Inténtalo más tarde.';
+}
+}
+
 
 
 // import { Component, OnInit, signal } from '@angular/core';

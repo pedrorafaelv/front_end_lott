@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, tap, switchMap, BehaviorSubject } from 'rxjs';
 import { environment, firebaseUrl } from '../../environments/environment';
+import { catchError, throwError } from 'rxjs';   
 
 export interface AuthResponse {
   idToken: string;
@@ -245,6 +246,8 @@ registrarEnBackend(
   name: string,
   docs: { doc_type: string; version: string; content_hash: string }[]
 ) {
+  // console.log( `${this.apiUrl}auth/register`,
+  //   { id_token: idToken, name, accepted_documents: docs });
   return this.http.post<{ success: boolean; user: { id: number } }>(
     `${this.apiUrl}auth/register`,
     { id_token: idToken, name, accepted_documents: docs }
@@ -263,6 +266,19 @@ eliminarCuentaFirebase(idToken: string) {
 me(): Observable<{ success: boolean; user: { id: number; name: string; email: string; is_admin: boolean } }> {
   return this.http.get<{ success: boolean; user: { id: number; name: string; email: string; is_admin: boolean } }>(
     `${this.apiUrl}auth/me`
+  );
+}
+
+
+iniciarSesionConIdToken(idToken: string, localId: string) {
+  this.guardarToken(idToken);
+  this.guardarProfile(localId);
+  return this.exchangeFirebaseToken().pipe(
+    // si el backend no acepta el token, no dejamos un token a medias en localStorage
+    catchError(err => {
+      this.logout();
+      return throwError(() => err);
+    })
   );
 }
 

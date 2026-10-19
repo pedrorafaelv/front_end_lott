@@ -51,20 +51,23 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">{{ sorteo.nombre }}</h5>
-                            <div class="d-flex justify-content-between mb-2">
-                                <div class="players-count">
-                                    <i class="fas fa-users"></i>
-                                    <span>{{ sorteo.jugadores }} jugando</span>
+                            <div class="row stat-bar">
+
+                                <!-- <h5 class="card-title">{{ sorteo.nombre }}</h5> -->
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div class="players-count">
+                                        <i class="fas fa-users"></i>
+                                        <span>{{ sorteo.jugadores }} jugando</span>
+                                    <!-- </div>
+                                    <div class="text-warning"> -->
+                                        <i class="fas fa-coins"></i>
+                                        <span>{{ sorteo.premioTotal }}</span>
+                                        <!-- <div class="mb-3"> -->
+                                            <small class="text-muted">Cartón:</small>
+                                            <div class="text-warning">{{ sorteo.valorCarton }}$</div>
+                                        <!-- </div> -->
+                                    </div>
                                 </div>
-                                <div class="text-warning">
-                                    <i class="fas fa-coins"></i>
-                                    <span>{{ sorteo.premioTotal }}</span>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <small class="text-muted">Valor por cartón:</small>
-                                <div class="text-warning">{{ sorteo.valorCarton }}</div>
                             </div>
                             <button class="btn btn-play w-100" 
                                     (click)="jugarSorteo(sorteo.id)">

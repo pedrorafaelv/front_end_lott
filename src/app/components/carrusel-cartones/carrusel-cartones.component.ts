@@ -64,7 +64,7 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
   }
   
     cargarDatosiniciales() {
-      //  console.log('raffleId en carrusel-cartones.component =', this.raffleId);
+       console.log('raffleId en carrusel-cartones.component =');
       //  if (this.UserId==0){
         // console.log('UserId en carrusel-cartones.component =', this.UserId);
       //  }

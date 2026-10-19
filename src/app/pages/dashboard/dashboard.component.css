@@ -88,7 +88,7 @@
 }
 
 .card-img-container {
-    height: 200px;
+    height: 60px;
     overflow: hidden;
     position: relative;
     background: var(--secondary-color);
@@ -151,7 +151,7 @@
 .card-title {
     color: var(--text-color);
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 12px;
     letter-spacing: 0.3px;
 }
@@ -369,7 +369,7 @@
     }
     
     .card-img-container {
-        height: 160px;
+        height: 60px;
     }
     
     .stat-item:not(:last-child)::after {
@@ -402,10 +402,13 @@
     }
     
     .card-img-container {
-        height: 140px;
+        height: 60px;
     }
     
     .card-body {
+        
+        flex-wrap: wrap;
+        height: 60px;
         padding: 1rem;
     }
     
@@ -453,7 +456,7 @@
   background: var(--secondary-color) !important;
   color: var(--text-color) !important;   /* ✅ blanco */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 100vh;
+  min-height: 50vh;
   padding: 20px 0;
   position: relative;
   overflow-x: hidden;
