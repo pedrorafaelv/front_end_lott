@@ -10,6 +10,7 @@ import {
     TransactionFilters,
     TransactionsResponse,
 } from '../interfaces/account.interface';
+import { GetTotalsResponse } from '../interfaces/get-totals-response';
 
 @Injectable({
     providedIn: 'root'
@@ -70,6 +71,17 @@ export class AccountService {
         return this.http.post<ApiResponse<AccountTransaction>>(
             `${this.baseUrl}account/store`,
             transaction
+        );
+    }
+
+    getTotals(userId:number, currencyId:number ): Observable<GetTotalsResponse> {
+        return this.http.get<GetTotalsResponse>(
+            `${this.baseUrl}account/getTotals`,
+            {
+                params: new HttpParams()
+                    .set('user_id', userId.toString())
+                    .set('currency_id', currencyId.toString())
+            }
         );
     }
 }

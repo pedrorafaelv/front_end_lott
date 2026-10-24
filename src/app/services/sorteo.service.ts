@@ -308,13 +308,13 @@ getSorteosEnVivo(): Observable<Sorteo[]> {
       alert(`Te notificaremos cuando "${sorteo.nombre}" comience`);
     }
   }
-    getSorteosPorEstado(estado: 'activo' | 'proximo' | 'finalizado'): Observable<Sorteo[]> {
-        return new Observable(observer => {
-            this.sorteos$.subscribe(sorteos => {
-                const filtrados = sorteos.filter(s => s.estado === estado);
-                observer.next(filtrados);
-            });
+getSorteosPorEstado(estado: 'activo' | 'proximo' | 'finalizado'): Observable<Sorteo[]> {
+    return new Observable(observer => {
+        this.sorteos$.subscribe(sorteos => {
+            const filtrados = sorteos.filter(s => s.estado === estado);
+            observer.next(filtrados);
         });
-    }
+    });
+}
 
 }

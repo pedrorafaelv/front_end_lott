@@ -7,6 +7,7 @@ import { GetCardAvailableRaffleResponse } from '../interfaces/get-card-available
 import { environment } from '../../environments/environment';
 import { NewRecordResponse } from '../interfaces/get-new-record-response';
 import { GetLastRaffleResponse } from '../interfaces/get-last-user-raffle-response';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +20,10 @@ export class RaffleService {
   baseUrl = `${environment.apiUrl}raffle/`;
   authService: any;
   raffleService: any;
-  constructor(private http: HttpClient) { 
+
+
+  constructor(
+    private http: HttpClient) { 
   }
 
  putRaffle(texto:string ){
@@ -90,7 +94,7 @@ export class RaffleService {
   }
 
   async getDetailActiveRafflesByUser(user_id: number){
-    console.log('obteniendo detalle de rifas activas por usuario', user_id);
+   // console.log('obteniendo detalle de rifas activas por usuario', user_id);
     const resp =  await fetch((`${this.baseUrl}getDetailActiveRafflesByUser/${user_id}`))
     const data= await resp.json();
     return data;
@@ -219,7 +223,27 @@ searchRaffle(userId: number | string, search: string): Observable<GetLastRaffleR
   );
 }
 
-  
+getSchedulerStatus() {
+    return this.http.get<any>(`${this.baseUrl}scheduler/status`);
+}
+
+toggleScheduler(adminUserId?: number) {
+    return this.http.post<any>(`${this.baseUrl}scheduler/toggle`,
+        adminUserId ? { admin_user_id: adminUserId } : {});
+}
+
+triggerScheduler() {
+    return this.http.post<any>(`${this.baseUrl}scheduler/trigger`, {});
+}
+ 
+updateSchedulerConfig(config: {
+    min_players?: number;
+    auto_play?: boolean;
+    auto_play_rate?: number;
+    template_raffle_id?: number;
+}) {
+    return this.http.post<any>(`${this.baseUrl}scheduler/config`, config);
+}
    // buscarUltimoRaffle(): Observable<GetLastRaffleResponse> {
   //   const url = `${this.baseUrl}getLastUserRaffle/${this.authService.getUserId()}`;
   //   return this.http.get<GetLastRaffleResponse>(url);

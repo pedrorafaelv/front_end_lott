@@ -65,7 +65,10 @@ export class RaffleComponent implements OnInit, OnDestroy {
   percentFullCalculado = 0;
 
   private destroy$ = new Subject<void>();
-
+  schedulerStatus: any = null;
+  schedulerLoading = false;
+  schedulerPolling?: any;
+  
   /* ============================================
      LISTAS PARA SELECTS
      ============================================ */
@@ -121,11 +124,16 @@ export class RaffleComponent implements OnInit, OnDestroy {
     this.cargarNivelUsuario();
     this.cargarGrupos();
     this.cargarFichas();
+    this.loadSchedulerStatus();
+    this.schedulerPolling = setInterval(() => this.loadSchedulerStatus(), 30_000);
+
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.schedulerPolling) clearInterval(this.schedulerPolling);
+
   }
 
   private generarNombreAleatorio(): void {
@@ -810,4 +818,90 @@ loadLastRaffle(): void {
       }
     });
 }
+loadSchedulerStatus(): void {
+    this.raffleService.getSchedulerStatus()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+            next: (resp) => this.schedulerStatus = resp.data,
+            error: (err) => console.error('scheduler status', err),
+        });
+}
+
+toggleScheduler(): void {
+    if (this.schedulerLoading) return;
+    this.schedulerLoading = true;
+
+    this.raffleService.toggleScheduler(this.userId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+            next: (resp) => {
+                this.schedulerLoading = false;
+                this.schedulerStatus = resp.data.status;
+                Swal.fire({
+                    icon: 'success',
+                    title: resp.data.enabled ? 'Programación ACTIVADA' : 'Programación DETENIDA',
+                    text: resp.data.enabled
+                        ? 'Se creará un sorteo automáticamente cuando no haya ninguno activo.'
+                        : 'Los sorteos ya no se crearán automáticamente.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+            },
+            error: (err) => {
+                this.schedulerLoading = false;
+                Swal.fire({ icon: 'error', title: 'Error', text: err?.error?.message || 'Error' });
+            },
+        });
+}
+
+triggerSchedulerNow(): void {
+    this.schedulerLoading = true;
+    this.raffleService.triggerScheduler()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+            next: (resp) => {
+                this.schedulerLoading = false;
+                Swal.fire({
+                    icon: resp.success ? (resp.created ? 'success' : 'info') : 'warning',
+                    title: resp.created ? '¡Sorteo creado!' : 'Sin cambios',
+                    text: resp.message,
+                    timer: 2500,
+                    showConfirmButton: false,
+                });
+                this.loadSchedulerStatus();
+            },
+            error: (err) => {
+                this.schedulerLoading = false;
+                Swal.fire({ icon: 'error', title: 'Error', text: err?.error?.message || 'Error' });
+            },
+        });
+}
+updateSchedulerConfig(cfg: {
+    min_players?: number;
+    auto_play?: boolean;
+    auto_play_rate?: number;
+    template_raffle_id?: number;
+}): void {
+    this.raffleService.updateSchedulerConfig(cfg)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+            next: (resp) => {
+                this.schedulerStatus = resp.data;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Configuración guardada',
+                    timer: 1200,
+                    showConfirmButton: false,
+                });
+            },
+            error: (err) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: err?.error?.message || 'Error al guardar la configuración',
+                });
+            },
+        });
+}
+
 } 

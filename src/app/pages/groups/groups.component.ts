@@ -156,7 +156,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
      ============================================ */
   async getInfo(): Promise<void> {
     try {
-      const user$ = await this.userService.getByLocalId(this.localId);
+      const user$ = await this.userService.getUserByLocalId(this.localId);
       user$.pipe(takeUntil(this.destroy$)).subscribe({
         next: (resp: any) => {
           this.usuario = resp;

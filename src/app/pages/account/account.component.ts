@@ -148,7 +148,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     // ============================================
     private async loadUserAndData(): Promise<void> {
         this.loading = true;
-
         try {
             const localId = this.authService.getLocalId();
 
@@ -158,9 +157,6 @@ export class AccountComponent implements OnInit, OnDestroy {
                 return;
             }
 
-            // Obtener el ID del usuario
-            // const user = await this.userService.getUserByLocalId(localId);
-            // this.userId = user.user[0]['id'];
 
             console.log('👤 Usuario ID:', this.userId);
 

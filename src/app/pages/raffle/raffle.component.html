@@ -41,7 +41,111 @@
       </div>
     </div>
   </header>
+ <!-- ============================================
+     SCHEDULER PANEL
+     ============================================ -->
+<!-- ============================================
+     SCHEDULER PANEL
+     ============================================ -->
+<section class="scheduler-panel" [class.is-active]="schedulerStatus?.enabled">
 
+    <!-- Columna 1: Título + estado ON/OFF -->
+    <div class="scheduler-info">
+        <i class="fas scheduler-icon"
+           [class.fa-play-circle]="schedulerStatus?.enabled"
+           [class.fa-stop-circle]="!schedulerStatus?.enabled"></i>
+        <div class="scheduler-text">
+            <h4>Scheduler de Sorteos</h4>
+            <span class="scheduler-state" [class.on]="schedulerStatus?.enabled">
+                {{ schedulerStatus?.enabled ? '● ACTIVO' : '○ DETENIDO' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Columna 2: Configuración -->
+          
+    <div class="scheduler-config">
+      <label for="minimojugadores" class="form-label">Mínimo de Jugadores</label>
+      <div class="input-with-icon">
+        <i class="fas fa-users"></i>
+        <input type="number" id="minimojugadores" class="form-control" placeholder="0"
+          [value]="schedulerStatus?.min_players || 5"
+          (change)="updateSchedulerConfig({ min_players: +$any($event.target).value })"
+                formControlName="minimun_user_play" [class.is-invalid]="maximunUserPlayNoValido">
+      </div>
+          <div class="card-options">
+               
+            <label class="toggle" title="Bots hacen draws automáticamente cuando el sorteo está activo">
+                <input type="checkbox" class="toggle-chcek"
+                       [checked]="schedulerStatus?.auto_play"
+                       (change)="updateSchedulerConfig({ auto_play: $any($event.target).checked })">
+                <span>Auto-play (bots)</span>
+            </label>
+                  
+          </div>
+        <!-- <label title="Mínimo de jugadores distintos para que el sorteo arranque">
+            <span>Mín. jugadores:</span>
+            <input type="number" min="2" max="50"
+                   [value]="schedulerStatus?.min_players || 5"
+                   (change)="updateSchedulerConfig({ min_players: +$any($event.target).value })">
+        </label> -->
+
+
+        <label *ngIf="schedulerStatus?.auto_play" title="Segundos entre cada draw de bot">
+            <span>Cada (seg):</span>
+            <input type="number" min="1" max="60"
+                   [value]="schedulerStatus?.auto_play_rate || 3"
+                   (change)="updateSchedulerConfig({ auto_play_rate: +$any($event.target).value })">
+        </label>
+    </div>
+
+    <!-- Columna 3: Estado del raffle actual -->
+    <div class="scheduler-stats" *ngIf="schedulerStatus?.current_raffle as r">
+        <div class="scheduler-stat">
+            <span class="stat-label">Estado</span>
+            <span class="stat-value" [ngClass]="r.state?.toLowerCase()">
+                {{ r.state || '—' }}
+            </span>
+        </div>
+        <div class="scheduler-stat">
+            <span class="stat-label">Jugadores</span>
+            <span class="stat-value">
+                {{ r.players_count }} / {{ schedulerStatus.min_players }}
+            </span>
+        </div>
+        <div class="scheduler-stat" *ngIf="r.state === 'WAITING' && r.players_needed > 0">
+            <span class="stat-label">Faltan</span>
+            <span class="stat-value warn">{{ r.players_needed }}</span>
+        </div>
+        <div class="scheduler-stat">
+            <span class="stat-label">Bots</span>
+            <span class="stat-value">{{ schedulerStatus.bots_count || 0 }}</span>
+        </div>
+    </div>
+
+    <!-- Mensaje cuando no hay raffle -->
+    <div class="scheduler-stats" *ngIf="!schedulerStatus?.current_raffle">
+        <div class="scheduler-stat">
+            <span class="stat-label">Sorteo actual</span>
+            <span class="stat-value small">Sin sorteo activo</span>
+        </div>
+    </div>
+
+    <!-- Columna 4: Botón Activar/Detener -->
+    <div class="scheduler-actions">
+        <button type="button"
+                class="btn-scheduler"
+                [class.active]="schedulerStatus?.enabled"
+                [disabled]="schedulerLoading"
+                (click)="toggleScheduler()">
+            <i class="fas"
+               [class.fa-power-off]="schedulerStatus?.enabled"
+               [class.fa-play]="!schedulerStatus?.enabled"></i>
+            {{ schedulerStatus?.enabled ? 'Detener' : 'Activar' }}
+        </button>
+    </div>
+
+</section>
   <!-- ============================================
        LAYOUT PRINCIPAL CON PUBLICIDAD LATERAL
        ============================================ -->

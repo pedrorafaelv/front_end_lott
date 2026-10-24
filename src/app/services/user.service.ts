@@ -16,6 +16,7 @@ export class UserService {
   email!: string;
   localStorage!: Storage;
   id!: string;
+  user:any;
 
   // Signal privado para el estado del usuario
   private userSignal = signal<User | null>(null);
@@ -25,17 +26,8 @@ export class UserService {
 
   // Computed para obtener el ID fácilmente (si se necesita mucho)
   public readonly userId = computed(() => this.userSignal() ? this.id : undefined);
+
   constructor(private http: HttpClient) { }
-
-  getByLocalId(localId: string ){
-    return this.http.get(
-      `${ this.baseUrl }getUserByFirebase/${localId}`
-    );
-}
-
-// updateDataFirebase(localId: string, token: string, last_connection: string){
-//   return this.http.post<any>(`${this.baseUrl}updateDataFirebase/${localId}/${token}/${last_connection}`, { title: 'Angular POST Request ' });
-// }
 
  getUserByLocalId(localId: string) {
    return this.http.get(`${this.baseUrl}getUserByFirebase/${localId}`);
@@ -49,8 +41,6 @@ getPermissionsByUser(userId: string) {
   return firstValueFrom(this.http.get<any>(`${this.baseUrl}getUserPermissions/${userId}`));
 }
  
-
-
 getUserLevel(userId: number){
   return this.http.get(
     `${ this.baseUrl }getUserLevel/${userId}`
@@ -61,7 +51,8 @@ getUserRoles(userId: string){
     `${ this.baseUrl }getUserRoles/${userId}`
   );
 }
-getUserPermissions(userId: string){
+
+getUserPermissions(userId: number){
   return this.http.get(
     `${ this.baseUrl }getUserPermissions/${userId}`
   );
@@ -69,24 +60,10 @@ getUserPermissions(userId: string){
 
 
 getGroups(id: string): Observable<GetGroupsResponse>{
-
   return this.http.get<GetGroupsResponse>(`${this.baseUrl}getGrupos/${id}`);
-
 }
 
-//  singUpUser(email: string, name: string, pass: string, localid: string, token: string){
-//   // console.log(`${this.baseUrl}newUser/${email}/${name}/${localid}/${token}`);
-//    return this.http.post<any>(`${this.baseUrl}newUser/${email}/${name}/${pass}/${localid}/${token}`, { title: 'User POST Request'});
-//  }
-
-//  getUserEmailConfirm(correo: string){
-    
-//   return this.http.get<GetGroupsResponse>(`${this.baseUrl}getUserEmailConfirm/${correo}`);
-
-//  }
-
-
-  getUsersList(
+getUsersList(
     user: string,
     page: number = 1,
     perPage: number = 10,
@@ -106,4 +83,31 @@ getGroups(id: string): Observable<GetGroupsResponse>{
       { params }
     );
   }
+
+LoadUserData(id: number): Observable<any>{
+   let params = new HttpParams()
+      .set('id', id.toString())
+
+    return this.http.get<any>(`${this.baseUrl}getUserData`, { params });
+
+}
+
+getUserPersonalData(id:number){
+  return this.http.get<any>(`${this.baseUrl}userData/${id}`);
+}
+
+
+//  singUpUser(email: string, name: string, pass: string, localid: string, token: string){
+//   // console.log(`${this.baseUrl}newUser/${email}/${name}/${localid}/${token}`);
+//    return this.http.post<any>(`${this.baseUrl}newUser/${email}/${name}/${pass}/${localid}/${token}`, { title: 'User POST Request'});
+//  }
+
+//  getUserEmailConfirm(correo: string){
+    
+//   return this.http.get<GetGroupsResponse>(`${this.baseUrl}getUserEmailConfirm/${correo}`);
+
+//  }
+
+
+  
 }
