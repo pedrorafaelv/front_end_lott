@@ -35,13 +35,12 @@
         <div class="online-users-header">
             <span class="online-dot"></span>
             <span class="online-title">En línea</span>
-            <span class="online-count">{{ usuariosEnLinea?.length || 0 }}</span>
+            <span class="online-count">{{ onlineCount }}</span>
         </div>
         <ul class="online-users-list">
-            <li class="online-user" *ngFor="let u of usuariosEnLinea">
+            <li class="online-user" *ngFor="let u of usersOnLine; trackBy: trackByUserId">
                 <span class="user-avatar-dot"></span>
-                <span class="user-name">{{ u.nombre }}</span>
-                <span class="user-bet" *ngIf="u.apuesta">{{ u.apuesta }}$</span>
+                <span class="user-name">{{ u.name }}</span>
             </li>
         </ul>
     </aside>
@@ -55,8 +54,9 @@
         <span class="countdown-title">Próximo Sorteo</span>
     </div>
 
-    <ng-container *ngIf="nextRaffleDate; else noRaffle">
-        <div class="countdown-name">{{ nextSorteo?.nombre }}</div>
+    <ng-container *ngIf="nextRaffle; else noRaffle">
+        <div class="countdown-name">{{ nextRaffle?.name }}</div>
+        <div class="countdown-name">{{ nextRaffle?.scheduled_date }}</div>
 
         <div class="countdown-clock" [class.is-starting]="isStarting">
             <div class="countdown-unit" *ngIf="countdown.days > 0">
@@ -100,16 +100,16 @@
             <section class="section-scheduled">
                 <h2 class="section-title"><span class="suit">♠</span>Próximos Sorteos</h2>
                 <div class="mini-cards-grid">
-                    <div class="mini-card"        [style.background-image]="sorteo.imagen ? 'url(' + sorteo.imagen + ')' : 'none'"
- *ngFor="let sorteo of sorteosProximos">
-                        <div class="mini-card-title">{{ sorteo.nombre }}</div>
+                    <div class="mini-card" [style.background-image]="sorteo.image ? 'url(' + sorteo.image + ')' : 'none'"
+ *ngFor="let sorteo of futureRaffles">
+                        <div class="mini-card-title">{{ sorteo.name }}-{{sorteo.id}}</div>
                         <div class="mini-card-info">
                             <i class="fas fa-clock"></i>
-                            {{ sorteo.fechaInicio || 'Pronto' }}
+                            {{ sorteo.scheduled_date || 'Pronto' }}
                         </div>
                         <div class="mini-card-info">
                             <i class="fas fa-ticket-alt"></i>
-                            <span class="text-warning">{{ sorteo.valorCarton }}$</span>
+                            <span class="text-warning">{{ sorteo.card_amount}}$</span>
                         </div>
                         <button class="btn btn-outline-primary btn-mini w-100"
                                 (click)="notificarSorteo(sorteo.id)">
@@ -123,17 +123,18 @@
             <section class="section-user-group">
                 <h2 class="section-title"><span class="suit">♦</span>Mis Grupos</h2>
                 <div class="mini-cards-grid mini-cards-grid-single">
-                    <!-- <div class="mini-card mini-card-group" *ngFor="let sorteo of sorteosGrupo">
-                        <div class="mini-card-title">{{ sorteo.nombre }}</div>
+                    <div class="mini-card mini-card-group" *ngFor="let sorteo of groupRaffles">
+                        <div class="mini-card-title">{{ sorteo.name }}-{{sorteo.id}}</div>
+                         {{ sorteo.scheduled_date }}
                         <div class="mini-card-info">
                             <i class="fas fa-users"></i>
-                            {{ sorteo.jugadores }} jugando
+                            Jugado {{ sorteo.total_amount }} 
                         </div>
                         <button class="btn btn-play btn-mini w-100"
                                 (click)="jugarSorteo(sorteo.id)">
                             Jugar
                         </button>
-                    </div> -->
+                    </div>
                 </div>
             </section>
 
@@ -156,25 +157,26 @@
                 </div> -->
 
                 <h2 class="section-title"><span class="suit">♥</span> Proximo sorteo en ...</h2>
+
                 <div class="mini-cards-grid">
                     <div class="mini-card mini-card-live" 
-                    [style.background-image]="sorteo.imagen ? 'url(' + sorteo.imagen + ')' : 'none'" *ngFor="let sorteo of sorteosEnVivo">
-                        <span class="live-badge-mini">
-                            <i class="fas fa-circle"></i> VIVO
-                        </span>
-                        <!-- <div class="card-img-container">
-                            <img [src]="sorteo.imagen" 
+                    [style.background-image]="sorteo.image ? 'url(' + sorteo.image + ')' : 'none'" *ngFor="let sorteo of publicRaffles">
+                    
+                        <div class="card-img-container">
+                            <img [src]="sorteo.image" 
                                  class="card-img-top" 
-                                 [alt]="sorteo.nombre">
-                            <div class="live-badge">
-                                <i class="fas fa-circle me-1" style="font-size: 8px;"></i> EN VIVO
-                            </div>
-                        </div> -->
-                        <!-- <div class="card-img-container">{{sorteo.imagen}}</div> -->
-                        <div class="mini-card-title">{{ sorteo.nombre }}</div>
+                                 [alt]="sorteo.name">
+                           
+                        </div>
+                        
+                        <div class="mini-card-title">{{ sorteo.name }}-{{sorteo.id}}</div>
+                        {{ sorteo.scheduled_date }}
+                        <div class="mini-card-title">"sorteo.id"{{sorteo.id}}</div>
+
                         <div class="mini-card-info">
-                            <i class="fas fa-users"></i> {{ sorteo.jugadores }}
-                            · <span class="text-warning">{{ sorteo.valorCarton }}$</span>
+
+                            <i class="fas fa-users"></i> {{ sorteo.total_amount }}
+                            · <span class="text-warning">{{ sorteo.card_amount }}$</span>
                         </div>
                         <button class="btn btn-play btn-mini w-100"
                                 (click)="jugarSorteo(sorteo.id)">

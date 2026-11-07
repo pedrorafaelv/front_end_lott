@@ -6,11 +6,13 @@ export const environment = {
   production: false,
   apiUrl: 'http://127.0.0.1:8000/api/',
   Firebase_apiKey: "AIzaSyCY8stzMT8SVuqJYp24v0mpmWppXkYewjM",
+  defaultTimezone: 'America/Caracas' ,
+  defaultCurrency: 1 ,
   firebaseWeb : {
-  authDomain: "lotteapp-d4cba.firebaseapp.com",
-  projectId: "lotteapp-d4cba",
-  appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
-},
+    authDomain: "lotteapp-d4cba.firebaseapp.com",
+    projectId: "lotteapp-d4cba",
+    appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
+ },
 };
 
 export const firebaseUrl={
@@ -48,6 +50,8 @@ export const firebaseWeb = {
   appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
 };
  
+   
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

@@ -42,9 +42,9 @@ getPermissionsByUser(userId: string) {
 }
  
 getUserLevel(userId: number){
-  return this.http.get(
-    `${ this.baseUrl }getUserLevel/${userId}`
-  );
+   let params = new HttpParams()
+      .set('id', userId.toString())
+  return this.http.get(`${ this.baseUrl }getUserLevel/${userId}`,{ params });
 }
 getUserRoles(userId: string){
   return this.http.get(
@@ -96,6 +96,13 @@ getUserPersonalData(id:number){
   return this.http.get<any>(`${this.baseUrl}userData/${id}`);
 }
 
+getOnlineUsers(params?: { window?: number; limit?: number }) {
+    const qs = new URLSearchParams();
+    if (params?.window) qs.set('window', params.window.toString());
+    if (params?.limit)  qs.set('limit',  params.limit.toString());
+    const query = qs.toString() ? `?${qs}` : '';
+    return this.http.get<any>(`${this.baseUrl}online${query}`);
+}
 
 //  singUpUser(email: string, name: string, pass: string, localid: string, token: string){
 //   // console.log(`${this.baseUrl}newUser/${email}/${name}/${localid}/${token}`);

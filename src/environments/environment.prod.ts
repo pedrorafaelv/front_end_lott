@@ -2,11 +2,14 @@ export const environment = {
   production: true,
   apiUrl: 'http://127.0.0.1:8000/api/',
   firebaseApiKey: "AIzaSyCY8stzMT8SVuqJYp24v0mpmWppXkYewjM",
+  defaultTimezone: 'America/Caracas' ,
+  defaultCurrency: 1 ,
   firebaseWeb : {
-  authDomain: "lotteapp-d4cba.firebaseapp.com",
-  projectId: "lotteapp-d4cba",
-  appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
-},
+    authDomain: "lotteapp-d4cba.firebaseapp.com",
+    projectId: "lotteapp-d4cba",
+    appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
+  },
+
 };
 
 export const firebaseConfig = {
@@ -44,3 +47,4 @@ export const firebaseWeb = {
   projectId: "lotteapp-d4cba",
   appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
 };
+

@@ -5,6 +5,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withInter
 import { routes } from './app.routes';
 
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { TimezoneInterceptor } from './interceptors/timezone.interceptor';
 
 
 // const routes: Routes = [];
@@ -14,13 +15,14 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptorsFromDi()),
-      provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    // TimezoneInterceptor is class-based and is registered through DI below.
 
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: AuthInterceptor,
-    //   multi: true,
-    // },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TimezoneInterceptor,
+      multi: true,
+    },
 
   ]
 };

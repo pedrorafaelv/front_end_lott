@@ -95,7 +95,7 @@ export class JuegoComponent implements OnInit {
         this.userId = id;
     this.route.queryParams.subscribe(params => {
       this.raffleId = params['raffleId'];
-      // console.log('ID del sorteo en componente juego:', this.raffleId);
+      console.log('ID del sorteo en componente juego:', this.raffleId);
       });
     this.localId = this.AuthService.getLocalId();
     if (this.localId){

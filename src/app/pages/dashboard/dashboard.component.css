@@ -570,12 +570,12 @@
     font-weight: 800;
     color: var(--text-color);
     margin-bottom: 5px;
-    line-height: 1.1;
+    line-height: 1.5;
     letter-spacing: 0.8px;
     text-transform: uppercase;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 

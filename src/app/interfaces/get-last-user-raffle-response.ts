@@ -11,6 +11,7 @@ export interface Raffle {
   minimun_play: number | null;
   maximun_play: number | null;
   maximun_user_play: number | null;
+  minimun_user_play: number | null;
   retention_percent: number | null;
   retention_amount: number | null;
   admin_retention_percent: number | null;
@@ -18,6 +19,7 @@ export interface Raffle {
   raffle_type: string | null;
   privacy: string | null;
   reward_line: number | null;
+  allow_bots: number |null;
   percent_line: number | null;
   reward_full: number | null;
   allow_promotional_bet: number;

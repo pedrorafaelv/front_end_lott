@@ -21,6 +21,7 @@ import { AuthService } from '../../services/auth.service';
 import { LotteryNameService } from '../../services/lotery-name.services';
 import { LevelConfig, UserLevel, niveles } from '../../interfaces/level';
 import { Raffle} from '../../interfaces/get-last-user-raffle-response';
+import { environment} from '../../../environments/environment';
 
 
 @Component({
@@ -68,7 +69,8 @@ export class RaffleComponent implements OnInit, OnDestroy {
   schedulerStatus: any = null;
   schedulerLoading = false;
   schedulerPolling?: any;
-  
+  currency= environment.defaultCurrency;
+  timeZone= environment.defaultTimezone;
   /* ============================================
      LISTAS PARA SELECTS
      ============================================ */
@@ -93,7 +95,7 @@ export class RaffleComponent implements OnInit, OnDestroy {
     .map(v => ({ id: v, name: `${v}` }));
 
   date = new Date();
-   buscarTexto: string = '';
+  buscarTexto: string = '';
   hasError: boolean =false;
   message: string= "";
   raffle: Raffle|null = null;
@@ -160,9 +162,10 @@ export class RaffleComponent implements OnInit, OnDestroy {
       grupo: ['', [Validators.required]],
       total_amount: [{ value: 0, disabled: true }, [Validators.min(0)]],
       card_amount: [1, [Validators.required, Validators.min(0.10)]],
-      minimun_play: [10, [Validators.min(1)]],
+      minimun_play: [5, [Validators.min(1)]],
       maximun_play: [10000, [Validators.min(1)]],
       maximun_user_play: [10000, [Validators.min(1)]],
+      minimun_user_play: [5, [Validators.min(1)]],
       retention_percent: [5, [Validators.min(0), Validators.max(20)]],
       retention_amount: [{ value: 0, disabled: true }],
       admin_retention_percent: [10, [Validators.min(0), Validators.max(20)]],
@@ -172,10 +175,11 @@ export class RaffleComponent implements OnInit, OnDestroy {
       reward_line: [1, [Validators.required]],
       percent_line: [10, [Validators.min(0), Validators.max(100)]],
       reward_full: [1, [Validators.required]],
+      allow_bots: [1,[Validators.required]],
       percent_full: [90, [Validators.min(0), Validators.max(100)]],
       scheduled_date: [this.minDate, [Validators.required, this.fechaNoPasada.bind(this)]],
       scheduled_hour: ['', [Validators.required]],
-      time_zone: ['chile'],
+      time_zone: [this.timeZone],
       start_date: [this.minDate, [this.fechaNoPasada.bind(this)]],
       start_hour: [''],
       end_date: [''],
@@ -472,6 +476,7 @@ private cargarFichas(): void {
   get minimunPlayNoValido() { return this.esInvalido('minimun_play'); }
   get maximunPlayNoValido() { return this.esInvalido('maximun_play'); }
   get maximunUserPlayNoValido() { return this.esInvalido('maximun_user_play'); }
+  get minimunUserPlayNoValido() { return this.esInvalido('minimun_user_play'); }
   get retentionPercentNoValido() { return this.esInvalido('retention_percent'); }
   get retentionAmountNoValido() { return this.esInvalido('retention_amount'); }
   get adminRetentionPercentNoValido() { return this.esInvalido('admin_retention_percent'); }
@@ -525,13 +530,41 @@ private cargarFichas(): void {
       confirmButtonColor: '#ff4757'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.forma_Raffle.reset({
+        this.resetFormulario();
+        // this.forma_Raffle.reset({
+        //   nombre: `${this.lotteryNameService.getRandomName(this.userId)}`,
+        //   description: `${this.lotteryNameService.getRandomName(this.userId)}`,
+        //   card_amount: 1,
+        //   minimun_play: 10,
+        //   maximun_play: 10000,
+        //   maximun_user_play: 10000,
+        //   minimun_user_play: 5,
+        //   retention_percent: 0,
+        //   admin_retention_percent: 10,
+        //   raffle_type: 1,
+        //   privacy: 1,
+        //   reward_line: 1,
+        //   percent_line: 40,
+        //   reward_full: 1,
+        //   allow_bots: 0,
+        //   percent_full: 0,
+        //   time_zone: 'venezuela'
+        // });
+        // this.grupofichaSeleccionada = null;
+        // this.grupofichaSeleccionadaInfo = null;
+      }
+    });
+  }
+
+  resetFormulario(): void{
+   this.forma_Raffle.reset({
           nombre: `${this.lotteryNameService.getRandomName(this.userId)}`,
           description: `${this.lotteryNameService.getRandomName(this.userId)}`,
           card_amount: 1,
           minimun_play: 10,
           maximun_play: 10000,
           maximun_user_play: 10000,
+          minimun_user_play: 5,
           retention_percent: 0,
           admin_retention_percent: 10,
           raffle_type: 1,
@@ -539,15 +572,13 @@ private cargarFichas(): void {
           reward_line: 1,
           percent_line: 40,
           reward_full: 1,
+          allow_bots: 0,
           percent_full: 0,
-          time_zone: 'chile'
+          time_zone: this.timeZone,
         });
         this.grupofichaSeleccionada = null;
         this.grupofichaSeleccionadaInfo = null;
-      }
-    });
   }
-
 
   trackByIndex(index: number): number { return index; }
   trackByGroupId(_: number, item: any): any { return item.id; }
@@ -575,16 +606,16 @@ private fechaNoPasada(control: AbstractControl): ValidationErrors | null {
 // Reemplaza el método construirRuta original
 private construirCuerpo(): any {
   const v = this.forma_Raffle.getRawValue();
+  console.log('grupofichaSeleccionada', v.grupofichaSeleccionada)
   return {
     admin_retention_amount: v.admin_retention_amount,
     admin_retention_percent: v.admin_retention_percent,
     card_amount: v.card_amount,
-    description: v.description, // Ya no necesitas encodeURIComponent
-    grupo: v.grupo,
+    description: v.description, 
     maximun_play: v.maximun_play,
     maximun_user_play: v.maximun_user_play,
     minimun_play: v.minimun_play,
-    nombre: v.nombre, // Ya no necesitas encodeURIComponent
+    name: v.nombre, 
     percent_full: v.percent_full,
     percent_line: v.percent_line,
     privacy: v.privacy,
@@ -593,11 +624,14 @@ private construirCuerpo(): any {
     retention_percent: v.retention_percent,
     reward_full: v.reward_full,
     reward_line: v.reward_line,
+    allow_bots: v.allow_bots, 
     scheduled_date: v.scheduled_date,
     scheduled_hour: v.scheduled_hour,
     time_zone: v.time_zone,
-    grupoficha: this.grupofichaSeleccionada ?? '',
-    // '1' // El significado de este campo debe determinarse según la lógica del backend
+    user_id: this.userId,
+    group_id: v.grupo,
+    currency: this.currency,
+    groupficha_id: v.grupoficha ?? '',
   };
 }
 
@@ -631,7 +665,7 @@ guardar(): void {
             title: '¡Sorteo creado!',
             text: resp?.message || 'El sorteo se creó correctamente'
           });
-          this.limpiarFormulario();
+          this.resetFormulario();
 
       },
       error: (err) => {
@@ -721,6 +755,8 @@ loadLastRaffle(): void {
     minimun_play:         raffle.minimun_play ?? 10,
     maximun_play:         raffle.maximun_play ?? 10000,
     maximun_user_play:    raffle.maximun_user_play ?? 10000,
+    minimun_user_play:    raffle.maximun_user_play ?? 5,
+
 
     retention_percent:       raffle.retention_percent ?? 0,
     admin_retention_percent: raffle.admin_retention_percent ?? 10,
@@ -730,6 +766,7 @@ loadLastRaffle(): void {
     reward_line:   raffle.reward_line ?? 1,
     percent_line:  raffle.percent_line ?? 10,
     reward_full:   raffle.reward_full ?? 1,
+    allow_bots:    raffle.allow_bots ?? 0,
 
     scheduled_date: soloFecha(raffle.scheduled_date),
     scheduled_hour: soloHora(raffle.scheduled_hour),
