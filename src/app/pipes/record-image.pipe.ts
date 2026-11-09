@@ -9,7 +9,7 @@ export class RecordImagePipe implements PipeTransform {
   transform(imagen: string, nombreGrupo: string): string {
     let img: string;
     img=imagen;
-    // console.log('imagen =',img);
+    console.log('imagen en RecordImagePipe =',img);
     // console.log('nombreGrupo =',nombreGrupo);
     if ( imagen ){
       if (nombreGrupo && nombreGrupo.length>0){

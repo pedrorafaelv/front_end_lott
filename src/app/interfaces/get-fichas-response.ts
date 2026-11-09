@@ -1,59 +1,65 @@
-export interface GetFichasResponse {
-    Raffle:    Raffle;
-    ArrFichas: string[];
-    Fichas:    Ficha[];
-}
-
+// ============================================
+// FICHA
+// ============================================
 export interface Ficha {
-    id:          number;
-    name:        string;
-    description: string;
-    image:       string;
-    sound:       string;
-    active:      string;
-    start_date:  Date;
-    end_date:    null;
-    created_at:  Date;
-    updated_at:  Date;
-    pivot:       Pivot;
+    id: number;
+    name: string;
+    image: string;
+    groupficha_id?: number;
+    active?: number;
+    created_at?: string;
+    updated_at?: string;
+    // Pivot (relación many-to-many con Raffle)
+    pivot?: {
+        raffle_id: number;
+        ficha_id: number;
+        indice?: number;
+        created_at?: string;
+        updated_at?: string;
+    };
 }
 
-export interface Pivot {
-    raffle_id: number;
-    ficha_id:  number;
-}
-
+// ============================================
+// SORTEO (Raffle)
+// ============================================
 export interface Raffle {
-    id:                      number;
-    name:                    string;
-    description:             string;
-    user_id:                 number;
-    group_id:                number;
-    groupFicha_id:           number;
-    total_amount:            null;
-    card_amount:             null;
-    minimun_play:            null;
-    maximun_play:            null;
-    maximun_user_play:       null;
-    retention_percent:       null;
-    retention_amount:        null;
-    admin_retention_percent: null;
-    admin_retention_amount:  null;
-    raffle_type:             null;
-    privacy:                 null;
-    reward_line:             null;
-    percent_line:            number;
-    reward_full:             null;
-    percent_full:            number;
-    admin_user:              null;
-    scheduled_date:          Date;
-    scheduled_hour:          null;
-    start_hour:              null;
-    end_hour:                null;
-    time_zone:               null;
-    start_date:              Date;
-    end_date:                Date;
-    created_at:              Date;
-    updated_at:              Date;
+    id: number;
+    name: string;
+    description?: string;
+    start_date?: string;
+    end_date?: string;
+    reward_line?: number;
+    reward_full?: number;
+    total_amount?: number;
+    card_amount?: number;
+    groupficha_id?: number;
+    winner?: string | null;
+    full_winner?: string | null;
+    allow_promotional_bet?: boolean;
+    created_at?: string;
+    updated_at?: string;
+    // Relaciones
+    fichas_count?: number;
+    fichas?: Ficha[];
 }
 
+// ============================================
+// DATA DEL ENDPOINT
+// ============================================
+export interface GetFichasData {
+    Raffle: Raffle;
+    ArrFichas: string[];     // Array de nombres ("nombre@")
+    Fichas: Ficha[];          // Array completo de objetos Ficha
+}
+
+// ============================================
+// RESPUESTA COMPLETA
+// ============================================
+export interface GetFichasResponse {
+    success: boolean;
+    error: boolean;
+    code: string;
+    message: string;
+    data?: GetFichasData;
+    errors?: { [key: string]: string[] };
+}

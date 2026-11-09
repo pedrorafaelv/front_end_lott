@@ -2,7 +2,7 @@
    VARIABLES Y RESET
    ============================================ */
 :root {
-    --header-height: 32vh;
+    --header-height: 50vh;
     --main-height: 68vh;
     
     --bg-dark: #0d0d1a;
@@ -52,7 +52,7 @@
    ============================================ */
 .loteria-header {
     flex: 0 0 auto;
-    height: calc(32vh - 8px);
+    height: calc(40vh - 8px);
     min-height: 240px;
     display: flex;
     flex-direction: column;
@@ -64,10 +64,60 @@
     overflow: hidden;
 }
 
+/* ============================================
+   FILA SUPERIOR: 80% saludo | 20% monto
+   ============================================ */
+.header-top {
+    display: flex;
+    align-items: center;      /* 👈 misma altura vertical */
+    gap: 8px;                 /* separación entre bloques */
+    width: 100%;
+    flex-shrink: 0;
+}
+
+/* Bloque izquierdo: saludo (80%) */
+.header-top .ad-banner {
+    flex: 0 0 80%;            /* 👈 80% del ancho */
+    max-width: none;          /* anula el 500px que tenías */
+    margin: 0;                /* anula el auto que lo centraba */
+    justify-content: center;
+}
+
+/* Bloque derecho: monto (20%) */
+.header-monto {
+    flex: 0 0 20%;            /* 👈 20% del ancho */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;/* pegado a la derecha del bloque */
+    min-width: 0;
+}
+
+/* Pill del monto resaltado */
+.monto-jugado {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 14px;
+    white-space: nowrap;
+    line-height: 1.2;
+
+    color: #ffd700;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 152, 0, 0.15));
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.4),
+                inset 0 0 6px rgba(255, 215, 0, 0.15);
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+
+
 .ad-banner {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 8px;
     padding: 5px 14px;
     background: rgba(255, 215, 0, 0.15);
@@ -77,7 +127,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     flex-shrink: 0;
-    max-width: 500px;
+    max-width: 90%;
     margin: 0 auto;
     text-align: center;
     white-space: nowrap;
@@ -93,6 +143,22 @@
 .ad-text {
     color: var(--accent-light);
     font-weight: 600;
+}
+
+
+ /* Estilo resaltado (dorado) */
+.monto-jugado {
+    color: #ffd700;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 152, 0, 0.15));
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.4),
+                inset 0 0 6px rgba(255, 215, 0, 0.15);
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+.monto-jugado i {
+    color: #ffd700;
+    font-size: 0.8rem;
 }
 
 /* Carrusel de cartones disponibles */
@@ -658,3 +724,5 @@
 .btn-actualizar-marcas:hover i {
     transform: rotate(180deg);
 }
+
+

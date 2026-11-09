@@ -112,10 +112,10 @@
 }
 
 .carton-counter {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  color: #00e676;
-  background: rgba(0, 230, 118, 0.15);
+  color: #03110a;
+  background: rgba(136, 54, 177, 0.15);
   padding: 2px 10px;
   border-radius: 12px;
   border: 1px solid rgba(0, 230, 118, 0.3);
@@ -238,7 +238,7 @@
 }
 
 .carton-name {
-  font-size: 0.85rem;
+  font-size: 0.2rem;
   color: var(--light-text);
   font-style: italic;
 }

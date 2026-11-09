@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output,SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PipesModule } from '../../pipes/pipes.module';
-// import { DirectivesModule } from '../../directives/directives.module';
 import { Card } from '../../interfaces/get-cards-raffle-response';
+import { posiciones } from '../../../environments/environment.development';
 
 @Component({
     selector: 'app-carton',
@@ -31,20 +31,15 @@ export class CartonComponent implements OnInit {
     marcas: { [key: string]: boolean } = {};
 
      // Lista de todas las posiciones del cartón
-    readonly posiciones: string[] = [
-        'desc_pos01', 'desc_pos06', 'desc_pos11', 'desc_pos16', 'desc_pos21',
-        'desc_pos02', 'desc_pos07', 'desc_pos12', 'desc_pos17', 'desc_pos22',
-        'desc_pos03', 'desc_pos08', 'desc_pos13', 'desc_pos18', 'desc_pos23',
-        'desc_pos04', 'desc_pos09', 'desc_pos14', 'desc_pos19', 'desc_pos24',
-        'desc_pos05', 'desc_pos10', 'desc_pos15', 'desc_pos20', 'desc_pos25'
-    ];
+    posiciones = posiciones;  // ← Importadas desde environment.ts
 
     @Output() cartonClick = new EventEmitter<Card>();  // ← Emite el cartón clickea
 
     constructor() { }
 
     ngOnInit(): void {
-        // console.log('carton = ', this.carton )
+         console.log('recordGroup = ', this.recordGroup );
+         console.log('carton = ', this.carton );
         this.inicializarMarcas();
 
     }
@@ -162,6 +157,7 @@ export class CartonComponent implements OnInit {
      * Obtener el valor de una posición del cartón
      */
     getValorPosicion(pos: string): string {
+        // console.log('🔍 Obteniendo valor de posición', pos, 'en cartón', this.carton[pos as keyof Card]);
         return this.carton[pos as keyof Card] as string;
     }
 

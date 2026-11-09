@@ -1,13 +1,13 @@
 import { RaffleService } from '../../services/raffle.service';
-import { Raffle } from '../../interfaces/get-fichas-response';
+// import { Raffle } from '../../interfaces/get-fichas-response';
 import { CommonModule } from '@angular/common';
-import { SorteoService } from '../../services/sorteo.service';
+import { SorteoService } from '../../trash/sorteo.service';
 import { Sorteo, Estadisticas } from '../../models/sorteo.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { AccountService } from '../../services/account.service';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, takeUntil, interval, Subscription, timeout } from 'rxjs';
 import {
@@ -19,7 +19,7 @@ import {
     Via,
     WithdrawalRequest,
 } from '../../interfaces/account.interface';
-import{getAvailablesRafflesResponse} from '../../interfaces/get-availables-raffles-response';
+// import{getAvailablesRafflesResponse} from '../../interfaces/get-availables-raffles-response';
 import{RaffleItem} from '../../models/raffle.model';
 
 
@@ -39,8 +39,6 @@ export class DashboardComponent implements OnInit {
   jugadores: 0,
   premios: '$0'
 };
-userId:any;
-user:any;
 vias: Via[] = [];
 private destroy$ = new Subject<void>();
 summary: AccountSummary | null = null;
@@ -59,20 +57,8 @@ nextRaffleDate: Date | null = null;
 countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
 isStarting = false;
 private countdownSub?: Subscription;
-
-  // Filtros
-  filters: TransactionFilters = {
-      currency_id: 'USD',
-      via_id: null,
-      type: null,
-      date_from: null,
-      date_to: null,
-      amount_min: null,
-      amount_max: null,
-      page: 1,
-      per_page: 20,
-  };
-
+userId:any;
+user:any;
 usersOnLine: { id: number; name: string; last_seen_at: string }[] = [];
 onlineCount = 0;
 private onlinePolling?: any;
@@ -83,7 +69,18 @@ userRaffles:  RaffleItem[]  | undefined ;
 futureRaffles: RaffleItem[] | undefined ;
 nextRaffles: RaffleItem[] | undefined ;
 nextRaffle: RaffleItem | undefined;
-
+  // Filtros
+  // filters: TransactionFilters = {
+  //     currency_id: 'USD',
+  //     via_id: null,
+  //     type: null,
+  //     date_from: null,
+  //     date_to: null,
+  //     amount_min: null,
+  //     amount_max: null,
+  //     page: 1,
+  //     per_page: 20,
+  // };
 
 constructor(private RaffleService: RaffleService, 
             private sorteoService: SorteoService, 
@@ -92,72 +89,55 @@ constructor(private RaffleService: RaffleService,
             private userService: UserService,
             private accountService:AccountService) { }
 
-
 ngOnInit(): void {
-     const id = this.authService.getUserId();
-        if (id === null) {
-             this.router.navigateByUrl('/log-in');   // sin sesión no debería estar aquí
-         return;
-        }
-        this.userId = id;
-        //  console.log('userId = ', this.userId);
-        this.user = this.userService.currentUser();
-        // console.log('currentUser', this.user);
-        this.loadUserData();
-        setTimeout(() => this.getTotalBalance(), 1000);
-        this.getAvailablesRaffles();
-        // this.raffles= this.RaffleService.getDetailActiveRafflesByUser(this.userId)
-        // .then((datos)=>{
-        //       this.raffles= datos;
-        //  })
-        //   .catch((error)=>{console.log(error)});
-
-     // Suscribirse a los sorteos en vivo
-      // this.sorteoService.getSorteosEnVivo().subscribe({
-      //   next: (sorteos) => {
-      //     this.sorteosEnVivo = sorteos;
-      //   },
-      //   error: (error) => {
-      //     console.error('Error al cargar sorteos en vivo:', error);
-      //   }
-      // });
-              // this.pickNextSorteo();
-
+  const id = this.authService.getUserId();
+    if (id === null) {
+          this.router.navigateByUrl('/log-in');   // sin sesión no debería estar aquí
+      return;
+    }
+  this.userId = id;
+  //  console.log('userId = ', this.userId);
+  this.user = this.userService.currentUser();
+  // console.log('currentUser', this.user);
+  this.loadUserData();
+  setTimeout(() => this.getTotalBalance(), 1000);
+  this.getAvailablesRaffles();
+    
       // Suscribirse a los sorteos próximos
-      this.RaffleService.getSorteosProximos(this.userId).subscribe({
-        next: (raffles) => {
-          console.log('Sorteos próximos recibidos:', raffles.data?.['next_raffles']);
-              this.nextRaffles = raffles.data?.next_raffles;
-              console.log('nextRaffles', this.nextRaffles);
-              this.pickNextSorteo();
-        },
-        error: (error) => {
-          console.error('Error al cargar sorteos próximos:', error);
-        }
-      });
+  this.RaffleService.getSorteosProximos(this.userId).subscribe({
+    next: (raffles) => {
+      console.log('Sorteos próximos recibidos:', raffles.data?.['next_raffles']);
+          this.nextRaffles = raffles.data?.next_raffles;
+          console.log('nextRaffles', this.nextRaffles);
+          this.pickNextSorteo();
+    },
+    error: (error) => {
+      console.error('Error al cargar sorteos próximos:', error);
+    }
+  });
 
       // Suscribirse a las estadísticas
-      this.sorteoService.estadisticas$.subscribe({
-        next: (estadisticas) => {
-          this.estadisticas = estadisticas;
-        },
-        error: (error) => {
-          console.error('Error al cargar estadísticas:', error);
-        }
-      });
+  this.sorteoService.estadisticas$.subscribe({
+    next: (estadisticas) => {
+      this.estadisticas = estadisticas;
+    },
+    error: (error) => {
+      console.error('Error al cargar estadísticas:', error);
+    }
+  });
 
-        // this.sorteoService.getSorteosPorEstado('activo').subscribe(sorteos => {
-        //         this.sorteosActivos = sorteos;
-        //     });
+  // this.sorteoService.getSorteosPorEstado('activo').subscribe(sorteos => {
+    //         this.sorteosActivos = sorteos;
+    //     });
 
-        this.sorteoService.getSorteosPorEstado('proximo').subscribe(sorteos => {
-            this.sorteosProximos = sorteos;
-        });
+  this.sorteoService.getSorteosPorEstado('proximo').subscribe(sorteos => {
+      this.sorteosProximos = sorteos;
+  });
 
-        // this.sorteoService.estadisticas$.subscribe(estadisticas => {
-        //     this.estadisticas = estadisticas;
-        // });
-        this.loadOnlineUsers();
+  // this.sorteoService.estadisticas$.subscribe(estadisticas => {
+  //     this.estadisticas = estadisticas;
+  // });
+  this.loadOnlineUsers();
 }
 
   loadUserData(){
@@ -283,17 +263,17 @@ loadOnlineUsers(): void {
   }
   
   getAvailablesRaffles(){
-      this.RaffleService.getAvailablesRaffles(this.userId).subscribe({
-        next:(resp)=>{
-          console.log('availableRaffles = ',resp);
-          this.publicRaffles = resp.data?.['public_raffles'];
-          this.futureRaffles = resp.data?.futures_raffles;
-          this.userRaffles = resp.data?.user_raffles;
-          this.groupRaffles = resp.data?.group_raffles;
-          this.nextRaffles = resp.data?.next_raffles;
-          this.nextRaffle = resp.data?.next_raffle;
-        }
-      });
+    this.RaffleService.getAvailablesRaffles(this.userId).subscribe({
+      next:(resp)=>{
+        console.log('availableRaffles = ',resp);
+        this.publicRaffles = resp.data?.['public_raffles'];
+        this.futureRaffles = resp.data?.futures_raffles;
+        this.userRaffles = resp.data?.user_raffles;
+        this.groupRaffles = resp.data?.group_raffles;
+        this.nextRaffles = resp.data?.next_raffles;
+        this.nextRaffle = resp.data?.next_raffle;
+      }
+    });
   }
 
   ngOnDestroy(): void {

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { RaffleService } from '../../services/raffle.service';
-import { Card } from 'src/app/interfaces/get-cards-raffle-response';
+import { Card } from '../../interfaces/get-cards-raffle-response';
 
 @Component({
     selector: 'app-card-raffle',
@@ -21,7 +21,7 @@ Fichas: string[] = [];
    }
   ngOnInit(): void {
     if (this.raffleId && this.userId){
-      this.RaffleService.getCardsRaffleByUser(String(this.raffleId), String(this.userId))
+      this.RaffleService.getCardsRaffleByUser(Number(this.raffleId), Number(this.userId))
       .subscribe( resp => {
         console.log('cartones en card-raffle = ', resp.Cards);
         this.cartones = resp.Cards;

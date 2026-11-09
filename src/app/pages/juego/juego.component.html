@@ -5,17 +5,25 @@
          Banner + Carrusel de cartones disponibles
          ============================================ -->
    <header class="loteria-header">
-    
-    <!-- <div class="ad-banner">
-        <i class="fas fa-bullhorn"></i>
-        <span class="ad-text">¡Sorteo especial este viernes! Premio mayor de $100,000</span>
-    </div> -->
-    
+    <div class="header-top">
+
+        <div class="ad-banner">
+            <i class="fas fa-bullhorn"></i>
+            <span class="ad-text">Bienvenido de nuevo, {{user.name}}</span>
+        </div>
+        <div class="header-monto">
+
+            <span class="monto-jugado">
+                <i class="fas fa-coins"></i>
+                Monto jugado: {{ 10000 | currency:'USD':'symbol':'1.0-0' }}
+            </span>
+        </div>
+    </div>
     <div class="header-content">
         
         <!-- Mostrar BouncingBall si hay MÁS de 2 fichas -->
         <app-bouncing-ball 
-            *ngIf="fichas.length > 2"
+            *ngIf="fichas.length > 0"
             [imagenActual]="imagenFichaActual"
             [nombreFicha]="nombreFichaActual">
         </app-bouncing-ball>
@@ -25,12 +33,13 @@
             *ngIf="fichas.length <= 2"
             [raffleId]="raffleId" 
             [UserId]="userId"
+            [recordGroup]="recordGroup"
             (actualizarSaldo)="onActualizarSaldo($any($event))"
             (actualizarMisCartones)="onActualizarMisCartones($any($event))">
         </app-carrusel-cartones>
         
     </div>
-</header>
+    </header>
 
     <!-- ============================================
          CONTENIDO PRINCIPAL - 72% de altura
@@ -66,7 +75,7 @@
                         <span>Sorteo: {{ raffleId }}</span>
                     </div>
                     <button type="button" (click)="getNewRecord()" class="btn-nueva-ficha">
-                        <!-- <i class="fas fa-plus"></i> Nueva Ficha -->
+                        <i class="fas fa-plus"></i> Nueva Ficha
                     </button>
                 </div>
                 
@@ -110,6 +119,7 @@
                                     <app-carton 
                                         [carton]="carton"
                                         [fichasReveladas]="fichasReveladasArray"
+                                        [recordGroup]="recordGroup"
                                         [triggerActualizarMarcas]="triggerActualizarMarcas"
                                         [clickable]="false">
                                     </app-carton>

@@ -26,16 +26,17 @@ export class RecordsComponent implements OnInit {
   constructor(private RaffleService: RaffleService) { }
 
   ngOnInit(): void {
-    
+    // console.log('Fichas en recordsComponent = ', this.Fichas);
+    // console.log('fichaGroup en recordsComponent = ', this.fichaGroup);
   }
 
-  getFichas(texto:string){
-    this.RaffleService.getFichas(texto)
-    .subscribe( resp => {
-      console.log('fichas en recordComponent = ', resp.Fichas);
-      this.Raffle = resp.Raffle;
-    })
-  }
+  // getFichas(texto:string){
+  //   this.RaffleService.getFichas(texto)
+  //   .subscribe( resp => {
+  //     console.log('fichas en recordComponent = ', resp.Fichas);
+  //     this.Raffle = resp.Raffle;
+  //   })
+  // }
 
    prevSlide(): void {
     if (this.currentIndex > 0) {

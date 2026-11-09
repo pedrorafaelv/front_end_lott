@@ -11767,13 +11767,13 @@ fieldset:disabled .btn {
   color: var(--color-light);
 }
 
-.carousel-container {
+/* .carousel-container {
   overflow: hidden;
   border-radius: 28px;
   background: rgba(0, 0, 0, 0.3);
   padding: 20px 10px;
   box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.4);
-}
+} */
 
 .carousel-track {
   display: flex;

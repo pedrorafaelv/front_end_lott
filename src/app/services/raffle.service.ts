@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GetFichasResponse, Ficha } from '../interfaces/get-fichas-response';
-import { Observable, catchError, map, tap, throwError } from 'rxjs';
+import { Observable, catchError, map, tap, throwError, firstValueFrom } from 'rxjs';
 import { GetCardsRaffleResponse } from '../interfaces/get-cards-raffle-response';
 import { GetCardAvailableRaffleResponse } from '../interfaces/get-card-available-raffle-response';
 import { environment } from '../../environments/environment';
@@ -22,8 +22,6 @@ export class RaffleService {
   baseUrl = `${environment.apiUrl}raffle/`;
   authService: any;
   raffleService: any;
-
-
   constructor(
     private http: HttpClient) { 
   }
@@ -40,6 +38,7 @@ export class RaffleService {
   }
  
   getFichas(texto: string):Observable<any>{
+
     return this.http.get<GetFichasResponse>(`${ this.baseUrl }getFichas/${texto}`);
   }
 
@@ -65,7 +64,11 @@ export class RaffleService {
  
    /**Asigna una carton al usario para el sorteo seleccionado  */
   putCard(raffleId: number, cardId: number, userId: number): Observable<any> {
-      return this.http.post(`${this.baseUrl}putCard/${raffleId}/${cardId}/${userId}`, {});
+    let params = new HttpParams()
+      .set('raffleId', raffleId.toString())
+      .set('cardId', cardId.toString())
+      .set('userId', userId.toString());
+      return this.http.post(`${this.baseUrl}putCard/`, {params: params});
     }
 
   /**Obtiene los sorteos activos por grupo  */
@@ -93,39 +96,43 @@ export class RaffleService {
 
   async getDetailActiveRafflesByUser(user_id: number){
    // console.log('obteniendo detalle de rifas activas por usuario', user_id);
+   
     const resp =  await fetch((`${this.baseUrl}getDetailActiveRafflesByUser/${user_id}`))
     const data= await resp.json();
     return data;
   }
 
   async getFichasAs(raffle_id: number){
-   const resp = await fetch((`${this.baseUrl}getFichas/${raffle_id}`))
-   const fichas = resp.json();
-   return  fichas; 
+    let params = new HttpParams().set('raffle_id', raffle_id.toString());
+    const data = await firstValueFrom(
+      this.http.get<GetFichasResponse>(`${this.baseUrl}getFichas`, { params })
+    );
+    // console.log('getFichasAs en raffleService', data);
+    return data;
   }
-
-
+   
   getNextRecord(raffleId: number): Observable<NewRecordResponse> {
-    return this.http.get<NewRecordResponse>(`${this.baseUrl}getNewRecord/${raffleId}`)
+    let params = new HttpParams().set('raffle_id', raffleId.toString());
+    return this.http.get<NewRecordResponse>(`${this.baseUrl}getNewRecord/`, { params })
       .pipe(
-          catchError((error) => {
-              // El error HTTP viene con el body completo de la API
-              // Extraer el mensaje del backend
-              const errorMessage = error.error?.message || 'Error al obtener la ficha';
-              const errorCode = error.error?.code || 'ERR-UNKNOWN';
-              const errorData = error.error?.data || null;
+        catchError((error) => {
+          // El error HTTP viene con el body completo de la API
+          // Extraer el mensaje del backend
+          const errorMessage = error.error?.message || 'Error al obtener la ficha';
+          const errorCode = error.error?.code || 'ERR-UNKNOWN';
+          const errorData = error.error?.data || null;
 
-              // Crear un error enriquecido
-              const enrichedError = {
-                  status: error.status,
-                  message: errorMessage,
-                  code: errorCode,
-                  data: errorData
-              };
+          // Crear un error enriquecido
+          const enrichedError = {
+              status: error.status,
+              message: errorMessage,
+              code: errorCode,
+              data: errorData
+          };
 
-              // console.error('❌ Error en getNextRecord:', enrichedError);
-              return throwError(() => enrichedError);
-          })
+          // console.error('❌ Error en getNextRecord:', enrichedError);
+          return throwError(() => enrichedError);
+        })
       );
   }
 
@@ -157,22 +164,41 @@ export class RaffleService {
 
   /**obtiene los detalles del sorteo se usa para obtener el nombre del grupo de fichas  */
   async getRaffleDetails(raffle_id: number){
-    const resp = await fetch(`${this.baseUrl}getRaffleDetails/${raffle_id}`);
-    return resp.json();
-  }
-
-  /*Obtiene los cartones disponibles para el sorteo seleccionado */
-  async getAvailableCardsByRaffle(raffle: number, user_id?: number): Promise<GetCardAvailableRaffleResponse> {
-    if (user_id) {
-      const resp = await fetch(`${this.baseUrl}getAvailableCardsByRaffle/${raffle}?user_id=${user_id}`);
-      const data = await resp.json();
+    try {let params = new HttpParams().set('raffle_id', raffle_id.toString());
+      const data = await firstValueFrom(
+        this.http.get<any>(`${this.baseUrl}getRaffleDetails`, { params })
+      );
       return data;
+    } catch (error) {
+      console.error('❌ Error en getRaffleDetails:', error);
+      throw error;
     }
-    const resp = await fetch(`${this.baseUrl}getAvailableCardsByRaffle/${raffle}`);
-    const data = await resp.json();
-    return data;
   }
 
+  async getAvailableCardsByRaffle(raffle: number, user_id?: number): Promise<GetCardAvailableRaffleResponse> {
+    try {
+        let params = new HttpParams().set('raffle', raffle.toString());
+
+        if (user_id) {
+            params = params.set('user_id', user_id.toString());
+        }
+
+        // ✅ Usa HttpClient (pasa por el interceptor)
+        const data = await firstValueFrom(
+            this.http.get<GetCardAvailableRaffleResponse>(
+                `${this.baseUrl}getAvailableCardsByRaffle/`,
+                { params }
+            )
+        );
+
+        // console.log('getAvailableCardsByRaffle en raffleService', data);
+        return data;
+
+    } catch (error) {
+        console.error('❌ Error en getAvailableCardsByRaffle:', error);
+        throw error;
+    }
+}
   getUserLevel(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/user/level`);
 
@@ -202,57 +228,45 @@ export class RaffleService {
     );
   }
 
-/** Busca un dorteo por el usuario o una palabra */
-searchRaffle(userId: number | string, search: string): Observable<GetLastRaffleResponse> {
-  const params = new HttpParams()
-    .set('user_id', userId.toString())
-    .set('search', search.trim());
+  /** Busca un dorteo por el usuario o una palabra */
+  searchRaffle(userId: number | string, search: string): Observable<GetLastRaffleResponse> {
+    const params = new HttpParams()
+      .set('user_id', userId.toString())
+      .set('search', search.trim());
 
-  return this.http.get<GetLastRaffleResponse>(`${this.baseUrl}searchRaffle`, { params });
-}
+    return this.http.get<GetLastRaffleResponse>(`${this.baseUrl}searchRaffle`, { params });
+  }
 
-getSchedulerStatus() {
-  return this.http.get<any>(`${this.baseUrl}scheduler/status`);
-}
+  getSchedulerStatus() {
+    return this.http.get<any>(`${this.baseUrl}scheduler/status`);
+  }
 
-toggleScheduler(adminUserId?: number) {
-  return this.http.post<any>(`${this.baseUrl}scheduler/toggle`,
-    adminUserId ? { admin_user_id: adminUserId } : {});
-}
+  toggleScheduler(adminUserId?: number) {
+    return this.http.post<any>(`${this.baseUrl}scheduler/toggle`,
+      adminUserId ? { admin_user_id: adminUserId } : {});
+  }
 
-triggerScheduler() {
-  return this.http.post<any>(`${this.baseUrl}scheduler/trigger`, {});
-}
- 
-updateSchedulerConfig(config: {min_players?: number; auto_play?: boolean; auto_play_rate?: number; template_raffle_id?: number;}) {
-  return this.http.post<any>(`${this.baseUrl}scheduler/config`, config);
-}
+  triggerScheduler() {
+    return this.http.post<any>(`${this.baseUrl}scheduler/trigger`, {});
+  }
+  
+  updateSchedulerConfig(config: {min_players?: number; auto_play?: boolean; auto_play_rate?: number; template_raffle_id?: number;}) {
+    return this.http.post<any>(`${this.baseUrl}scheduler/config`, config);
+  }
 
-getAvailablesRaffles(userId:number): Observable<getAvailablesRafflesResponse>{
-   const params = new  HttpParams()
-    .set('user_id', userId.toString())
+  getAvailablesRaffles(userId:number): Observable<getAvailablesRafflesResponse>{
+    const params = new  HttpParams()
+      .set('user_id', userId.toString())
 
-  return this.http.get<any>(`${this.baseUrl}getAvailablesRaffles`, { params });
+    return this.http.get<any>(`${this.baseUrl}getAvailablesRaffles`, { params });
 
-}
+  }
   getSorteosProximos(userId:number): Observable<getAvailablesRafflesResponse> {
     const params = new  HttpParams()
     .set('user_id', userId.toString())
       return this.http.get<getAvailablesRafflesResponse>(`${this.baseUrl}getNextRaffles`, { params });
   }
 
-   // buscarUltimoRaffle(): Observable<GetLastRaffleResponse> {
-  //   const url = `${this.baseUrl}getLastUserRaffle/${this.authService.getUserId()}`;
-  //   return this.http.get<GetLastRaffleResponse>(url);
-  // }
-  /** Obtiene una nueva ficha para el sorteo solo lo usa el administrador del sorteo */
-    //  async getNextRecord(raffle:number){
-    //   const resp =  await fetch(`${this.baseUrl}getNewRecord/${raffle}`)
-    //   const ficha = resp.json();
-    //   console.log('obteniendo siguiente ficha para la rifa', raffle, 'ficha obtenida', ficha);
-    //   return ficha;
-
-    //  }
-
+  
 }
          

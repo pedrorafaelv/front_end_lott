@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PeliculasService } from '../../services/peliculas.service';
+import { PeliculasService } from '../peliculas.service';
 import { Movie } from '../../interfaces/cartelera-response';
 
 @Component({
