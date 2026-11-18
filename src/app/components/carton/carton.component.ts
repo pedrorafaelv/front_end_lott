@@ -19,7 +19,6 @@ export class CartonComponent implements OnInit {
     @Input() carton!: Card;
     @Input() recordGroup: string = '@';
     @Input() clickable: boolean = true;  // ← Nuevo: controla si es clickeable
-
     // ⭐ Fichas que ya salieron (para marcar automáticamente)
     @Input() fichasReveladas: string[] = [];
 
@@ -38,8 +37,8 @@ export class CartonComponent implements OnInit {
     constructor() { }
 
     ngOnInit(): void {
-         console.log('recordGroup = ', this.recordGroup );
-         console.log('carton = ', this.carton );
+        //  console.log('recordGroup = ', this.recordGroup );
+        //  console.log('carton = ', this.carton );
         this.inicializarMarcas();
 
     }
@@ -52,29 +51,28 @@ export class CartonComponent implements OnInit {
 
 
     esFichaRevelada(descripcion: string): boolean {
-    if (!this.fichasReveladas || this.fichasReveladas.length === 0) {
-        return false;
+        if (!this.fichasReveladas || this.fichasReveladas.length === 0) {
+            return false;
+        }
+        
+        // Normalizar: quitar extensión y comparar sin extensión
+        const descripcionSinExt = descripcion?.replace(/\.[^/.]+$/, '') || '';
+        
+        return this.fichasReveladas.some(ficha => {
+            const fichaSinExt = ficha?.replace(/\.[^/.]+$/, '') || '';
+            return fichaSinExt === descripcionSinExt;
+        });
     }
-    
-    // Normalizar: quitar extensión y comparar sin extensión
-    const descripcionSinExt = descripcion?.replace(/\.[^/.]+$/, '') || '';
-    
-    return this.fichasReveladas.some(ficha => {
-        const fichaSinExt = ficha?.replace(/\.[^/.]+$/, '') || '';
-        return fichaSinExt === descripcionSinExt;
-    });
- }
-
 
    onFichaClick(ficha:any){
-    console.log('ficha', ficha);
+    // console.log('ficha', ficha);
    }
 
 
    ngOnChanges(changes: SimpleChanges): void {
         // ⭐ Si cambia el trigger, actualizar las marcas automáticamente
         if (changes['triggerActualizarMarcas'] && !changes['triggerActualizarMarcas'].firstChange) {
-            console.log('🔄 Trigger de actualización recibido');
+            // console.log('🔄 Trigger de actualización recibido');
             this.marcarFichasSalidas();
         }
 
@@ -101,27 +99,22 @@ export class CartonComponent implements OnInit {
      */
     marcarFichasSalidas(): void {
         if (!this.fichasReveladas || this.fichasReveladas.length === 0) {
-            console.log('⚠️ No hay fichas reveladas');
+            // console.log('⚠️ No hay fichas reveladas');
             return;
         }
-
-        console.log('🎯 Marcando fichas salidas:', this.fichasReveladas);
-
+        // console.log('🎯 Marcando fichas salidas:', this.fichasReveladas);
         this.posiciones.forEach(pos => {
             const valor = this.carton[pos as keyof Card];
-            
             if (valor && typeof valor === 'string') {
                 // Normalizar comparación
                 const valorNormalizado = this.normalizar(valor);
                 const estaRevelada = this.fichasReveladas.some(ficha => 
                     this.normalizar(ficha) === valorNormalizado
-                );
-                
+                );       
                 // Solo marcar (no desmarcar) si está revelada
                 if (estaRevelada) {
                     this.marcas[pos] = true;
                 }
-
             }
         });
     }
@@ -133,7 +126,7 @@ export class CartonComponent implements OnInit {
         event.stopPropagation();  // Evitar que el click se propague al cartón
         
         this.marcas[pos] = !this.marcas[pos];
-        console.log(`🔀 Celda ${pos} → ${this.marcas[pos] ? 'MARCADA' : 'DESMARCADA'}`);
+        // console.log(`🔀 Celda ${pos} → ${this.marcas[pos] ? 'MARCADA' : 'DESMARCADA'}`);
     }
 
     /**
@@ -163,8 +156,9 @@ export class CartonComponent implements OnInit {
 
 
     contarMarcadas(): number {
-    return Object.values(this.marcas).filter(m => m === true).length;
+        return Object.values(this.marcas).filter(m => m === true).length;
     }
+    
     // esFichaRevelada(descripcion: string): boolean {
     //     if (!this.fichasReveladas || this.fichasReveladas.length === 0) {
     //         return false;

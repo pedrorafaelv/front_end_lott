@@ -9,6 +9,8 @@ import { NewRecordResponse } from '../interfaces/get-new-record-response';
 import { GetLastRaffleResponse, Raffle } from '../interfaces/get-last-user-raffle-response';
 import { getAvailablesRafflesResponse } from '../interfaces/get-availables-raffles-response';
 import { RaffleItem } from '../models/raffle.model';
+import { GetMyCardsResponse } from '../interfaces/get-my-cards-respose';
+import { CancelBetResponse } from '../interfaces/cancel-bet-response';
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +40,6 @@ export class RaffleService {
   }
  
   getFichas(texto: string):Observable<any>{
-
     return this.http.get<GetFichasResponse>(`${ this.baseUrl }getFichas/${texto}`);
   }
 
@@ -64,12 +65,18 @@ export class RaffleService {
  
    /**Asigna una carton al usario para el sorteo seleccionado  */
   putCard(raffleId: number, cardId: number, userId: number): Observable<any> {
-    let params = new HttpParams()
-      .set('raffleId', raffleId.toString())
-      .set('cardId', cardId.toString())
-      .set('userId', userId.toString());
-      return this.http.post(`${this.baseUrl}putCard/`, {params: params});
-    }
+    const body = {
+      raffle_id: raffleId,
+      card_id:   cardId,
+      user_id:   userId,
+    };
+
+    // console.log('📦 POST putCard:', body);
+
+    return this.http.post(`${this.baseUrl}putCard/`, body).pipe(
+      tap(res => console.log('✅ Respuesta putCard:', res)),
+    );
+  }
 
   /**Obtiene los sorteos activos por grupo  */
   getActiveRafflesByGroup(group_id: number){
@@ -138,13 +145,19 @@ export class RaffleService {
 
 
    /**elimina una apuesta de un carton  */
-  deleteCard(raffleId:number, user_id:number, card_id:number): Observable<NewRecordResponse> {
-    return this.http.post<NewRecordResponse>(`${this.baseUrl}cancelBet/${raffleId}/${card_id}/${user_id}`, {})
+  deleteCard(raffle_id:number, user_id:number, card_id:number): Observable<CancelBetResponse> {
+    
+    const body = {
+        raffle_id: raffle_id,
+        user_id: user_id,
+        card_id: card_id,
+      };
+    return this.http.post<CancelBetResponse>(`${this.baseUrl}cancelBet`,  body)
       .pipe(
         catchError((error) => {
             // El error HTTP viene con el body completo de la API
             // Extraer el mensaje del backend
-            const errorMessage = error.error?.message || 'Error alEliminar el Cartón';
+            const errorMessage = error.error?.message || 'Error al Eliminar el Cartón';
             const errorCode = error.error?.code || 'ERR-UNKNOWN';
             const errorData = error.error?.data || null;
 
@@ -177,7 +190,7 @@ export class RaffleService {
 
   async getAvailableCardsByRaffle(raffle: number, user_id?: number): Promise<GetCardAvailableRaffleResponse> {
     try {
-        let params = new HttpParams().set('raffle', raffle.toString());
+        let params = new HttpParams().set('raffle_id', raffle.toString());
 
         if (user_id) {
             params = params.set('user_id', user_id.toString());
@@ -267,6 +280,14 @@ export class RaffleService {
       return this.http.get<getAvailablesRafflesResponse>(`${this.baseUrl}getNextRaffles`, { params });
   }
 
+  async getMyCards(raffle_id: number, user_id: number): Promise<GetMyCardsResponse> {
+    let params = new HttpParams().set('raffle_id', raffle_id.toString()).set('user_id', user_id.toString());
+    const data = await firstValueFrom(
+      this.http.get<GetMyCardsResponse>(`${this.baseUrl}getMyCards`, { params })
+    );
+    // console.log('getMyCards en raffleService', data);
+    return data;
+  }
   
 }
          

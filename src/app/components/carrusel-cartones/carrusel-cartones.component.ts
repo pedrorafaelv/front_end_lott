@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit, OnInit, OnChanges, SimpleChanges  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Carton } from '../../models/carton.model';
@@ -18,16 +18,19 @@ import { environment } from '../../../environments/environment.prod';
   styleUrls: ['./carrusel-cartones.component.css']
 })
 
-export class CarruselCartonesComponent implements OnInit, AfterViewInit {
+export class CarruselCartonesComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() cartones: Card[] = [];
   @Input() seleccionados: number[] = [];
   @Input() JugadorId: string = '';
   @Input() UserId: number = 0;
   @Input() raffleId: number = 0;
   @Input() recordGroup: string = environment.defaultRecordGroup || 'Caricaturs';
+  @Input() triggerActualizarDisponibles: number = 0;   // ⭐ NUEVO
   @Output() seleccionar = new EventEmitter<number>();
   @Output() actualizarSaldo = new EventEmitter<number>();
   @Output() actualizarMisCartones = new EventEmitter<any[]>();
+  @Output() actualizarRaffleDetails = new EventEmitter<number>();
+
   @ViewChild('track') track!: ElementRef;
 
   currentIndex = 0;
@@ -43,11 +46,9 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
     private CartonesService: CartonesService,
     private readonly http: HttpClient,
     private RaffleService: RaffleService,
-    // http: HttpClient
   ) {
     this.http = http;
   }
-
   ngOnInit(): void {
     this.cargarDatosiniciales();
   }
@@ -57,6 +58,15 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
       this.updateCarouselPosition();
     }, 0);
   }
+
+   ngOnChanges(changes: SimpleChanges): void {
+    // Solo reaccionar cuando cambia el trigger (no en la primera asignación)
+    if (changes['triggerActualizarDisponibles'] &&
+        !changes['triggerActualizarDisponibles'].firstChange &&
+        this.raffleId != 0) {
+      this.recargarDisponibles();
+    }
+  }
   
   cargarDatosiniciales() {
       if (this.raffleId != 0){
@@ -64,19 +74,26 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
       }
   }
 
-  async getCardsAvailables(){
-    this.CartonesService.getAvailableCards(String(this.raffleId))
-      .subscribe((resp: any) => {
-          this.cartones = resp.Card;
-        },
-        (error: any) => {
-          console.log(error);
-        });
+   /** Recarga los cartones disponibles desde el backend (usado tras cancelar apuesta) */
+  async recargarDisponibles(): Promise<void> {
+    try {
+      await this.getAvailableCardsByRaffle(this.raffleId);
+      // Resetear la posición del carrusel si ya no caben los slides actuales
+      const maxIndex = Math.max(0, this.cartones.length - this.cardsPerView);
+      if (this.currentIndex > maxIndex) {
+        this.currentIndex = maxIndex;
+      }
+      this.updateCarouselPosition();
+    } catch (error) {
+      console.error('❌ Error al recargar cartones disponibles:', error);
+    }
   }
-
+  
  /**Obtiene los cartones disponibles para el sorteo seleccionado  vienen de la tabla cardRaffle  con user_id == null*/
   async getAvailableCardsByRaffle(raffle: number): Promise<GetCardAvailableRaffleResponse> {
     const data = await this.RaffleService.getAvailableCardsByRaffle(this.raffleId);
+
+    // console.log('🔍 Data en JSON getAvailableCardsByRaffle en carrosel-cartones:', JSON.stringify(data, null, 2));
     this.cartones = data.data.Card.data;
     this.quantityAvailableCards = this.cartones.length;
     return data;
@@ -114,13 +131,12 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
               text: response.message || 'El cartón ha sido agregado exitosamente.',
               confirmButtonColor: '#176585'
             });
-            
-            this.seleccionar.emit(id);
-            
             // Recargar datos actualizados
+            this.seleccionar.emit(id);
             this.cargarDatosiniciales();
             this.actualizarSaldo.emit(this.UserId);
             this.actualizarMisCartones.emit(this.myCards);
+            this.actualizarRaffleDetails.emit(this.raffleId);
           },
           error: (error: any) => {
             this.manejarErrorApuesta(error);
@@ -303,10 +319,16 @@ export class CarruselCartonesComponent implements OnInit, AfterViewInit {
         this.track.nativeElement.style.transform = `translateX(-${offset}px)`;
       }
     }
-    
-    
+      
+    // async getCardsAvailables(){
+    //   this.CartonesService.getAvailableCards(String(this.raffleId))
+    //     .subscribe((resp: any) => {
+    //         this.cartones = resp.Card;
+    //       },
+    //       (error: any) => {
+    //         console.log(error);
+    //       });
+    // }
+  
   }
 
-  function subscribe(arg0: { next: (response: any) => void; error: (error: any) => void; }) {
-    throw new Error('Function not implemented.');
-  }

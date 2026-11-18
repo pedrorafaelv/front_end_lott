@@ -50,11 +50,10 @@ export const firebaseWeb = {
   appId: "1:372154165741:web:6f23fe9249cb531f909fe4",
 };
  export const  posiciones: string[] = [
-        'pos00', 'pos01', 'pos02', 'pos03', 'pos04',
-        'pos05', 'pos06', 'pos07', 'pos08', 'pos09',
-        'pos10', 'pos11', 'pos12', 'pos13', 'pos14',
-        'pos15', 'pos16', 'pos17', 'pos18', 'pos19',
-        'pos20', 'pos21', 'pos22', 'pos23', 'pos24'
+        'pos01', 'pos02', 'pos03', 'pos04', 'pos05',
+        'pos06', 'pos07', 'pos08', 'pos09', 'pos10',
+        'pos11', 'pos12', 'pos13', 'pos14', 'pos15',
+        'pos16', 'pos17', 'pos18', 'pos19', 'pos20',
+        'pos21', 'pos22', 'pos23', 'pos24', 'pos25'
     ]; 
-
 

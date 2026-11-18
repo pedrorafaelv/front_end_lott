@@ -77,7 +77,7 @@
 
 /* Bloque izquierdo: saludo (80%) */
 .header-top .ad-banner {
-    flex: 0 0 80%;            /* 👈 80% del ancho */
+    flex: 0 0 30%;            /* 👈 80% del ancho */
     max-width: none;          /* anula el 500px que tenías */
     margin: 0;                /* anula el auto que lo centraba */
     justify-content: center;
@@ -85,7 +85,7 @@
 
 /* Bloque derecho: monto (20%) */
 .header-monto {
-    flex: 0 0 20%;            /* 👈 20% del ancho */
+    flex: 0 0 70%;            /* 👈 20% del ancho */
     display: flex;
     align-items: center;
     justify-content: flex-end;/* pegado a la derecha del bloque */

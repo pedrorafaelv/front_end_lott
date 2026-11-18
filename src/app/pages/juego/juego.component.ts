@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RaffleService } from '../../services/raffle.service';
@@ -65,15 +65,20 @@ export class JuegoComponent implements OnInit {
  nombreFichaActual:string ="";
  imagenFichaActual:string ="";
  baseUrlImage:string = './assets/images/Caricatures/';
+ line_reward: undefined | number=0;
+ full_reward: undefined |number=0;
  activeRaffles: any ;
  lineWinner: any;
  fullWinner: any; 
  user:any;
     // ⭐ Trigger para actualizar marcas (cambia cada vez que se presiona el botón)
 triggerActualizarMarcas: number = 0;
+   // ⭐ Trigger para recargar cartones disponibles en el carrusel
+triggerActualizarDisponibles: number = 0;
   
 @ViewChild('scroll') scroll!: ElementRef;
 @Output() eliminar = new EventEmitter<number>();
+availableCards: any;
 
   constructor(private RaffleService: RaffleService,
               private AuthService: AuthService,
@@ -101,9 +106,17 @@ triggerActualizarMarcas: number = 0;
     this.loadUserData();
     if (this.raffleId != 0){
       this.getInfo();
-      this.getAvailableCardsByRaffle();
       this.getRaffleDetails();
       this.getFichas();
+    }
+  }
+ 
+  async getInfo(){
+    const user =  await this.UserService.getUserByLocalId(this.localId);
+   
+    if(this.userId){
+      const MyCards = await this.getMyCards();
+      // console.log('MyCards', MyCards);
     }
   }
 
@@ -111,7 +124,31 @@ triggerActualizarMarcas: number = 0;
      const response = await this.RaffleService.getFichasAs(this.raffleId);
     this.fichas = response.data?.Fichas ?? [];
     this.raffle = response.data?.Raffle?? {} as Raffle;  
-   }
+  }
+
+  async getMyCards(): Promise<any> {
+    const data = await this.RaffleService.getMyCards(this.raffleId, this.userId);
+    this.MyCards = data.data.cards;
+    // console.log('🔍 myCards Data en JSON:', JSON.stringify(data.data.cards, null, 2));
+    return data;
+  }
+  
+  async getRaffleDetails(): Promise<RaffleDetails | undefined> {
+    try {
+        const response = await this.RaffleService.getRaffleDetails(this.raffleId);
+        this.RaffleDetails = response;
+        // console.log('✅ Detalles del sorteo:', this.RaffleDetails);
+        this.fichaGroupName = this.RaffleDetails?.data.groupficha.name || '';
+   
+        this.recordGroup = this.fichaGroupName.split(' ')[0] || environment.defaultRecordGroup;
+        this.actualizarPremios();
+        return this.RaffleDetails;
+    } catch (error) {
+        console.error('❌ Error en getRaffleDetails:', error);
+      return undefined;
+    }
+ }
+ 
   /**
   * Array de nombres de fichas reveladas (se usa en el cartón)
   */
@@ -134,71 +171,24 @@ triggerActualizarMarcas: number = 0;
   onActualizarMisCartones(misCartones: any[]): void {
     // console.log('Mis cartones actualizados:', misCartones);
     // Actualizar la lista de mis cartones en el padre
-    this.getAvailableCardsByRaffle();
+    this.actualizarPremios()
+    this.getMyCards();
   }
-
-  async getAvailableCardsByRaffle(): Promise<GetCardAvailableRaffleResponse> {
-    const data = await this.RaffleService.getAvailableCardsByRaffle(this.raffleId, this.userId);
-    // console.log('📦 Datos desde el servicio: RaffleServices en juego.component', data.data.Card.data);
-    this.MyCards = data.data.Card.data;
-
-    // console.log('🔍 Data en JSON:', JSON.stringify(data, null, 2));
-    return data;
+  
+  onActualizarRaffleDetails(totalAmount:number):void{
+    this.getRaffleDetails();
   }
-
-  // get fichasReveladasArray(): string[] {
-  //     // Opción 1: Si 'fichas' contiene las fichas que ya salieron
-  //     return this.fichas.map(f => f.image);
-      
-  //     // Opción 2: Si tienes un array separado de fichas reveladas
-  //     // return this.fichasReveladas.map(f => f.image);
-  // } 
-
-  async getRaffleDetails(): Promise<RaffleDetails | undefined> {
-    try {
-        const response = await this.RaffleService.getRaffleDetails(this.raffleId);
-        this.RaffleDetails = response;
-        // console.log('✅ Detalles del sorteo:', this.RaffleDetails);
-        this.fichaGroupName = this.RaffleDetails?.data.groupficha.name || '';
-        this.recordGroup = this.fichaGroupName.split(' ')[0] || environment.defaultRecordGroup;
-        return this.RaffleDetails;
-    } catch (error) {
-        console.error('❌ Error en getRaffleDetails:', error);
-      return undefined;
-    }
- }
-
-  async getInfo(){
-    const user =  await this.UserService.getUserByLocalId(this.localId);
-    // this.userId = user.user[0]['id'];
-    // console.log('userId', this.userId);
-    if(this.userId){
-      const MyCards = await this.getAvailableCardsByRaffle();
-      // console.log('MyCards', MyCards);
-    }
+  
+  actualizarPremios(): void {
+    this.line_reward= this.RaffleDetails?.data.raffle.percent_line && this.RaffleDetails?.data.raffle.total_amount? this.RaffleDetails?.data.raffle.total_amount* this.RaffleDetails?.data.raffle.percent_line/100 : 0;
+    this.full_reward= this.RaffleDetails?.data.raffle.percent_full && this.RaffleDetails?.data.raffle.total_amount? this.RaffleDetails?.data.raffle.total_amount* this.RaffleDetails?.data.raffle.percent_full/100 : 0; 
   }
 
   async getCardsRafflesByUser(){
     const resp = await this.RaffleService.getCardsRaffleByUserAs(this.raffleId, this.userId);
     this.cartones = resp.Cards;
-   }
+  }
 
-  async getActiveRaffle(){
-     const resp =  await this.RaffleService.getActiveRafflesByUser(this.userId);
-      //  console.log('resp', resp);
-     this.raffleId =  resp['raffles'][0]['id']; 
-     this.fichaGroupName= resp['raffles'][0]['groupfichas']; 
-  }
-    
-  async getCardsAvailables(){
-    this.Cartones.getAvailableCards(String(this.raffleId))
-      .subscribe((resp: any) => {
-          this.cartones = resp.Card;
-        },
-        (error: any) => {
-          console.log(error);
-        });
-  }
 
   eliminarCarton(id:number): void {
     Swal.fire({
@@ -211,113 +201,126 @@ triggerActualizarMarcas: number = 0;
           confirmButtonColor: '#176585'
         }).then((result) => {
           if (result.isConfirmed) {
-            this.RaffleService.deleteCard(this.raffleId, this.userId, id).subscribe(
-              (resp: any) => {
-                // console.log('resp en deleteCard', resp);
-                const cancelBetResponse = resp as CancelBetResponse;
-                if (isCancelBetSuccess(cancelBetResponse)) {
-                  Swal.fire({
+
+
+
+
+            // this.RaffleService.deleteCard(this.raffleId, this.userId, id).subscribe(
+            //   (resp: any) => {
+            //     console.log('carton.id: en eliminar carton raffleservice', id);
+            //      console.log('resp en deleteCard', resp);
+            //     const cancelBetResponse = resp as CancelBetResponse;
+            //     if (isCancelBetSuccess(cancelBetResponse)) {
+            //       Swal.fire({
+            //         icon: 'success',
+            //         title: 'Cartón eliminado',
+            //         text: `Se eliminó el cartón correctamente.`,
+            //         confirmButtonText: 'Aceptar',
+            //         confirmButtonColor: '#176585'
+            //       });
+            //       return;
+            //     }
+
+            //     if (isCancelBetError(cancelBetResponse)) {
+            //       Swal.fire({
+            //         icon: 'error',
+            //         title: 'No se pudo eliminar',
+            //         text: CANCEL_BET_MESSAGES[cancelBetResponse.code] || cancelBetResponse.message,
+            //         confirmButtonText: 'Aceptar',
+            //         confirmButtonColor: '#176585'
+            //       });
+            //     }
+            //   },
+            //   (error: any) => {
+            //     console.error('Error al eliminar el cartón:', error);
+            //     Swal.fire({
+            //       icon: 'error',
+            //       title: 'Error',
+            //       text: error?.message || 'No se pudo eliminar el cartón.',
+            //       confirmButtonText: 'Aceptar',
+            //       confirmButtonColor: '#176585'
+            //     });
+            //   }
+            // );
+            try {
+              // this.eliminar.emit(id);
+
+              this.RaffleService.deleteCard(this.raffleId, this.userId, id).subscribe({
+                next: (response) => {
+                  const cancelBetResponse = response as unknown as CancelBetResponse;
+              // ✅ Type Guard - Éxito
+                  if (isCancelBetSuccess(cancelBetResponse)) {
+                   Swal.fire({
                     icon: 'success',
-                    title: 'Cartón eliminado',
-                    text: `Se eliminó el cartón correctamente.`,
-                    confirmButtonText: 'Aceptar',
-                    confirmButtonColor: '#176585'
-                  });
-                  return;
-                }
-
-                if (isCancelBetError(cancelBetResponse)) {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'No se pudo eliminar',
-                    text: CANCEL_BET_MESSAGES[cancelBetResponse.code] || cancelBetResponse.message,
-                    confirmButtonText: 'Aceptar',
-                    confirmButtonColor: '#176585'
-                  });
-                }
-              },
-              (error: any) => {
-                console.error('Error al eliminar el cartón:', error);
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: error?.message || 'No se pudo eliminar el cartón.',
-                  confirmButtonText: 'Aceptar',
-                  confirmButtonColor: '#176585'
+                    title: 'Apuesta cancelada',
+                    text: `Se reembolsaron $${cancelBetResponse.data.refunded_amount}. Nuevo saldo: $${cancelBetResponse.data.new_amount}`,
+                    footer: `ID: ${cancelBetResponse.meta.request_id}`
                 });
-              }
-            );
-//              try {
-//               // this.eliminar.emit(id);
-
-//               this.RaffleService.deleteCard(this.raffleId, this.userId, id).subscribe({
-//                 next: (response) => {
-//             const cancelBetResponse = response as unknown as CancelBetResponse;
-//         // ✅ Type Guard - Éxito
-//             if (isCancelBetSuccess(cancelBetResponse)) {
-//             Swal.fire({
-//                 icon: 'success',
-//                 title: 'Apuesta cancelada',
-//                 text: `Se reembolsaron $${cancelBetResponse.data.refunded_amount}. Nuevo saldo: $${cancelBetResponse.data.new_amount}`,
-//                 footer: `ID: ${cancelBetResponse.meta.request_id}`
-//             });
-//             return;
-//           }
-
-//         // ❌ Type Guard - Error
-//             if (isCancelBetError(cancelBetResponse)) {
-//             Swal.fire({
-//                 icon: 'error',
-//                 title: 'Error',
-//                 text: CANCEL_BET_MESSAGES[cancelBetResponse.code] || cancelBetResponse.message,
-//                 footer: `ID: ${cancelBetResponse.meta.request_id}`
-//             });
-//         }
-//     },
-//     error: (error) => {
-//         // Errores HTTP no controlados (500, 404, etc.)
-//         const errorResponse = error.error as CancelBetResponse;
-//         Swal.fire({
-//             icon: 'error',
-//             title: 'Error de conexión',
-//             text: errorResponse?.message || 'No se pudo conectar con el servidor'
-//         });
-//     }
-// });
-//               this.RaffleService.deleteCard(this.raffleId,this.userId,id)
-//                console.log('carton eliminado');
-//              } catch (error) {
-//               console.log('no se puedo hacer eliminar el cartón')
-//              }
+                // Actualizar la lista de cartones después de eliminar uno
+                this.getMyCards();
+                // Actualizar datos en el sorteo (por ejemplo, saldo del usuario)
+                this.getRaffleDetails();
+                //actualizar los cartones disponibles
+                // this.getAvailableCardsByRaffle(this.raffleId);
+                // ⭐ Recargar cartones disponibles en el carrusel
+                this.triggerActualizarDisponibles++;
+                return;
           }
-        });
+
+
+        // ❌ Type Guard - Error
+          if (isCancelBetError(cancelBetResponse)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: CANCEL_BET_MESSAGES[cancelBetResponse.code] || cancelBetResponse.message,
+                footer: `ID: ${cancelBetResponse.meta.request_id}`
+            });
+         }
+
+        },
+        error: (error) => {
+            // Errores HTTP no controlados (500, 404, etc.)
+            const errorResponse = error.error as CancelBetResponse;
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de conexión',
+                text: errorResponse?.message || 'No se pudo conectar con el servidor'
+            });
+        }
+        });         
+      } catch (error) {
+        console.log('no se puedo hacer eliminar el cartón')
+      }
+    }
+    });
 
   }
   
-async getNextRecord(){
-  const resp = this.RaffleService.getNextRecord(this.raffleId).subscribe({
-    next: (resp: NewRecordResponse) => { 
-      this.lastRecord= resp.data?.ficha;
-      this.lineWinner = resp.data?.winners.line;
-      this.fullWinner = resp.data?.winners.full;
-      this.imagenFichaActual= this.baseUrlImage +(resp.data?.ficha?.image ?? "");
-      // this.imagenFichaActual= this.baseUrlImage + "376_p.png";
-      this.nombreFichaActual =  resp.data?.ficha?.name ?? "";
-      // console.log('resp en getnetxRecord', resp);
-    },
-     error: (error: any) => {
-      console.error('Error al obtener la siguiente ficha:', error);
-      Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: error.message,            
-          confirmButtonText: 'Aceptar',
-          confirmButtonColor: '#176585'
-       }); 
-     }
-     //  this.lastRecord = resp.ficha; 
-   })
-}
+  async getNextRecord(){
+    const resp = this.RaffleService.getNextRecord(this.raffleId).subscribe({
+      next: (resp: NewRecordResponse) => { 
+        this.lastRecord= resp.data?.ficha;
+        this.lineWinner = resp.data?.winners.line;
+        this.fullWinner = resp.data?.winners.full;
+        this.imagenFichaActual= this.baseUrlImage +(resp.data?.ficha?.image ?? "");
+        // this.imagenFichaActual= this.baseUrlImage + "376_p.png";
+        this.nombreFichaActual =  resp.data?.ficha?.name ?? "";
+        // console.log('resp en getnetxRecord', resp);
+      },
+      error: (error: any) => {
+        console.error('Error al obtener la siguiente ficha:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message,            
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#176585'
+        }); 
+      }
+      //  this.lastRecord = resp.ficha; 
+    })
+  }
 
   async  getNewRecord(){
     // console.log('getNewRecord');
@@ -366,75 +369,75 @@ async getNextRecord(){
    /**
      * Muestra mensaje de error genérico
      */
-    private mostrarError(mensaje: string) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Aviso',
-            text: mensaje,
-            confirmButtonText: 'Aceptar',
-            confirmButtonColor: '#176585'
-        });
-    }
+    // private mostrarError(mensaje: string) {
+    //     Swal.fire({
+    //         icon: 'warning',
+    //         title: 'Aviso',
+    //         text: mensaje,
+    //         confirmButtonText: 'Aceptar',
+    //         confirmButtonColor: '#176585'
+    //     });
+    // }
 
     /**
      * Maneja errores HTTP (el backend envía el mensaje)
      */
-    private manejarErrorHttp(error: any) {
-        console.error('Error HTTP:', error);
+    // private manejarErrorHttp(error: any) {
+    //     console.error('Error HTTP:', error);
 
-        // Extraer mensaje de la respuesta del backend
-        const mensaje = error.message || 'Error al obtener la ficha';
-        const codigo = error.code || 'ERR-UNKNOWN';
-        const status = error.status || 500;
+    //     // Extraer mensaje de la respuesta del backend
+    //     const mensaje = error.message || 'Error al obtener la ficha';
+    //     const codigo = error.code || 'ERR-UNKNOWN';
+    //     const status = error.status || 500;
 
-        // Personalizar título según el código de error
-        let titulo = 'Error';
-        let icono: 'error' | 'warning' | 'info' = 'error';
+    //     // Personalizar título según el código de error
+    //     let titulo = 'Error';
+    //     let icono: 'error' | 'warning' | 'info' = 'error';
 
-        switch (codigo) {
-            case 'ERR-009':
-                titulo = 'Sorteo finalizado';
-                icono = 'info';
-                break;
-            case 'ERR-023':
-                titulo = 'Sorteo no iniciado';
-                icono = 'warning';
-                break;
-            case 'ERR-024':
-                titulo = 'Ganador de línea';
-                icono = 'info';
-                break;
-            case 'ERR-025':
-                titulo = 'Cartón lleno';
-                icono = 'info';
-                break;
-            case 'ERR-026':
-                titulo = 'Sin premios habilitados';
-                icono = 'warning';
-                break;
-            case 'ERR-002':
-                titulo = 'Sin fichas disponibles';
-                icono = 'warning';
-                break;
-            case 'ERR-006':
-                titulo = 'Sorteo no encontrado';
-                icono = 'error';
-                break;
-        }
+    //     switch (codigo) {
+    //         case 'ERR-009':
+    //             titulo = 'Sorteo finalizado';
+    //             icono = 'info';
+    //             break;
+    //         case 'ERR-023':
+    //             titulo = 'Sorteo no iniciado';
+    //             icono = 'warning';
+    //             break;
+    //         case 'ERR-024':
+    //             titulo = 'Ganador de línea';
+    //             icono = 'info';
+    //             break;
+    //         case 'ERR-025':
+    //             titulo = 'Cartón lleno';
+    //             icono = 'info';
+    //             break;
+    //         case 'ERR-026':
+    //             titulo = 'Sin premios habilitados';
+    //             icono = 'warning';
+    //             break;
+    //         case 'ERR-002':
+    //             titulo = 'Sin fichas disponibles';
+    //             icono = 'warning';
+    //             break;
+    //         case 'ERR-006':
+    //             titulo = 'Sorteo no encontrado';
+    //             icono = 'error';
+    //             break;
+    //     }
 
-        Swal.fire({
-            icon: icono,
-            title: titulo,
-            text: mensaje,
-            confirmButtonText: 'Aceptar',
-            confirmButtonColor: '#176585'
-        });
+    //     Swal.fire({
+    //         icon: icono,
+    //         title: titulo,
+    //         text: mensaje,
+    //         confirmButtonText: 'Aceptar',
+    //         confirmButtonColor: '#176585'
+    //     });
 
-        // Si el sorteo terminó, actualizar el estado local
-        if (codigo === 'ERR-009' || codigo === 'ERR-024' || codigo === 'ERR-025') {
-            this.sorteoCerrado = true;
-        }
-    }
+    //     // Si el sorteo terminó, actualizar el estado local
+    //     if (codigo === 'ERR-009' || codigo === 'ERR-024' || codigo === 'ERR-025') {
+    //         this.sorteoCerrado = true;
+    //     }
+    // }
 
     /**
      * Muestra mensaje cuando hay ganador de línea y el sorteo continúa
@@ -505,23 +508,38 @@ async getNextRecord(){
    /**
      *  Se ejecuta al presionar el botón de "Actualizar Marcas"
      */
-  actualizarMarcasCartones(): void {
-      this.triggerActualizarMarcas++;
-      // console.log('🎯 Actualizando marcas. Trigger:', this.triggerActualizarMarcas);
-      // console.log('📋 Fichas reveladas:', this.fichasReveladasArray);
-  }
+    actualizarMarcasCartones(): void {
+        this.triggerActualizarMarcas++;
+        // console.log('🎯 Actualizando marcas. Trigger:', this.triggerActualizarMarcas);
+        // console.log('📋 Fichas reveladas:', this.fichasReveladasArray);
+    }
 
-  loadUserData(){
-    this.UserService.LoadUserData(this.userId).subscribe({
-      next: (user) => {
-        this.user = user.data.user;
-        // console.log('user', this.user);
-      },
-      error: (error) => {
-        console.error('Error al cargar usuario:', error);
-      }
-    });
+    loadUserData(){
+      this.UserService.LoadUserData(this.userId).subscribe({
+        next: (user) => {
+          this.user = user.data.user;
+          // console.log('user', this.user);
+        },
+        error: (error) => {
+          console.error('Error al cargar usuario:', error);
+        }
+      });
 
-  }
-  
+    }
+   // async getActiveRaffle(){
+  //    const resp =  await this.RaffleService.getActiveRafflesByUser(this.userId);
+  //     //  console.log('resp', resp);
+  //    this.raffleId =  resp['raffles'][0]['id']; 
+  //    this.fichaGroupName= resp['raffles'][0]['groupfichas']; 
+  // }
+    
+  // async getCardsAvailables(){
+  //   this.Cartones.getAvailableCards(String(this.raffleId))
+  //     .subscribe((resp: any) => {
+  //         this.cartones = resp.Card;
+  //       },
+  //       (error: any) => {
+  //         console.log(error);
+  //       });
+  // }
 }
