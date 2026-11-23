@@ -33,7 +33,7 @@ export interface Via {
 export interface AccountTransaction {
     id: number;
     user_id: number;
-    currency_id: string;
+    currency_id: number;
     amount: number;
     balance_after: number | null;
     promo_after: number | null;
@@ -64,7 +64,7 @@ export interface AccountTransaction {
 // BALANCES
 // ============================================
 export interface Balance {
-    currency_id: string;
+    currency_id: number;
     amount: number;
     credit_promotion: number;
     total: number;
@@ -87,7 +87,7 @@ export interface Totals {
 export interface WithdrawalRequest {
     id: number;
     user_id: number;
-    currency_id: string;
+    currency_id: number;
     amount: number;
     commission: number;
     net_amount: number;
@@ -151,7 +151,7 @@ export interface TransactionsResponse {
 // FILTROS DE TRANSACCIONES
 // ============================================
 export interface TransactionFilters {
-    currency_id: string;
+    currency_id: number;
     via_id: number | null;
     type: 'credit' | 'debit' | 'neutral' | null;
     date_from: string | null;
@@ -167,7 +167,7 @@ export interface TransactionFilters {
 // ============================================
 export interface WithdrawalForm {
     user_id: number;
-    currency_id: string;
+    currency_id: number;
     amount: number;
     via_id: number;
     payment_data: any;

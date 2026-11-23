@@ -52,9 +52,9 @@
             <div class="card-content">
                 <span class="card-label">Saldo disponible</span>
                 <span class="card-value">
-                    {{ formatCurrency(currentBalance?.amount || 0) }}
+                    {{ formatCurrency(balance[0].amount || 0) }}
                 </span>
-                <span class="card-currency">{{ selectedCurrency }}</span>
+                <span class="card-currency">{{ selectedCurrencyCode   }}</span>
             </div>
         </div>
 
@@ -65,7 +65,7 @@
             <div class="card-content">
                 <span class="card-label">Crédito promocional</span>
                 <span class="card-value">
-                    {{ formatCurrency(currentBalance?.credit_promotion || 0) }}
+                    {{ formatCurrency(balance[0].credit_promotion || 0) }}
                 </span>
                 <span class="card-hint">No retirable</span>
             </div>
@@ -78,7 +78,7 @@
             <div class="card-content">
                 <span class="card-label">Total apostable</span>
                 <span class="card-value">
-                    {{ formatCurrency(currentBalance?.total || 0) }}
+                    {{ formatCurrency(balance[0].total || 0) }}
                 </span>
                 <span class="card-hint">Real + Promocional</span>
             </div>
@@ -154,7 +154,7 @@
                     {{ getStatusLabel(dr.status) }}
                 </div>
                 <div class="wr-details">
-                    <span class="wr-amount">{{ formatCurrency(dr.amount, dr.currency_id) }}</span>
+                    <span class="wr-amount">{{ formatCurrency(dr.amount, +dr.currency_id) }}</span>
                     <span class="wr-net">
                         Método: {{ dr.via?.label || 'N/A' }}
                         <span *ngIf="dr.reference"> | Ref: {{ dr.reference }}</span>

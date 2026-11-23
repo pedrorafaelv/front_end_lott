@@ -15,6 +15,7 @@ export interface GetTotalsData {
   promotions:  number;
   debits:      number;
   credits:     number;
+  available_amount: number;
 }
 
 // ─────────────────────────────────────────────

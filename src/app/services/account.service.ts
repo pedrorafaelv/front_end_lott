@@ -18,7 +18,8 @@ import { GetTotalsResponse } from '../interfaces/get-totals-response';
 export class AccountService {
 
     private baseUrl = environment.apiUrl;
-
+    currencies: any;
+    selectedCurrency: any;
     constructor(private http: HttpClient) { }
 
     /**
@@ -83,5 +84,10 @@ export class AccountService {
                     .set('currency_id', currencyId.toString())
             }
         );
+    }
+
+    get selectedCurrencyCode(): string {
+        const c = this.currencies.find((x: any) => x.id === this.selectedCurrency);
+        return c?.code ?? String(this.selectedCurrency);
     }
 }

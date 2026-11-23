@@ -244,13 +244,14 @@ getUserId(): number | null {
 registrarEnBackend(
   idToken: string,
   name: string,
-  docs: { doc_type: string; version: string; content_hash: string }[]
+  docs: { doc_type: string; version: string; content_hash: string }[],
+  referrerId: string|null, 
 ) {
   // console.log( `${this.apiUrl}auth/register`,
   //   { id_token: idToken, name, accepted_documents: docs });
   return this.http.post<{ success: boolean; user: { id: number } }>(
     `${this.apiUrl}auth/register`,
-    { id_token: idToken, name, accepted_documents: docs }
+    { id_token: idToken, name, ref:referrerId, accepted_documents: docs }
   );
 }
 

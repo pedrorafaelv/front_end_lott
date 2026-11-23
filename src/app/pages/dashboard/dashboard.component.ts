@@ -52,6 +52,7 @@ loading = false;
 currency_id = 2;
 totalDebits = 0;
 totalCredits = 0;
+availableAmount = 0;
 nextSorteo: RaffleItem | null = null;
 nextRaffleDate: Date | null = null;
 countdown = { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -98,9 +99,10 @@ ngOnInit(): void {
   this.userId = id;
   //  console.log('userId = ', this.userId);
   this.user = this.userService.currentUser();
+  this.getTotalBalance();
   // console.log('currentUser', this.user);
   this.loadUserData();
-  setTimeout(() => this.getTotalBalance(), 1000);
+  // setTimeout(() => this.getTotalBalance(), 1000);
   this.getAvailablesRaffles();
     
       // Suscribirse a los sorteos próximos
@@ -156,7 +158,7 @@ ngOnInit(): void {
   // Método para jugar un sorteo
   jugarSorteo(id: number): void {
     // this.sorteoService.jugarSorteo(id);
-    console.log(`Intentando jugar el sorteo con ID: ${id}`);
+    // console.log(`Intentando jugar el sorteo con ID: ${id}`);
      this.router.navigate(['juego'], { 
         queryParams: { raffleId: id }  
     });
@@ -169,7 +171,7 @@ ngOnInit(): void {
     
 /** Elige el próximo sorteo (el primero cuya fecha sea futura) y arranca el countdown */
 pickNextSorteo(): void {
-  console.log('futuros', this.nextRaffles);
+  // console.log('futuros', this.nextRaffles);
   const futuros = (this.nextRaffles ?? [])
   .filter(s => s.scheduled_date)
   .map(s => ({ raffle: s, fecha: new Date(s.scheduled_date!) }))
@@ -233,8 +235,10 @@ getTotalBalance(){
         const totals = total as unknown as { debits: number; credits: number };
         this.totalDebits = total?.data?.debits ?? 0;
         this.totalCredits = total?.data?.credits ?? 0;
-        console.log('totalCredits', this.totalCredits);
-        console.log('totalDebits', this.totalDebits);
+        this.availableAmount = total?.data?.available_amount?? 0;
+        // console.log('totalCredits', this.totalCredits);
+        // console.log('totalDebits', this.totalDebits);
+        // console.log('available', this.availableAmount);
       },
       error: (error) => {
         console.error('Error al cargar usuario:', error);
@@ -243,11 +247,11 @@ getTotalBalance(){
 }
 
 
-private updateCurrentBalance(): void {
-    this.currentBalance = this.balances.find(
-        b => b.currency_id === this.selectedCurrency
-    ) || null;
-}
+// private updateCurrentBalance(): void {
+//     this.currentBalance = this.balances.find(
+//         b => b.currency_id === this.selectedCurrency
+//     ) || null;
+// }
 
 loadOnlineUsers(): void {
     this.userService.getOnlineUsers({ window: 2, limit: 30 })

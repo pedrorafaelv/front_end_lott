@@ -19,7 +19,6 @@ import { PublicityComponent } from '../../components/publicity/publicity.compone
 import { RecordsComponent } from '../../components/records/records.component';
 import { PipesModule } from "../../pipes/pipes.module";
 import { CartonComponent } from '../../components/carton/carton.component';
-import { GetCardAvailableRaffleResponse } from '../../interfaces/get-card-available-raffle-response';
 import { NewRecordResponse } from '../../interfaces/get-new-record-response';
 import { CANCEL_BET_MESSAGES, CancelBetResponse, isCancelBetError, isCancelBetSuccess } from '../../interfaces/cancel-bet-response';
 import { BouncingBallComponent } from '../../components/bouncing-ball/bouncing-ball.component';
@@ -84,7 +83,7 @@ availableCards: any;
               private AuthService: AuthService,
               private UserService: UserService,
               private fb : FormBuilder,
-              private Cartones:CartonesService,
+              // private Cartones:CartonesService,
               private router:Router,
               private route: ActivatedRoute) { 
               this.forma = this.fb.group({
@@ -525,6 +524,44 @@ availableCards: any;
         }
       });
 
+    }
+
+    
+    async copyToClipboard(input: HTMLInputElement): Promise<void> {
+      const texto = input.value;
+      let copiado = false;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(texto);
+          copiado = true;
+        } else {
+          // Fallback para HTTP / navegadores viejos
+          input.select();
+          input.setSelectionRange(0, 99999);
+          copiado = document.execCommand('copy');
+          input.setSelectionRange(0, 0);
+        }
+      } catch (error) {
+        console.error('Error al copiar:', error);
+      }
+
+      if (copiado) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Copiado!',
+          text: 'El enlace de invitación se copió al portapapeles.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudo copiar',
+          text: 'Copia el enlace manualmente.',
+          confirmButtonColor: '#176585'
+        });
+      }
     }
    // async getActiveRaffle(){
   //    const resp =  await this.RaffleService.getActiveRafflesByUser(this.userId);

@@ -28,7 +28,15 @@
                 Premio Lleno: {{ full_reward? (full_reward| currency:'USD':'symbol':'1.0-0' ): 'N/A' }}
             </span>
         </div>
+            <div class="referral-link" *ngIf="user">
+                <p>Comparte este enlace para invitar amigos:</p>
+                <input type="text" readonly 
+                        [value]="'https://tu-dominio.com/registro?ref=' + user.id" 
+                        #refInput>
+                <button (click)="copyToClipboard(refInput)">Copiar</button>
+        </div>
     </div>
+
     <div class="header-content">
         
         <!-- Mostrar BouncingBall si hay MÁS de 2 fichas -->

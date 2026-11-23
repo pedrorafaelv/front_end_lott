@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute  } from '@angular/router';
 import { forkJoin, of, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import Swal from 'sweetalert2';
@@ -32,6 +32,7 @@ export class SignUpComponent implements OnInit {
   cargando = false;
   errorMessage = '';
   year = new Date().getFullYear();
+  referrerId: string | null = null;
 
   constructor(
     private auth: AuthService,
@@ -39,13 +40,19 @@ export class SignUpComponent implements OnInit {
     private validadores: ValidadoresService,
     private router: Router,
     private termsService: TermsService,
-    private social: SocialAuthService
-
+    private social: SocialAuthService,
+    private route: ActivatedRoute
   ) {
     this.crearFormulario();
   }
 
   ngOnInit(): void {
+     // Captura el valor de ?ref= en la URL
+      this.route.queryParams.subscribe(params => {
+      this.referrerId = params['ref'] || null;
+      // Si existe, puedes guardarlo en un formulario o estado
+    });
+
     forkJoin([
       this.termsService.getPublicVersion('terms'),
       this.termsService.getPublicVersion('privacy'),
@@ -118,9 +125,10 @@ export class SignUpComponent implements OnInit {
       content_hash: d.contentHash,
     }));
 
+
     this.auth.nuevoUsuario(correo, pass1).pipe(
       switchMap(fbUser =>
-        this.auth.registrarEnBackend(fbUser.idToken, usuario, docs).pipe(
+        this.auth.registrarEnBackend(fbUser.idToken, usuario,  docs, this.referrerId).pipe(
           // Si el backend falla, no dejamos una cuenta huérfana en Firebase
           catchError(err =>
             this.auth.eliminarCuentaFirebase(fbUser.idToken).pipe(
@@ -198,7 +206,7 @@ export class SignUpComponent implements OnInit {
     const nombre = (social.displayName ?? '').trim();
 
     await firstValueFrom(this.auth.registrarEnBackend(
-      social.idToken, nombre.length >= 3 ? nombre.slice(0, 50) : '', docs));
+      social.idToken, nombre.length >= 3 ? nombre.slice(0, 50) : '', docs, this.referrerId));
     registrado = true;
 
     await firstValueFrom(this.auth.iniciarSesionConIdToken(social.idToken, social.localId));

@@ -26,6 +26,7 @@ import {
     WithdrawalRequest,
 } from '../../interfaces/account.interface';
 import { CurrencyService } from '../../services/currency.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-account',
@@ -49,8 +50,7 @@ export class AccountComponent implements OnInit, OnDestroy {
     // ESTADO
     // ============================================
     userId: number= 0;
-    selectedCurrency: string = 'USD';
-
+    selectedCurrency: number = environment.defaultCurrency; 
     // Data
     summary: AccountSummary | null = null;
     balances: Balance[] = [];
@@ -59,6 +59,8 @@ export class AccountComponent implements OnInit, OnDestroy {
     withdrawalRequests: WithdrawalRequest[] = [];
     currencies: Currency[] = [];
     vias: Via[] = [];
+    balance: any;
+    currency_id:number = environment.defaultCurrency
 
     // Paginación
     pagination = {
@@ -70,7 +72,7 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     // Filtros
     filters: TransactionFilters = {
-        currency_id: 'USD',
+        currency_id: environment.defaultCurrency,  
         via_id: null,
         type: null,
         date_from: null,
@@ -111,7 +113,7 @@ export class AccountComponent implements OnInit, OnDestroy {
         // Inicializar formularios
         // Formulario de retiro
         this.withdrawalForm = this.fb.group({
-            currency_id: [this.selectedCurrency, Validators.required], 
+            currency_id: [environment.defaultCurrency, Validators.required],
             amount: ['', [Validators.required, Validators.min(1)]],
             via_id: ['', Validators.required],
             payment_data: ['', Validators.required],
@@ -158,7 +160,7 @@ export class AccountComponent implements OnInit, OnDestroy {
             }
 
 
-            console.log('👤 Usuario ID:', this.userId);
+            // console.log('👤 Usuario ID:', this.userId);
 
         this.loadVias();
 
@@ -180,7 +182,7 @@ export class AccountComponent implements OnInit, OnDestroy {
             next: (resp) => {
                 if (resp.success) {
                     this.depositRequests = resp.data;
-                    console.log('📥 Mis depósitos:', this.depositRequests);
+                    // console.log('📥 Mis depósitos:', this.depositRequests);
                 }
             },
             error: (err) => console.error('❌ Error depósitos:', err)
@@ -191,9 +193,8 @@ export class AccountComponent implements OnInit, OnDestroy {
      //cargar los tipos de monedas 
       this.currencyService.getCurrenciesCanBeSeeByUser().subscribe({
       next:(resp)=>{
-          console.log('loadCurrencies currencies = ', resp.data);
+        //   console.log('loadCurrencies currencies = ', resp.data);
           if (resp.data?.currencies){
-
               this.currencies = resp.data?.currencies;
           }
       }
@@ -206,7 +207,6 @@ export class AccountComponent implements OnInit, OnDestroy {
     // ⭐ Cargar vías de tipo credit (para depósitos)
     this.viaService.getCreditsCanBeSeeByUser().subscribe({
         next: (resp) => {
-            // console.log('✅ [loadVias] credits - respuesta:', resp);
             
             // ⭐ Usar resp.data en lugar de resp.success + resp.data
             if (resp && resp.data) {
@@ -223,25 +223,26 @@ export class AccountComponent implements OnInit, OnDestroy {
     // ⭐ Cargar vías de tipo debit (para retiros)
     this.viaService.getDebitsCanBeSeeByUser().subscribe({
         next: (resp) => {
-            console.log('✅ [loadVias] debits - respuesta:', resp);
+            // console.log('✅ [loadVias] debits - respuesta:', resp);
             
             if (resp && resp.data) {
                 this.withdrawalVias = resp.data;
-                console.log('💳 Vías de retiro asignadas:', this.withdrawalVias.length);
+                // console.log('💳 Vías de retiro asignadas:', this.withdrawalVias.length);
             }
         },
         error: (err) => {
-            console.error('❌ [loadVias] debits - ERROR:', err);
+            // console.error('❌ [loadVias] debits - ERROR:', err);
         }
     });
 
-    console.log('🎬 [loadVias] FIN - suscripciones hechas');
+    // console.log('🎬 [loadVias] FIN - suscripciones hechas');
 }
 
     // ============================================
     // CARGAR RESUMEN
     // ============================================
     private loadSummary(): void {
+        // console.log('user_id en loadSummary = ', this.userId);
         this.accountService.getSummary((this.userId))
             .pipe(takeUntil(this.destroy$))
             .subscribe({
@@ -255,10 +256,14 @@ export class AccountComponent implements OnInit, OnDestroy {
 
                         // Convertir balances a array
                         this.balances = Object.values(resp.data.balances || {});
+                         console.log('balance', this.balances);
+                         this.balance = Object.values(resp.data.balances)
+                         
 
                         // Si hay balances y no hay moneda seleccionada, usar la primera
                         if (this.balances.length > 0 && !this.selectedCurrency) {
                             this.selectedCurrency = this.balances[0].currency_id;
+
                         }
 
                         // Actualizar balance actual
@@ -313,19 +318,19 @@ export class AccountComponent implements OnInit, OnDestroy {
     // ============================================
     // CAMBIAR MONEDA
     // ============================================
-    changeCurrency(currencyCode: string): void {
-        this.selectedCurrency = currencyCode;
-        this.filters.currency_id = currencyCode;
+    changeCurrency(currencyId: number): void {
+        this.selectedCurrency = currencyId;
+        this.filters.currency_id = currencyId;
         this.filters.page = 1;
         this.updateCurrentBalance();
         this.loadTransactions();
     }
 
-    private updateCurrentBalance(): void {
-        this.currentBalance = this.balances.find(
-            b => b.currency_id === this.selectedCurrency
-        ) || null;
-    }
+   private updateCurrentBalance(): void {
+    this.currentBalance = this.balances.find(
+        b => Number(b.currency_id) === Number(this.selectedCurrency)   // ← forzar number en ambos lados
+    ) || null;
+}
 
     // ============================================
     // FILTROS
@@ -672,13 +677,17 @@ export class AccountComponent implements OnInit, OnDestroy {
         });
     }
 
+     get selectedCurrencyCode(): string {
+    const c = this.currencies.find(x => x.id === this.selectedCurrency);
+    return c?.code ?? String(this.selectedCurrency);
+}
     // ============================================
     // HELPERS
     // ============================================
-    formatCurrency(amount: number, currencyCode: string = this.selectedCurrency): string {
+    formatCurrency(amount: number, currencyId: number = this.selectedCurrency): string {
              const numericAmount = Number(amount) || 0;
 
-        const currency = this.currencies.find(c => c.code === currencyCode);
+        const currency = this.currencies.find(c => c.id === currencyId);
         const symbol = currency?.symbol || '$';
         const decimals = currency?.decimals || 2;
 
